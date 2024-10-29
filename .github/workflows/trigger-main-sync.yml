@@ -4,7 +4,7 @@ on:
     branches:
       - main
 env:
-  SUBMODULE_NAME: "MITP-mobile
+  SUBMODULE_NAME: "MITP-mobile"
 
 jobs:
   trigger-sync:
