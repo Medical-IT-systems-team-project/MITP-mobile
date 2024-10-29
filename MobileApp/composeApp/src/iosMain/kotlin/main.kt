@@ -1,5 +1,5 @@
 import androidx.compose.ui.window.ComposeUIViewController
-import org.umcs.mobile.App
+import org.umcs.mobile.navigation.NavigationHost
 import platform.UIKit.UIViewController
 
-fun MainViewController(): UIViewController = ComposeUIViewController { App() }
+fun MainViewController(): UIViewController = ComposeUIViewController { NavigationHost() }
