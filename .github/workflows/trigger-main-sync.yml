@@ -21,7 +21,7 @@ jobs:
           curl -X POST \
           -H "Authorization: token ${{ secrets.PAT_TOKEN }}" \
           -H "Accept: application/vnd.github.v3+json" \
-          https://api.github.com/repos/Innocenttt3/Medical-IT-systems-team-project/dispatches \
+          https://api.github.com/repos/Medical-IT-systems-team-project/CareTrack/dispatches \
           -d "{
           \"event_type\": \"submodule-main-updated\",
           \"client_payload\": {
