@@ -51,6 +51,9 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.room.runtime)
             implementation(libs.composeIcons.featherIcons)
+
+            implementation(libs.qrose)
+
         }
 
         commonTest.dependencies {
