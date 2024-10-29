@@ -13,7 +13,7 @@ class AppActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent { NavigationHost() }
-    } //test
+    } //test2
 }
 
 @Preview
