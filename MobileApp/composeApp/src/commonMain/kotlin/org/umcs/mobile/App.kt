@@ -34,6 +34,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import compose.icons.FeatherIcons
+import compose.icons.feathericons.Camera
 import compose.icons.feathericons.Moon
 import kotlinx.coroutines.isActive
 import mobileapp.composeapp.generated.resources.IndieFlower_Regular
@@ -130,6 +131,16 @@ internal fun App(navController: NavHostController) = AppTheme {
                 Icon(imageVector = FeatherIcons.Moon, contentDescription = null)
                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                 Text(text = "Second Screen")
+            }
+        )
+
+        ElevatedButton(
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp).widthIn(min = 200.dp),
+            onClick = { navController.navigate(Routes.THIRD)},
+            content = {
+                Icon(imageVector = FeatherIcons.Camera, contentDescription = null)
+                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                Text(text = "Camera")
             }
         )
 

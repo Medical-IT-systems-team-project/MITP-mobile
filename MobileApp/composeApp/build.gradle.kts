@@ -53,7 +53,7 @@ kotlin {
             implementation(libs.composeIcons.featherIcons)
 
             implementation(libs.qrose)
-
+            implementation(libs.qr.kit)
         }
 
         commonTest.dependencies {
@@ -82,7 +82,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        minSdk = 21
+        minSdk = 29
         targetSdk = 35
 
         applicationId = "org.umcs.mobile.androidApp"
