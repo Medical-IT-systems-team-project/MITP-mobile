@@ -10,7 +10,7 @@ import org.umcs.mobile.network.KtorClient
 import org.umcs.mobile.network.Welcome
 
 class AppViewModel : ViewModel() {
-    var data by mutableStateOf("")
+    var data by mutableStateOf("poczekaj chwile")
 
     fun fetchData() {
         viewModelScope.launch {
