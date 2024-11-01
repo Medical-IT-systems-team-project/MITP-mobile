@@ -29,6 +29,8 @@ import androidx.navigation.compose.rememberNavController
 import co.touchlab.kermit.Logger
 import io.github.alexzhirkevich.qrose.rememberQrCodePainter
 import org.umcs.mobile.App
+import org.umcs.mobile.composables.LoginScreen
+import org.umcs.mobile.theme.AppTheme
 import qrscanner.CameraLens
 import qrscanner.OverlayShape
 import qrscanner.QrScanner
@@ -38,19 +40,25 @@ import kotlin.uuid.Uuid
 
 @Composable
 fun NavigationHost(navController: NavHostController = rememberNavController()) {
-    NavHost(
-        navController = navController,
-        modifier = Modifier.fillMaxSize(),
-        startDestination = "home"
-    ) {
-        composable(Routes.HOME) {
-            App(navController)
-        }
-        composable(Routes.SECOND) {
-            SecondScreen(navController)
-        }
-        composable(Routes.THIRD) {
-            ThirdScreen(navController)
+
+    AppTheme{
+        NavHost(
+            navController = navController,
+            modifier = Modifier.fillMaxSize(),
+            startDestination = "home"
+        ) {
+            composable(Routes.HOME) {
+                App(navController)
+            }
+            composable(Routes.SECOND) {
+                SecondScreen(navController)
+            }
+            composable(Routes.THIRD) {
+                ThirdScreen(navController)
+            }
+            composable(Routes.LOGIN){
+                LoginScreen(goToHomeScreen = { navController.navigate(Routes.HOME) })
+            }
         }
     }
 }

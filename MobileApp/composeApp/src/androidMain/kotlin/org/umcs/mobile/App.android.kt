@@ -4,20 +4,21 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import appModule
+import org.koin.core.context.startKoin
 import org.umcs.mobile.navigation.NavigationHost
 
 class AppActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initKoin()
         enableEdgeToEdge()
         setContent { NavigationHost() }
-    } //test1234
+    }
 }
 
-@Preview
-@Composable
-fun AppPreview() {
-    NavigationHost()
+internal fun initKoin() {
+    startKoin {
+        modules(appModule)
+    }
 }

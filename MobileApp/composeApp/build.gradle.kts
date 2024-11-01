@@ -51,12 +51,14 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.room.runtime)
             implementation(libs.composeIcons.featherIcons)
+            implementation(libs.ktor.client.content.negotiation.json)
 
             implementation(libs.qrose)
             implementation(libs.qr.kit)
         }
 
         commonTest.dependencies {
+
             implementation(kotlin("test"))
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.uiTest)
@@ -104,6 +106,7 @@ room {
 }
 
 dependencies {
+
     with(libs.room.compiler) {
         add("kspAndroid", this)
         add("kspIosX64", this)
