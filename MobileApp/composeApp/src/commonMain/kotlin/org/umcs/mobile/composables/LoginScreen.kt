@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import co.touchlab.kermit.Logger
 import kotlinx.coroutines.delay
 
 @Composable
@@ -42,8 +43,12 @@ fun LoginScreen(goToHomeScreen: () -> Unit) {
     )
 
     LaunchedEffect(Unit){
-        delay(2000)
-        viewModel.fetchData()
+        try {
+            delay(2000)
+            viewModel.fetchData()
+        }catch(e: Exception){
+            Logger.e("Something bad happened ${e.message}",e,"LoginScreen")
+        }
     }
 
     Column(

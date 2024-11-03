@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.room)
     alias(libs.plugins.ksp)
+    id("co.touchlab.skie") version "0.9.3"
 }
 
 kotlin {
@@ -92,6 +93,12 @@ android {
         versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+}
+
+skie{
+    features{
+        coroutinesInterop.set(true)
     }
 }
 

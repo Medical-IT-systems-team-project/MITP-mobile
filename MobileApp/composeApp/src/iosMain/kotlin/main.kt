@@ -1,5 +1,5 @@
 import androidx.compose.ui.window.ComposeUIViewController
-import network.chaintech.cmpimagepickncrop.platform
+import org.koin.core.context.startKoin
 import org.umcs.mobile.navigation.NavigationHost
 import platform.UIKit.UIViewController
 
