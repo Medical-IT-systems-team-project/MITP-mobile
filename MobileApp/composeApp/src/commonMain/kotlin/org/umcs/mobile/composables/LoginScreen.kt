@@ -31,8 +31,7 @@ import co.touchlab.kermit.Logger
 import kotlinx.coroutines.delay
 
 @Composable
-fun LoginScreen(goToHomeScreen: () -> Unit) {
-    val viewModel : AppViewModel = viewModel()
+fun LoginScreen(goToHomeScreen: () -> Unit, viewModel : AppViewModel = viewModel{ AppViewModel() }) {
     var login by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var errorMessage = viewModel.data
