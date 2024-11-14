@@ -45,7 +45,7 @@ fun NavigationHost(navController: NavHostController = rememberNavController()) {
         NavHost(
             navController = navController,
             modifier = Modifier.fillMaxSize(),
-            startDestination = "home"
+            startDestination = Routes.HOME
         ) {
             composable(Routes.HOME) {
                 App(navController)

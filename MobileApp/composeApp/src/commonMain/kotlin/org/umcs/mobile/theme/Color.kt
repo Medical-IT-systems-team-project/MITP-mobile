@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.Color
 //Color palette was taken here: https://coolors.co/palette/e63946-f1faee-a8dadc-457b9d-1d3557
 
 
+val healthGreen = Color(0xff45b04a)
 val primaryLight = Color(0xFFA4003C)
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFFE31E5B)

@@ -9,8 +9,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -27,11 +30,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import co.touchlab.kermit.Logger
 import kotlinx.coroutines.delay
+import mobileapp.composeapp.generated.resources.Res
+import mobileapp.composeapp.generated.resources.caretrack
+import mobileapp.composeapp.generated.resources.cross_logo
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun LoginScreen(goToHomeScreen: () -> Unit, viewModel : AppViewModel = viewModel{ AppViewModel() }) {
+fun LoginScreen(
+    goToHomeScreen: () -> Unit,
+    viewModel: AppViewModel = viewModel { AppViewModel() }
+) {
     var login by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var errorMessage = viewModel.data
@@ -41,20 +50,35 @@ fun LoginScreen(goToHomeScreen: () -> Unit, viewModel : AppViewModel = viewModel
         focusedIndicatorColor = Color.Transparent
     )
 
-    LaunchedEffect(Unit){
-        try {
-            delay(2000)
-            viewModel.fetchData()
-        }catch(e: Exception){
-            Logger.e("Something bad happened ${e.message}",e,"LoginScreen")
-        }
+    LaunchedEffect(Unit) {
+        delay(2000)
+        viewModel.fetchData()
     }
 
     Column(
-        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).imePadding(),
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
+            .imePadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(0.8f).offset(y = (-65).dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            Icon(
+                modifier = Modifier.size(150.dp).offset(y = 50.dp),
+                tint = MaterialTheme.colorScheme.primary,
+                painter = painterResource(Res.drawable.cross_logo),
+                contentDescription = null
+            )
+            Icon(
+                modifier = Modifier.fillMaxWidth(0.7f),
+                painter = painterResource(Res.drawable.caretrack),
+                contentDescription = null
+            )
+        }
+
         TextField(
             modifier = Modifier.fillMaxWidth(0.6f),
             singleLine = true,
