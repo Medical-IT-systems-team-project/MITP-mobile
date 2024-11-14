@@ -2,6 +2,7 @@ package org.umcs.mobile
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
@@ -15,7 +16,16 @@ import org.umcs.mobile.theme.AppTheme
 class AppActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.light(
+                scrim = android.graphics.Color.TRANSPARENT,
+                darkScrim = android.graphics.Color.TRANSPARENT
+            ),
+            navigationBarStyle = SystemBarStyle.light(
+                scrim = android.graphics.Color.TRANSPARENT,
+                darkScrim = android.graphics.Color.TRANSPARENT
+            )
+        )
         setContent { NavigationHost() }
     }
 }
@@ -29,8 +39,8 @@ internal fun initKoin() {
 
 @Preview(showSystemUi = true)
 @Composable
-private fun NavigationHostPreviewDark() {
-    AppTheme(systemIsDark = true){
+private fun LoginScreenPreviewDark() {
+    AppTheme(systemIsDark = true) {
         LoginScreen(
             goToHomeScreen = {}
         )
@@ -39,10 +49,11 @@ private fun NavigationHostPreviewDark() {
 
 @Preview(showSystemUi = true)
 @Composable
-private fun NavigationHostPreviewLight() {
-    AppTheme(systemIsDark = false){
+private fun LoginScreenPreviewLight() {
+    AppTheme(systemIsDark = false) {
         LoginScreen(
             goToHomeScreen = {}
         )
     }
 }
+

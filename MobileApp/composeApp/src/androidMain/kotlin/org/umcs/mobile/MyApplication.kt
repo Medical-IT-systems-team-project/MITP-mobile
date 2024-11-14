@@ -8,3 +8,4 @@ class MyApplication : Application() {
         initKoin()
     }
 }
+
