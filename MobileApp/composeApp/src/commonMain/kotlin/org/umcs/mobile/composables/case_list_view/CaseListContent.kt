@@ -11,14 +11,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.umcs.mobile.Data.Case
+import org.umcs.mobile.navigation.Case
 
 @Composable
 fun CaseViewContent(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
     cases: List<Case>,
-    listState: LazyListState
+    listState: LazyListState,
+    navigateToCase: (Case) -> Unit
 ) {
     LazyColumn(
         modifier = modifier,
@@ -29,7 +30,8 @@ fun CaseViewContent(
     ) {
         items(cases){ case ->
             CaseListItem(
-                case = case,
+                navigateToCase = navigateToCase,
+                currentCase = case,
                 modifier = Modifier.fillMaxWidth(0.8f).height(80.dp)
             )
         }

@@ -34,7 +34,7 @@ internal fun App(navController: NavHostController) {
     ) {
         ElevatedButton(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp).widthIn(min = 200.dp),
-            onClick = { navController.navigate(Routes.SECOND) },
+            onClick = { navController.navigate(Routes.CASE_LIST) },
             content = {
                 Icon(imageVector = FeatherIcons.Moon, contentDescription = null)
                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
@@ -49,6 +49,16 @@ internal fun App(navController: NavHostController) {
                 Icon(imageVector = FeatherIcons.Camera, contentDescription = null)
                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                 Text(text = "Camera")
+            }
+        )
+
+        ElevatedButton(
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp).widthIn(min = 200.dp),
+            onClick = { navController.navigate(Routes.NEW_CASE) },
+            content = {
+                Icon(imageVector = FeatherIcons.Camera, contentDescription = null)
+                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                Text(text = "New Case")
             }
         )
 

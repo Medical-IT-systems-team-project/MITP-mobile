@@ -9,7 +9,7 @@ import org.umcs.mobile.theme.AppTheme
 @Composable
 private fun CaseViewPreviewDark() {
     AppTheme(systemIsDark = true){
-        CaseListLayout{}
+        CaseListLayout({}, {  })
     }
 }
 
@@ -17,6 +17,6 @@ private fun CaseViewPreviewDark() {
 @Composable
 private fun CaseViewPreviewLight() {
     AppTheme(systemIsDark = false){
-        CaseListLayout{  }
+        CaseListLayout({  }, {})
     }
 }

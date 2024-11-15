@@ -1,6 +1,7 @@
 package org.umcs.mobile.composables.case_list_view
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -9,11 +10,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import org.umcs.mobile.Data.Case
+import androidx.compose.ui.unit.dp
+import org.umcs.mobile.navigation.Case
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CaseListLayout(navigateToCase: () -> Unit) {
+fun CaseListLayout(navigateToCase: (Case) -> Unit, navigateBack: () -> Unit) {
     val testValues = remember { fetchTestCases() }
     val contentState = rememberLazyListState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -21,9 +23,10 @@ fun CaseListLayout(navigateToCase: () -> Unit) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { CaseViewTopBar(scrollBehavior) },
-        floatingActionButton = {CaseListFAB()},
+        floatingActionButton = { CaseListFAB(Modifier.offset(y= (-20).dp)) },
     ) { paddingValues ->
         CaseViewContent(
+            navigateToCase = navigateToCase,
             contentPadding = paddingValues,
             cases = testValues,
             listState = contentState,
