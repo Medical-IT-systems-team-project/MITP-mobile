@@ -89,107 +89,134 @@ fun NewCaseLayout() {
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            AnimatedVisibility(
-                visible = showQrScanner,
-                enter = slideInVertically(),
-                exit = slideOutVertically()
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .aspectRatio(1f)
-                ) {
-                    QrScanner(
-                        modifier = Modifier.weight(2f),
-                        flashlightOn = false,
-                        cameraLens = CameraLens.Back,
-                        openImagePicker = false,
-                        onCompletion = { UUID ->
-                            text = UUID
-                            Logger.i(UUID, tag = "UUID")
-                        },
-                        imagePickerHandler = { bool ->
-                            Logger.i("Image picker handler", tag = "Image picker handler")
-                        },
-                        onFailure = { failure ->
-                            Logger.i(failure, tag = "FAILURE")
-                        },
-                        overlayShape = OverlayShape.Square,
-                        overlayColor = MaterialTheme.colorScheme.background,
-                        overlayBorderColor = MaterialTheme.colorScheme.onBackground
-                    )
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.background)
-                            .zIndex(2f),
-                    )
-                }
-            }
+            QrScannerContent(showQrScanner, onQrScannerCompletion = { UUID ->
+                text = UUID
+                Logger.i(UUID, tag = "UUID")
+            })
 
-
-            Row(
+            CaseIdentifierRow(
+                text = text,
+                supportingText = supportingText,
+                isFocused = isFocused,
+                focusRequester = focusRequester,
+                onTextChange = { text = it },
+                onFocusChange = { changedFocus -> isFocused = changedFocus },
+                onSupportingTextChange = { supportingText = it },
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                TextField(
-                    supportingText = {
-                        Text(
-                            supportingText,
-                            color = MaterialTheme.colorScheme.error,
-                            modifier = Modifier.padding(start = 16.dp)
-                        )
-                    },
-                    singleLine = true,
-                    shape = RoundedCornerShape(16.dp),
-                    value = text,
-                    onValueChange = { text = it },
-                    label = { Text("Case Identifier") },
-                    enabled = !matchUUID(text),
-                    modifier = Modifier
-                        .weight(1f)
-                        .focusRequester(focusRequester)
-                        .onFocusChanged {
-                            Logger.i(it.isFocused.toString(), tag = "onFocusChanged")
-                            isFocused = it.isFocused
+                    .padding(16.dp)
+            )
+        }
+    }
+}
 
-                            if (isFocused) {
-                                supportingText = ""
-                            }
-                        },
-                    trailingIcon = {
-                        if (!matchUUID(text) && text.isNotEmpty() && !isFocused) {
-                            ErrorIcon()
-                        }
-                    },
-                    colors = TextFieldDefaults.colors(
-                        disabledIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent
-                    ),
+@Composable
+fun QrScannerContent(showQrScanner: Boolean, onQrScannerCompletion: (String) -> Unit) {
+    AnimatedVisibility(
+        visible = showQrScanner,
+        enter = slideInVertically(),
+        exit = slideOutVertically()
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .aspectRatio(1f)
+        ) {
+            QrScanner(
+                modifier = Modifier.weight(2f),
+                flashlightOn = false,
+                cameraLens = CameraLens.Back,
+                openImagePicker = false,
+                onCompletion = onQrScannerCompletion,
+                imagePickerHandler = { bool ->
+                    Logger.i("Image picker handler", tag = "Image picker handler")
+                },
+                onFailure = { failure ->
+                    Logger.i(failure, tag = "FAILURE")
+                },
+                overlayShape = OverlayShape.Square,
+                overlayColor = MaterialTheme.colorScheme.background,
+                overlayBorderColor = MaterialTheme.colorScheme.onBackground
+            )
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .zIndex(2f),
+            )
+        }
+    }
+}
+
+@Composable
+fun CaseIdentifierRow(
+    modifier : Modifier = Modifier,
+    text: String,
+    supportingText: String,
+    isFocused: Boolean,
+    focusRequester: FocusRequester,
+    onTextChange: (String) -> Unit,
+    onFocusChange: (Boolean) -> Unit,
+    onSupportingTextChange: (String) -> Unit
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        TextField(
+            supportingText = {
+                Text(
+                    supportingText,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(start = 16.dp)
                 )
-                FloatingActionButton(
-                    onClick = {
-                        when {
-                            text.isEmpty() -> supportingText = "Please enter the identification"
-                            !matchUUID(text) -> supportingText = "Please enter a valid UUID"
-                            matchUUID(text) -> {
-                                supportingText = "CORRECT"
-                                //TODO : Fetch the case from server
-                            }
-                        }
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Add Case by UUID"
-                    )
+            },
+            singleLine = true,
+            shape = RoundedCornerShape(16.dp),
+            value = text,
+            onValueChange = onTextChange,
+            label = { Text("Case Identifier") },
+            enabled = !matchUUID(text),
+            modifier = Modifier
+                .weight(1f)
+                .focusRequester(focusRequester)
+                .onFocusChanged {
+                    Logger.i(it.isFocused.toString(), tag = "onFocusChanged")
+                    onFocusChange(it.isFocused)
+
+                    if (it.isFocused) {
+                        onSupportingTextChange("")
+                    }
+                },
+            trailingIcon = {
+                if (!matchUUID(text) && text.isNotEmpty() && !isFocused) {
+                    ErrorIcon()
                 }
-            }
+            },
+            colors = TextFieldDefaults.colors(
+                disabledIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent
+            ),
+        )
+        FloatingActionButton(
+            onClick = {
+                when {
+                    text.isEmpty() -> onSupportingTextChange("Please enter the identification")
+                    !matchUUID(text) -> onSupportingTextChange("Please enter a valid UUID")
+                    matchUUID(text) -> {
+                        onSupportingTextChange("CORRECT")
+                        //TODO : Fetch the case from server
+                    }
+                }
+            },
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Add Case by UUID"
+            )
         }
     }
 }
