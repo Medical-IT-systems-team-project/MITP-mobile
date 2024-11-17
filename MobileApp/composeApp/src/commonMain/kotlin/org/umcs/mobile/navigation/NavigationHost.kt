@@ -23,8 +23,9 @@ import org.umcs.mobile.App
 import org.umcs.mobile.composables.case_list_view.CaseListLayout
 import org.umcs.mobile.composables.case_list_view.patient.share_uuid_view.ShareUUIDLayout
 import org.umcs.mobile.composables.case_view.CaseLayout
-import org.umcs.mobile.composables.login.DoctorLoginScreen
-import org.umcs.mobile.composables.login.PatientLoginScreen
+import org.umcs.mobile.composables.login.ChooseProfileLayout
+import org.umcs.mobile.composables.login.DoctorLoginLayout
+import org.umcs.mobile.composables.login.PatientLoginLayout
 import org.umcs.mobile.data.Case
 import org.umcs.mobile.theme.AppTheme
 import kotlin.uuid.ExperimentalUuidApi
@@ -64,11 +65,18 @@ fun NavigationHost(navController: NavHostController = rememberNavController()) {
                     modifier = Modifier.fillMaxSize()
                 )
             }
+            composable(Routes.CHOOSE_LOGIN){
+                ChooseProfileLayout(
+                    modifier = Modifier.fillMaxSize(),
+                    navigateToPatientLogin = { navController.navigate(Routes.PATIENT_LOGIN) },
+                    navigateToDoctorLogin = { navController.navigate(Routes.DOCTOR_LOGIN) }
+                )
+            }
             composable(Routes.PATIENT_LOGIN){
-             PatientLoginScreen()
+             PatientLoginLayout()
             }
             composable(Routes.DOCTOR_LOGIN) {
-                DoctorLoginScreen(goToHomeScreen = { navController.navigate(Routes.HOME) })
+                DoctorLoginLayout(goToHomeScreen = { navController.navigate(Routes.HOME) })
             }
             composable<Case>{ backStackEntry ->
                 val case : Case = backStackEntry.toRoute()

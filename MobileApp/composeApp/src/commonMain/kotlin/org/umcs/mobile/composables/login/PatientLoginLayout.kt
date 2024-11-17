@@ -5,6 +5,6 @@ import androidx.compose.ui.Modifier
 import org.umcs.mobile.composables.new_case_view.NewUUIDScreen
 
 @Composable
-fun PatientLoginScreen(modifier: Modifier = Modifier) {
+fun PatientLoginLayout(modifier: Modifier = Modifier) {
     NewUUIDScreen()
 }

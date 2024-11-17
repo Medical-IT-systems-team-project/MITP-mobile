@@ -26,11 +26,11 @@ import org.umcs.mobile.navigation.Routes
 
 @Composable
 internal fun App(navController: NavHostController) {
-    //TODO : Add Patient View (scan or write patient uuid) ## almost implemented
-    //TODO : Add Patient sharing QR UUID
+    //TODO : Add Patient CaseListView  - DONE
+    //TODO : Add Patient sharing QR UUID - DONE
     //TODO : Case View
     //TODO : Modify Case View
-    //TODO : Starting View (either doctor or patient)
+    //TODO : Starting View (either doctor or patient) - DONE
     //TODO : Hold user data (either patient or doctor)
     //TODO : Handle API requests (patient should log in with uuid, doctor should log in with username and password)
 
@@ -79,6 +79,16 @@ internal fun App(navController: NavHostController) {
                 Icon(imageVector = FeatherIcons.UserMinus, contentDescription = null)
                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                 Text(text = "Log in as Doctor")
+            }
+        )
+
+        ElevatedButton(
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp).widthIn(min = 200.dp),
+            onClick = { navController.navigate(Routes.CHOOSE_LOGIN) },
+            content = {
+                Icon(imageVector = FeatherIcons.UserMinus, contentDescription = null)
+                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                Text(text = "Choose login")
             }
         )
 

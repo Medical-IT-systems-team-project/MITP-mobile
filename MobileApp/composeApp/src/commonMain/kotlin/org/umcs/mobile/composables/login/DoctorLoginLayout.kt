@@ -35,7 +35,7 @@ import mobileapp.composeapp.generated.resources.cross_logo
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun DoctorLoginScreen(
+fun DoctorLoginLayout(
     goToHomeScreen: () -> Unit,
     viewModel: AppViewModel = viewModel { AppViewModel() }
 ) {
@@ -81,7 +81,7 @@ fun DoctorLoginScreen(
             modifier = Modifier.fillMaxWidth(0.6f),
             singleLine = true,
             colors = colors,
-            placeholder = { Text(text = "Login", fontSize = 16.sp) },
+            placeholder = { Text(text = "Username", fontSize = 16.sp) },
             shape = shape,
             value = login,
             onValueChange = { newLogin ->

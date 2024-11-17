@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import appModule
 import org.koin.core.context.startKoin
-import org.umcs.mobile.composables.login.DoctorLoginScreen
+import org.umcs.mobile.composables.login.DoctorLoginLayout
 import org.umcs.mobile.navigation.NavigationHost
 import org.umcs.mobile.theme.AppTheme
 
@@ -41,7 +41,7 @@ internal fun initKoin() {
 @Composable
 private fun LoginScreenPreviewDark() {
     AppTheme(systemIsDark = true) {
-        DoctorLoginScreen(
+        DoctorLoginLayout(
             goToHomeScreen = {}
         )
     }
@@ -51,7 +51,7 @@ private fun LoginScreenPreviewDark() {
 @Composable
 private fun LoginScreenPreviewLight() {
     AppTheme(systemIsDark = false) {
-        DoctorLoginScreen(
+        DoctorLoginLayout(
             goToHomeScreen = {}
         )
     }
