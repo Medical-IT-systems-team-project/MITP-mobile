@@ -17,11 +17,11 @@ fun AppFab(
 ) {
 
     FloatingActionButton(
-        modifier = modifier.size(50.dp),
+        modifier = modifier.size(60.dp),
         onClick = onClick,
     ) {
         Icon(
-            modifier= Modifier.size(27.dp),
+            modifier= Modifier.size(32.dp),
             painter = painterResource(iconResource),
             contentDescription = null
         )

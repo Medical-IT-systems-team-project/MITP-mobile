@@ -19,12 +19,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import compose.icons.FeatherIcons
-import compose.icons.feathericons.Camera
 import compose.icons.feathericons.Moon
+import compose.icons.feathericons.UserMinus
+import compose.icons.feathericons.UserPlus
 import org.umcs.mobile.navigation.Routes
 
 @Composable
 internal fun App(navController: NavHostController) {
+    //TODO : Add Patient View (scan or write patient uuid) ## almost implemented
+    //TODO : Case View
+    //TODO : Modify Case View
+    //TODO : Starting View (either doctor or patient)
+    //TODO : Hold user data (either patient or doctor)
+    //TODO : Handle API requests (patient should log in with uuid, doctor should log in with username and password)
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -34,41 +43,41 @@ internal fun App(navController: NavHostController) {
     ) {
         ElevatedButton(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp).widthIn(min = 200.dp),
-            onClick = { navController.navigate(Routes.CASE_LIST) },
+            onClick = { navController.navigate(Routes.CASE_LIST_DOCTOR) },
             content = {
                 Icon(imageVector = FeatherIcons.Moon, contentDescription = null)
                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                Text(text = "Second Screen")
+                Text(text = "Case list as a doctor")
             }
         )
 
         ElevatedButton(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp).widthIn(min = 200.dp),
-            onClick = { navController.navigate(Routes.THIRD) },
+            onClick = { navController.navigate(Routes.CASE_LIST_PATIENT) },
             content = {
-                Icon(imageVector = FeatherIcons.Camera, contentDescription = null)
+                Icon(imageVector = FeatherIcons.Moon, contentDescription = null)
                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                Text(text = "Camera")
+                Text(text = "Case list as a patient")
             }
         )
 
         ElevatedButton(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp).widthIn(min = 200.dp),
-            onClick = { navController.navigate(Routes.NEW_CASE) },
+            onClick = { navController.navigate(Routes.PATIENT_LOGIN) },
             content = {
-                Icon(imageVector = FeatherIcons.Camera, contentDescription = null)
+                Icon(imageVector = FeatherIcons.UserPlus, contentDescription = null)
                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                Text(text = "New Case")
+                Text(text = "Log in as Patient")
             }
         )
 
         ElevatedButton(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp).widthIn(min = 200.dp),
-            onClick = { navController.navigate(Routes.LOGIN) },
+            onClick = { navController.navigate(Routes.DOCTOR_LOGIN) },
             content = {
-                Icon(imageVector = FeatherIcons.Camera, contentDescription = null)
+                Icon(imageVector = FeatherIcons.UserMinus, contentDescription = null)
                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                Text(text = "Login")
+                Text(text = "Log in as Doctor")
             }
         )
 

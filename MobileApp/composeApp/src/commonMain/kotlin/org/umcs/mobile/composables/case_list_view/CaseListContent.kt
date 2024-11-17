@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.umcs.mobile.navigation.Case
+import org.umcs.mobile.data.Case
 
 @Composable
 fun CaseViewContent(
@@ -19,7 +19,8 @@ fun CaseViewContent(
     contentPadding: PaddingValues,
     cases: List<Case>,
     listState: LazyListState,
-    navigateToCase: (Case) -> Unit
+    navigateToCase: (Case) -> Unit,
+    isDoctor: Boolean
 ) {
     LazyColumn(
         modifier = modifier,
@@ -28,12 +29,20 @@ fun CaseViewContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(30.dp)
     ) {
-        items(cases){ case ->
-            CaseListItem(
-                navigateToCase = navigateToCase,
-                currentCase = case,
-                modifier = Modifier.fillMaxWidth(0.8f).height(80.dp)
-            )
+        items(cases) { case ->
+            if (isDoctor) {
+                CaseListItemForDoctor(
+                    navigateToCase = navigateToCase,
+                    currentCase = case,
+                    modifier = Modifier.fillMaxWidth(0.8f).height(80.dp)
+                )
+            } else {
+                CaseListItemForPatient(
+                    navigateToCase = navigateToCase,
+                    currentCase = case,
+                    modifier = Modifier.fillMaxWidth(0.8f).height(80.dp)
+                )
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-package org.umcs.mobile.composables
+package org.umcs.mobile.composables.login
 
 import AppViewModel
 import androidx.compose.foundation.background
@@ -19,7 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,30 +29,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import kotlinx.coroutines.delay
 import mobileapp.composeapp.generated.resources.Res
 import mobileapp.composeapp.generated.resources.caretrack
 import mobileapp.composeapp.generated.resources.cross_logo
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun LoginScreen(
+fun DoctorLoginScreen(
     goToHomeScreen: () -> Unit,
     viewModel: AppViewModel = viewModel { AppViewModel() }
 ) {
     var login by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var errorMessage = viewModel.data
+    var errorMessage = ""
     val shape = RoundedCornerShape(16.dp)
     val colors = TextFieldDefaults.colors(
         unfocusedIndicatorColor = Color.Transparent,
         focusedIndicatorColor = Color.Transparent
     )
 
-    LaunchedEffect(Unit) {
+/*    LaunchedEffect(Unit) {
         delay(2000)
         viewModel.fetchData()
-    }
+    }*/
 
     Column(
         modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)

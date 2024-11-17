@@ -11,21 +11,43 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import org.umcs.mobile.navigation.Case
+import org.umcs.mobile.data.Case
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CaseListLayout(navigateToCase: (Case) -> Unit, navigateBack: () -> Unit) {
+fun CaseListLayout(
+    navigateToCase: (Case) -> Unit,
+    navigateBack: () -> Unit,
+    isDoctor: Boolean = true
+) {
     val testValues = remember { fetchTestCases() }
     val contentState = rememberLazyListState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
+    val scaffoldFAB: @Composable () -> Unit = {
+        val fabOffset = Modifier.offset(y = (-40).dp)
+
+        if (isDoctor) {
+            CaseListDoctorFAB(
+                modifier = fabOffset,
+                navigateToAddNewPatientView = {},
+                navigateToAddNewCaseView = {}
+            )
+        } else {
+            CaseListPatientFAB(
+                modifier = fabOffset,
+                shareUUID = {},
+            )
+        }
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = { CaseViewTopBar(scrollBehavior) },
-        floatingActionButton = { CaseListFAB(Modifier.offset(y= (-20).dp)) },
+        topBar = { CaseViewTopBar(scrollBehavior, isDoctor) },
+        floatingActionButton = scaffoldFAB,
     ) { paddingValues ->
         CaseViewContent(
+            isDoctor = isDoctor,
             navigateToCase = navigateToCase,
             contentPadding = paddingValues,
             cases = testValues,
@@ -37,15 +59,25 @@ fun CaseListLayout(navigateToCase: (Case) -> Unit, navigateBack: () -> Unit) {
 
 fun fetchTestCases(): List<Case> {
     return listOf(
-        Case(uuid = "test-uuid-1", stringDate = "2023-01-01"),
-        Case(uuid = "test-uuid-2", stringDate = "2023-02-01"),
-        Case(uuid = "test-uuid-3", stringDate = "2023-03-01"),
-        Case(uuid = "test-uuid-4", stringDate = "2023-04-01"),
-        Case(uuid = "test-uuid-5", stringDate = "2023-05-01"),
-        Case(uuid = "test-uuid-6", stringDate = "2023-06-01"),
-        Case(uuid = "test-uuid-7", stringDate = "2023-07-01"),
-        Case(uuid = "test-uuid-8", stringDate = "2023-08-01"),
-        Case(uuid = "test-uuid-9", stringDate = "2023-09-01"),
-        Case(uuid = "test-uuid-10", stringDate = "2023-10-01")
+        Case(caseDetails = "Broken arm", stringDate = "2023-01-01", patientName = "John Doe", doctorName = "Dr. Smith"),
+        Case(caseDetails = "Sprained ankle", stringDate = "2023-02-01", patientName = "Jane Smith", doctorName = "Dr. Johnson"),
+        Case(
+            caseDetails = "Fractured wrist",
+            stringDate = "2023-03-01",
+            patientName = "Alice Johnson",
+            doctorName = "Dr. Williams"
+        ),
+        Case(
+            caseDetails = "Dislocated shoulder",
+            stringDate = "2023-04-01",
+            patientName = "Bob Brownnnnnnnnnnnnnn",
+            doctorName = "Dr. Brown"
+        ),
+        Case(caseDetails = "Broken leg", stringDate = "2023-05-01", patientName = "Charlie Davis", doctorName = "Dr. Davis"),
+        Case(caseDetails = "Concussion", stringDate = "2023-06-01", patientName = "Diana Evans", doctorName = "Dr. Wilson"),
+        Case(caseDetails = "Broken ribs", stringDate = "2023-07-01", patientName = "Eve Foster", doctorName = "Dr. Taylor"),
+        Case(caseDetails = "Knee injury", stringDate = "2023-08-01", patientName = "Frank Green", doctorName = "Dr. Anderson"),
+        Case(caseDetails = "Back pain", stringDate = "2023-09-01", patientName = "Grace Harris", doctorName = "Dr. Martinez"),
+        Case(caseDetails = "Twisted ankle", stringDate = "2023-10-01", patientName = "Henry Irving", doctorName = "Dr. Thomas")
     )
 }

@@ -54,7 +54,7 @@ import qrscanner.QrScanner
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewCaseLayout() {
+fun NewUUIDScreen() {
     var showQrScanner by remember { mutableStateOf(false) }
     var text by remember { mutableStateOf("") }
     var supportingText by remember { mutableStateOf("") }
@@ -76,7 +76,7 @@ fun NewCaseLayout() {
         },
         floatingActionButton = {
             AppFab(
-                modifier = Modifier.offset(y = (-20).dp),
+                modifier = Modifier.offset(y = (-40).dp),
                 onClick = { showQrScanner = !showQrScanner },
                 iconResource = Res.drawable.qr_scanner
             )

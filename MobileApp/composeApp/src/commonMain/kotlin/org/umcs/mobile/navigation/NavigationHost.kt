@@ -20,11 +20,11 @@ import androidx.navigation.toRoute
 import co.touchlab.kermit.Logger
 import io.github.alexzhirkevich.qrose.rememberQrCodePainter
 import org.umcs.mobile.App
-import org.umcs.mobile.composables.LoginScreen
-import org.umcs.mobile.composables.QrCodeScanner
 import org.umcs.mobile.composables.case_list_view.CaseListLayout
 import org.umcs.mobile.composables.case_view.CaseLayout
-import org.umcs.mobile.composables.new_case_view.NewCaseLayout
+import org.umcs.mobile.composables.login.DoctorLoginScreen
+import org.umcs.mobile.composables.login.PatientLoginScreen
+import org.umcs.mobile.data.Case
 import org.umcs.mobile.theme.AppTheme
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -42,20 +42,25 @@ fun NavigationHost(navController: NavHostController = rememberNavController()) {
             composable(Routes.HOME) {
                 App(navController)
             }
-            composable(Routes.CASE_LIST) {
+            composable(Routes.CASE_LIST_DOCTOR) {
                 CaseListLayout(
+                    isDoctor = true,
                     navigateToCase = navController::navigate,
                     navigateBack = navController::navigateUp
                 )
             }
-            composable(Routes.NEW_CASE) {
-                NewCaseLayout()
+            composable(Routes.CASE_LIST_PATIENT) {
+                CaseListLayout(
+                    isDoctor = false,
+                    navigateToCase = navController::navigate,
+                    navigateBack = navController::navigateUp
+                )
             }
-            composable(Routes.THIRD) {
-                QrCodeScanner(navController)
+            composable(Routes.PATIENT_LOGIN){
+             PatientLoginScreen()
             }
-            composable(Routes.LOGIN){
-                LoginScreen(goToHomeScreen = { navController.navigate(Routes.HOME) })
+            composable(Routes.DOCTOR_LOGIN) {
+                DoctorLoginScreen(goToHomeScreen = { navController.navigate(Routes.HOME) })
             }
             composable<Case>{ backStackEntry ->
                 val case : Case = backStackEntry.toRoute()
