@@ -27,6 +27,7 @@ import org.umcs.mobile.navigation.Routes
 @Composable
 internal fun App(navController: NavHostController) {
     //TODO : Add Patient View (scan or write patient uuid) ## almost implemented
+    //TODO : Add Patient sharing QR UUID
     //TODO : Case View
     //TODO : Modify Case View
     //TODO : Starting View (either doctor or patient)

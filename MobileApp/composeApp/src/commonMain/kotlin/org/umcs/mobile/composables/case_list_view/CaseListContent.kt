@@ -11,6 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.umcs.mobile.composables.case_list_view.doctor.CaseListItemForDoctor
+import org.umcs.mobile.composables.case_list_view.patient.CaseListItemForPatient
 import org.umcs.mobile.data.Case
 
 @Composable

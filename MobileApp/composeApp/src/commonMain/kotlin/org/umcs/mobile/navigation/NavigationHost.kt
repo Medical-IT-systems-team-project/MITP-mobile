@@ -21,6 +21,7 @@ import co.touchlab.kermit.Logger
 import io.github.alexzhirkevich.qrose.rememberQrCodePainter
 import org.umcs.mobile.App
 import org.umcs.mobile.composables.case_list_view.CaseListLayout
+import org.umcs.mobile.composables.case_list_view.patient.share_uuid_view.ShareUUIDLayout
 import org.umcs.mobile.composables.case_view.CaseLayout
 import org.umcs.mobile.composables.login.DoctorLoginScreen
 import org.umcs.mobile.composables.login.PatientLoginScreen
@@ -53,7 +54,14 @@ fun NavigationHost(navController: NavHostController = rememberNavController()) {
                 CaseListLayout(
                     isDoctor = false,
                     navigateToCase = navController::navigate,
-                    navigateBack = navController::navigateUp
+                    navigateBack = navController::navigateUp,
+                    navigateToShareUUID = { navController.navigate(Routes.SHARE_UUID) }
+                )
+            }
+            composable(Routes.SHARE_UUID){
+                ShareUUIDLayout(
+                    navigateBack = navController::navigateUp,
+                    modifier = Modifier.fillMaxSize()
                 )
             }
             composable(Routes.PATIENT_LOGIN){

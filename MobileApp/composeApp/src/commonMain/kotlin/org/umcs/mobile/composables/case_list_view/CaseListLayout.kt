@@ -11,6 +11,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import org.umcs.mobile.composables.case_list_view.doctor.CaseListDoctorFAB
+import org.umcs.mobile.composables.case_list_view.patient.CaseListPatientFAB
 import org.umcs.mobile.data.Case
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -18,6 +20,7 @@ import org.umcs.mobile.data.Case
 fun CaseListLayout(
     navigateToCase: (Case) -> Unit,
     navigateBack: () -> Unit,
+    navigateToShareUUID : (() -> Unit)? = null,
     isDoctor: Boolean = true
 ) {
     val testValues = remember { fetchTestCases() }
@@ -36,7 +39,7 @@ fun CaseListLayout(
         } else {
             CaseListPatientFAB(
                 modifier = fabOffset,
-                shareUUID = {},
+                shareUUID = navigateToShareUUID!!,
             )
         }
     }

@@ -7,7 +7,7 @@ import org.umcs.mobile.theme.AppTheme
 
 @Preview(showSystemUi = true)
 @Composable
-private fun CaseViewPreviewDarkDoctor() {
+private fun CaseListViewPreviewDarkDoctor() {
     AppTheme(systemIsDark = true) {
         CaseListLayout({}, { })
     }
@@ -15,7 +15,7 @@ private fun CaseViewPreviewDarkDoctor() {
 
 @Preview(showSystemUi = true)
 @Composable
-private fun CaseViewPreviewLightDoctor() {
+private fun CaseListViewPreviewLightDoctor() {
     AppTheme(systemIsDark = false) {
         CaseListLayout({ }, {})
     }
@@ -23,7 +23,7 @@ private fun CaseViewPreviewLightDoctor() {
 
 @Preview(showSystemUi = true)
 @Composable
-private fun CaseViewPreviewDarkPatient() {
+private fun CaseListViewPreviewDarkPatient() {
     AppTheme(systemIsDark = true) {
         CaseListLayout({}, { }, isDoctor = false)
     }
@@ -31,7 +31,7 @@ private fun CaseViewPreviewDarkPatient() {
 
 @Preview(showSystemUi = true)
 @Composable
-private fun CaseViewPreviewLightPatient() {
+private fun CaseListViewPreviewLightPatient() {
     AppTheme(systemIsDark = false) {
         CaseListLayout({ }, {}, isDoctor = false)
     }

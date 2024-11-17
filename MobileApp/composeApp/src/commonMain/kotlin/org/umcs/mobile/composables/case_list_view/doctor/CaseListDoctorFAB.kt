@@ -1,4 +1,4 @@
-package org.umcs.mobile.composables.case_list_view
+package org.umcs.mobile.composables.case_list_view.doctor
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

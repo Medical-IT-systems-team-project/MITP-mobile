@@ -1,4 +1,4 @@
-package org.umcs.mobile.composables.case_list_view
+package org.umcs.mobile.composables.case_list_view.patient
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import org.umcs.mobile.data.Case
 
 @Composable
-fun CaseListItemForDoctor(
+fun CaseListItemForPatient(
     navigateToCase: (Case) -> Unit,
     modifier: Modifier = Modifier,
     currentCase: Case,
@@ -48,7 +48,7 @@ fun CaseListItemForDoctor(
                 Text(
                     overflow= TextOverflow.Ellipsis,
                     maxLines = 1,
-                    text = currentCase.patientName,
+                    text = currentCase.doctorName,
                     fontSize = 20.sp,
                     color = textColor,
                     modifier = Modifier.weight(2f)
