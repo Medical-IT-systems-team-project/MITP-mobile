@@ -24,6 +24,8 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun ChooseProfileButton(onClick: () -> Unit, drawableResource: DrawableResource, bottomText: String) {
     FloatingActionButton(
+        contentColor = MaterialTheme.colorScheme.primary,
+        containerColor = MaterialTheme.colorScheme.surface,
         modifier = Modifier.fillMaxWidth(0.7f).aspectRatio(1f),
         onClick = onClick,
     ){

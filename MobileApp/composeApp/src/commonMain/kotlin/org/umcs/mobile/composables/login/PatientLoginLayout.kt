@@ -6,5 +6,5 @@ import org.umcs.mobile.composables.new_case_view.NewUUIDScreen
 
 @Composable
 fun PatientLoginLayout(modifier: Modifier = Modifier) {
-    NewUUIDScreen()
+    NewUUIDScreen("Login as Patient")
 }

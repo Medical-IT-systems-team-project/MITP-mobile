@@ -17,11 +17,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.github.alexzhirkevich.qrose.options.Neighbors
 import io.github.alexzhirkevich.qrose.options.QrLogo
 import io.github.alexzhirkevich.qrose.options.QrLogoPadding
+import io.github.alexzhirkevich.qrose.options.QrLogoShape
 import io.github.alexzhirkevich.qrose.rememberQrCodePainter
 import mobileapp.composeapp.generated.resources.Res
 import mobileapp.composeapp.generated.resources.cross_logo
@@ -52,7 +55,8 @@ fun ShareUUIDLayout(
                 painter = rememberQrCodePainter(
                     data = patientUUID,
                     logo = QrLogo(
-                        padding = QrLogoPadding.Accurate(0.002f),
+                        shape = CrossQrLogoShape(),
+                        padding = QrLogoPadding.Accurate(-0.3f),
                         painter = painterResource(Res.drawable.cross_logo),
                     ),
                 ),
@@ -75,5 +79,28 @@ fun ShareUUIDLayout(
                 )
             }
         }
+    }
+}
+
+class CrossQrLogoShape : QrLogoShape {
+    override fun Path.path(size: Float, neighbors: Neighbors): Path {
+        val thickness = size * 0.3f
+        val halfThickness = thickness / 2
+
+        // Vertical part of cross
+        moveTo(size / 2 - halfThickness, 0f)
+        lineTo(size / 2 + halfThickness, 0f)
+        lineTo(size / 2 + halfThickness, size)
+        lineTo(size / 2 - halfThickness, size)
+        close()
+
+        // Horizontal part of cross
+        moveTo(0f, size / 2 - halfThickness)
+        lineTo(size, size / 2 - halfThickness)
+        lineTo(size, size / 2 + halfThickness)
+        lineTo(0f, size / 2 + halfThickness)
+        close()
+
+        return this
     }
 }
