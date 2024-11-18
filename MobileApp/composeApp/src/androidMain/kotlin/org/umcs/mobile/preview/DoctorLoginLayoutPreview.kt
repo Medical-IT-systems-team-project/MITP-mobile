@@ -9,7 +9,7 @@ import org.umcs.mobile.theme.AppTheme
 @Composable
 fun DoctorLoginDarkPreview() {
     AppTheme(systemIsDark = true) {
-        DoctorLoginLayout({},  )
+        DoctorLoginLayout({})
     }
 }
 
@@ -17,6 +17,6 @@ fun DoctorLoginDarkPreview() {
 @Composable
 fun DoctorLoginLightPreview() {
     AppTheme(systemIsDark = false) {
-        DoctorLoginLayout({},  )
+        DoctorLoginLayout({})
     }
 }

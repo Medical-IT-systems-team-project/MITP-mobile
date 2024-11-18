@@ -6,11 +6,13 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
 import appModule
 import org.koin.core.context.startKoin
 import org.umcs.mobile.composables.login.DoctorLoginLayout
 import org.umcs.mobile.navigation.NavigationHost
+import org.umcs.mobile.persistence.createDataStore
 import org.umcs.mobile.theme.AppTheme
 
 class AppActivity : ComponentActivity() {
@@ -26,7 +28,12 @@ class AppActivity : ComponentActivity() {
                 darkScrim = android.graphics.Color.TRANSPARENT
             )
         )
-        setContent { NavigationHost() }
+        setContent {
+            NavigationHost(
+                loginDataStore = remember {createDataStore(applicationContext)},
+                testDataStore = remember {createDataStore(applicationContext)}
+            )
+        }
     }
 }
 
@@ -42,7 +49,7 @@ internal fun initKoin() {
 private fun LoginScreenPreviewDark() {
     AppTheme(systemIsDark = true) {
         DoctorLoginLayout(
-            goToHomeScreen = {}
+            goToHomeScreen = {},
         )
     }
 }
@@ -52,7 +59,7 @@ private fun LoginScreenPreviewDark() {
 private fun LoginScreenPreviewLight() {
     AppTheme(systemIsDark = false) {
         DoctorLoginLayout(
-            goToHomeScreen = {}
+            goToHomeScreen = {},
         )
     }
 }

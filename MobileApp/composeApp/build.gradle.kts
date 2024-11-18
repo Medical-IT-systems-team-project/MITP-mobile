@@ -56,6 +56,8 @@ kotlin {
 
             implementation(libs.qrose)
             implementation(libs.qr.kit)
+            api(libs.datastore.preferences)
+            api(libs.datastore)
         }
 
         commonTest.dependencies {
@@ -101,6 +103,8 @@ skie{
         coroutinesInterop.set(true)
     }
 }
+
+
 
 //https://developer.android.com/develop/ui/compose/testing#setup
 dependencies {

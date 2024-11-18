@@ -1,5 +1,6 @@
 [versions]
 
+datastoreCoreOkio = "1.1.1"
 kotlin = "2.0.20"
 compose = "1.7.1"
 agp = "8.6.1"
@@ -18,9 +19,11 @@ room = "2.7.0-alpha10"
 ksp = "2.0.20-1.0.25"
 composeIcons = "1.1.1"
 qrose = "1.0.1"
+datastore = "1.1.1"
 
 [libraries]
-
+datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
+datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 androidx-activityCompose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 androidx-uitest-testManifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "androidx-uiTest" }
 androidx-uitest-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "androidx-uiTest" }

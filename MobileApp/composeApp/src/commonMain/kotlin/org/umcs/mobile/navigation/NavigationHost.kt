@@ -12,6 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.zIndex
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -33,7 +35,11 @@ import kotlin.uuid.Uuid
 
 
 @Composable
-fun NavigationHost(navController: NavHostController = rememberNavController()) {
+fun NavigationHost(
+    navController: NavHostController = rememberNavController(),
+    loginDataStore: DataStore<Preferences>,
+    testDataStore : DataStore<Preferences>,
+) {
 
     AppTheme{
         NavHost(
@@ -42,7 +48,10 @@ fun NavigationHost(navController: NavHostController = rememberNavController()) {
             startDestination = Routes.HOME
         ) {
             composable(Routes.HOME) {
-                App(navController)
+                App(
+                    navController = navController,
+                    testDataStore = testDataStore
+                )
             }
             composable(Routes.CASE_LIST_DOCTOR) {
                 CaseListLayout(
@@ -76,7 +85,10 @@ fun NavigationHost(navController: NavHostController = rememberNavController()) {
              PatientLoginLayout()
             }
             composable(Routes.DOCTOR_LOGIN) {
-                DoctorLoginLayout(goToHomeScreen = { navController.navigate(Routes.HOME) })
+                DoctorLoginLayout(
+                    loginDataStore = loginDataStore,
+                    goToHomeScreen = { navController.navigate(Routes.HOME)}
+                )
             }
             composable<Case>{ backStackEntry ->
                 val case : Case = backStackEntry.toRoute()

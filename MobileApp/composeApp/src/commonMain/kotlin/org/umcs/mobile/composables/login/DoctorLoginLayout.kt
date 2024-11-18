@@ -28,6 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.viewmodel.compose.viewModel
 import mobileapp.composeapp.generated.resources.Res
 import mobileapp.composeapp.generated.resources.caretrack
@@ -37,7 +39,8 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun DoctorLoginLayout(
     goToHomeScreen: () -> Unit,
-    viewModel: AppViewModel = viewModel { AppViewModel() }
+    viewModel: AppViewModel = viewModel { AppViewModel() },
+    loginDataStore: DataStore<Preferences>? = null,
 ) {
     var login by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
