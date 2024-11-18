@@ -12,12 +12,12 @@ import appModule
 import org.koin.core.context.startKoin
 import org.umcs.mobile.composables.login.DoctorLoginLayout
 import org.umcs.mobile.navigation.NavigationHost
-import org.umcs.mobile.persistence.createDataStore
 import org.umcs.mobile.theme.AppTheme
 
 class AppActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.light(
                 scrim = android.graphics.Color.TRANSPARENT,
@@ -29,9 +29,10 @@ class AppActivity : ComponentActivity() {
             )
         )
         setContent {
+            val myApplication = application as MyApplication
             NavigationHost(
-                loginDataStore = remember {createDataStore(applicationContext)},
-                testDataStore = remember {createDataStore(applicationContext)}
+                loginDataStore = remember {myApplication.loginDataStore},
+                testDataStore = remember {myApplication.testDataStore}
             )
         }
     }
@@ -40,7 +41,6 @@ class AppActivity : ComponentActivity() {
 internal fun initKoin() {
     startKoin {
         modules(appModule)
-
     }
 }
 
