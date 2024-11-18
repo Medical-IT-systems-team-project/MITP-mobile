@@ -92,7 +92,10 @@ fun NavigationHost(
             }
             composable<Case>{ backStackEntry ->
                 val case : Case = backStackEntry.toRoute()
-                CaseLayout(case)
+                CaseLayout(
+                    case = case,
+                    navigateBack = navController::navigateUp,
+                )
             }
         }
     }

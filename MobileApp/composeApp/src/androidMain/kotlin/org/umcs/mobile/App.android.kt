@@ -17,6 +17,7 @@ import org.umcs.mobile.theme.AppTheme
 class AppActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val myApplication = application as MyApplication
 
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.light(
@@ -29,7 +30,6 @@ class AppActivity : ComponentActivity() {
             )
         )
         setContent {
-            val myApplication = application as MyApplication
             NavigationHost(
                 loginDataStore = remember {myApplication.loginDataStore},
                 testDataStore = remember {myApplication.testDataStore}

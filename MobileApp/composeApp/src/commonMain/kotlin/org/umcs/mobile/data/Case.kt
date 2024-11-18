@@ -7,5 +7,6 @@ data class Case(
     val stringDate : String,
     val patientName : String,
     val doctorName : String,
-    val caseDetails : String
+    val caseDetails : String,
+    val description : String
 )
