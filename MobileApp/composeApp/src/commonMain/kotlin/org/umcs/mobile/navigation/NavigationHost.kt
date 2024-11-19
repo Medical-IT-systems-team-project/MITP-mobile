@@ -28,6 +28,7 @@ import org.umcs.mobile.composables.case_view.CaseLayout
 import org.umcs.mobile.composables.login.ChooseProfileLayout
 import org.umcs.mobile.composables.login.DoctorLoginLayout
 import org.umcs.mobile.composables.login.PatientLoginLayout
+import org.umcs.mobile.composables.new_patient_view.NewPatientLayout
 import org.umcs.mobile.data.Case
 import org.umcs.mobile.theme.AppTheme
 import kotlin.uuid.ExperimentalUuidApi
@@ -38,10 +39,10 @@ import kotlin.uuid.Uuid
 fun NavigationHost(
     navController: NavHostController = rememberNavController(),
     loginDataStore: DataStore<Preferences>,
-    testDataStore : DataStore<Preferences>,
+    testDataStore: DataStore<Preferences>,
 ) {
 
-    AppTheme{
+    AppTheme {
         NavHost(
             navController = navController,
             modifier = Modifier.fillMaxSize(),
@@ -57,6 +58,12 @@ fun NavigationHost(
                 CaseListLayout(
                     isDoctor = true,
                     navigateToCase = navController::navigate,
+                    navigateBack = navController::navigateUp,
+                    navigateToAddNewPatient = { navController.navigate(Routes.NEW_PATIENT) }
+                )
+            }
+            composable(Routes.NEW_PATIENT) {
+                NewPatientLayout(
                     navigateBack = navController::navigateUp
                 )
             }
@@ -68,30 +75,30 @@ fun NavigationHost(
                     navigateToShareUUID = { navController.navigate(Routes.SHARE_UUID) }
                 )
             }
-            composable(Routes.SHARE_UUID){
+            composable(Routes.SHARE_UUID) {
                 ShareUUIDLayout(
                     navigateBack = navController::navigateUp,
                     modifier = Modifier.fillMaxSize()
                 )
             }
-            composable(Routes.CHOOSE_LOGIN){
+            composable(Routes.CHOOSE_LOGIN) {
                 ChooseProfileLayout(
                     modifier = Modifier.fillMaxSize(),
                     navigateToPatientLogin = { navController.navigate(Routes.PATIENT_LOGIN) },
                     navigateToDoctorLogin = { navController.navigate(Routes.DOCTOR_LOGIN) }
                 )
             }
-            composable(Routes.PATIENT_LOGIN){
-             PatientLoginLayout()
+            composable(Routes.PATIENT_LOGIN) {
+                PatientLoginLayout()
             }
             composable(Routes.DOCTOR_LOGIN) {
                 DoctorLoginLayout(
                     loginDataStore = loginDataStore,
-                    goToHomeScreen = { navController.navigate(Routes.HOME)}
+                    goToHomeScreen = { navController.navigate(Routes.HOME) }
                 )
             }
-            composable<Case>{ backStackEntry ->
-                val case : Case = backStackEntry.toRoute()
+            composable<Case> { backStackEntry ->
+                val case: Case = backStackEntry.toRoute()
                 CaseLayout(
                     case = case,
                     navigateBack = navController::navigateUp,

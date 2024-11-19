@@ -126,7 +126,5 @@ internal fun App(
             Text(text = counter.toString(), fontSize = 21.sp)
         }
 
-
-
     }
 }

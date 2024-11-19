@@ -1,4 +1,4 @@
-package org.umcs.mobile.composables.case_view
+package org.umcs.mobile.composables.shared
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text

@@ -22,7 +22,7 @@ fun CaseViewContent(
     cases: List<Case>,
     listState: LazyListState,
     navigateToCase: (Case) -> Unit,
-    isDoctor: Boolean
+    isDoctor: Boolean,
 ) {
     LazyColumn(
         modifier = modifier,

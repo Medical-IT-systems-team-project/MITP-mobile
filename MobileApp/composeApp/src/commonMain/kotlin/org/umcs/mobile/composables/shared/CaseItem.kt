@@ -1,4 +1,4 @@
-package org.umcs.mobile.composables.case_view
+package org.umcs.mobile.composables.shared
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween

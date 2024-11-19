@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.umcs.mobile.composables.shared.CaseItem
 import org.umcs.mobile.data.Case
 
 @Composable

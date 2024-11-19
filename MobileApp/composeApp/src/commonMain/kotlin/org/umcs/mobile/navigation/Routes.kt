@@ -1,6 +1,7 @@
 package org.umcs.mobile.navigation
 
-object Routes{
+object Routes {
+    const val NEW_PATIENT = "new_patient"
     const val CHOOSE_LOGIN = "choose_login"
     const val SHARE_UUID = "share_uuid"
     const val CASE_LIST_PATIENT = "case_list_patient"

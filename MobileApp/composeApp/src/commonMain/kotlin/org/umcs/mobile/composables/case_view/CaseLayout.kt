@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import org.umcs.mobile.composables.shared.AppTopBar
 import org.umcs.mobile.data.Case
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -21,7 +22,7 @@ fun CaseLayout(case: Case, navigateBack: () -> Unit) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            CaseViewTopBar(
+            AppTopBar(
                 scrollBehavior = scrollBehavior,
                 navigateBack = navigateBack,
                 title = case.caseDetails

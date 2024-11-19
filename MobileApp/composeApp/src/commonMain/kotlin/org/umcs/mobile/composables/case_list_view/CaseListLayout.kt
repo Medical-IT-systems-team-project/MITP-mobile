@@ -9,7 +9,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import org.umcs.mobile.composables.case_list_view.doctor.CaseListDoctorFAB
 import org.umcs.mobile.composables.case_list_view.patient.CaseListPatientFAB
@@ -20,6 +19,7 @@ import org.umcs.mobile.data.Case
 fun CaseListLayout(
     navigateToCase: (Case) -> Unit,
     navigateBack: () -> Unit,
+    navigateToAddNewPatient : (()->Unit)? = null,
     navigateToShareUUID: (() -> Unit)? = null,
     isDoctor: Boolean = true
 ) {
@@ -33,7 +33,7 @@ fun CaseListLayout(
         if (isDoctor) {
             CaseListDoctorFAB(
                 modifier = fabOffset,
-                navigateToAddNewPatientView = {},
+                navigateToAddNewPatientView = navigateToAddNewPatient!!,
                 navigateToAddNewCaseView = {}
             )
         } else {
@@ -55,10 +55,11 @@ fun CaseListLayout(
             contentPadding = paddingValues,
             cases = testValues,
             listState = contentState,
-            modifier = Modifier.fillMaxSize().nestedScroll(scrollBehavior.nestedScrollConnection)
+            modifier = Modifier.fillMaxSize()
         )
     }
 }
+
 
 val loremIpsum =
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
