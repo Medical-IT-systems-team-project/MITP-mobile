@@ -15,6 +15,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -27,13 +28,16 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.navigation.NavHostController
+import co.touchlab.kermit.Logger
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.Moon
 import compose.icons.feathericons.UserMinus
 import compose.icons.feathericons.UserPlus
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.umcs.mobile.navigation.Routes
+import org.umcs.mobile.network.GlobalKtorClient
 
 @Composable
 internal fun App(
@@ -128,6 +132,16 @@ internal fun App(
             }
         ){
             Text(text = counter.toString(), fontSize = 21.sp)
+        }
+
+        LaunchedEffect(Unit){
+            delay(1000)
+            try {
+                val randomJson = GlobalKtorClient.getRandomJson()
+                Logger.i("Random json: $randomJson",tag ="JSON")
+            } catch (e: Exception) {
+                Logger.e(tag = "JSON", throwable = e, { "wyjebalo sie $e" })
+            }
         }
 
     }
