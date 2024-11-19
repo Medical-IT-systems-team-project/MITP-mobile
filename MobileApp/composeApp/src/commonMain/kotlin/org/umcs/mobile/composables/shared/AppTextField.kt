@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 fun AppTextField(
     modifier: Modifier = Modifier,
     isSingleLine: Boolean = true,
+    maxLines : Int = Int.MAX_VALUE,
     title: @Composable (() -> Unit)? = null,
     text: String,
     supportingText: String,
@@ -31,6 +32,7 @@ fun AppTextField(
     trailingIcon: @Composable (() -> Unit)? = null,
 ) {
     TextField(
+        maxLines = maxLines,
         trailingIcon = trailingIcon,
         placeholder = placeholder,
         readOnly = readOnly,

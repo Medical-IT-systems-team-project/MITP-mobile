@@ -46,7 +46,6 @@ fun NewCaseContent(
     newCase: MedicalCase,
     formState: MedicalCaseFormState,
     fullName: String,
-    selectedDate: Long?,
     focusRequester: FocusRequester,
     focusManager: FocusManager,
     onNewCaseChange: (MedicalCase) -> Unit,
@@ -119,7 +118,7 @@ fun NewCaseContent(
             },
             onTextChange = { onNewCaseChange(newCase.copy(admissionDate = it)) },
             modifier = Modifier
-                .pointerInput(selectedDate) {
+                .pointerInput(newCase.admissionDate) {
                     awaitEachGesture {
                         awaitFirstDown(pass = PointerEventPass.Initial)
                         val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
@@ -138,6 +137,7 @@ fun NewCaseContent(
             placeholder = { Text("Details") },
         )
         AppTextField(
+            maxLines = 5,
             isSingleLine = false,
             title = { Text("Diagnosis") },
             text = newCase.diagnosis,

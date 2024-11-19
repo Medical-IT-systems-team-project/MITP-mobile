@@ -29,12 +29,12 @@ fun CaseViewContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(30.dp)
     ) {
-        items(cases) { case ->
+        items(items = cases, key = { case -> case.patientName }) { case ->
             CaseListItem(
                 navigateToCase = navigateToCase,
                 currentCase = case,
                 modifier = Modifier.fillMaxWidth(0.8f).height(80.dp),
-                isDoctor = isDoctor
+                isDoctor = isDoctor,
             )
         }
     }

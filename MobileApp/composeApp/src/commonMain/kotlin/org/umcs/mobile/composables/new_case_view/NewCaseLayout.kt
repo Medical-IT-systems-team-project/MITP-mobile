@@ -28,7 +28,6 @@ fun NewCaseLayout(navigateBack: () -> Unit, modifier: Modifier = Modifier) {
     val patientPickerState = rememberModalBottomSheetState()
     var showPatientPicker by remember { mutableStateOf(false) }
     var showDatePicker by remember { mutableStateOf(false) }
-    var selectedDate by remember { mutableStateOf<Long?>(null) }
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
@@ -55,7 +54,6 @@ fun NewCaseLayout(navigateBack: () -> Unit, modifier: Modifier = Modifier) {
             newCase = newCase,
             formState = formState,
             fullName = fullName,
-            selectedDate = selectedDate,
             focusRequester = focusRequester,
             focusManager = focusManager,
             onNewCaseChange = { newCase = it },
@@ -70,10 +68,13 @@ fun patientList() = listOf(
     Patient(firstName = "Jane", lastName = "Smith", socialSecurityNumber = "98765432109"),
     Patient(firstName = "Alice", lastName = "Johnson", socialSecurityNumber = "45678901234"),
     Patient(firstName = "Bob", lastName = "Williams", socialSecurityNumber = "78901234567"),
-    Patient(firstName = "Emma", lastName = "Brown", socialSecurityNumber = "32109876543")
+    Patient(firstName = "Emma", lastName = "Brown", socialSecurityNumber = "32109876543"),
+    Patient(firstName = "Michael", lastName = "Davis", socialSecurityNumber = "65432109876"),
+    Patient(firstName = "Sarah", lastName = "Wilson", socialSecurityNumber = "89012345678"),
+    Patient(firstName = "David", lastName = "Taylor", socialSecurityNumber = "23456789012"),
+    Patient(firstName = "Emily", lastName = "Anderson", socialSecurityNumber = "56789012345"),
+    Patient(firstName = "James", lastName = "Martinez", socialSecurityNumber = "90123456789")
 )
-
-
 data class MedicalCase(
     var patient: Patient = Patient(),
     var admissionDate: String = "",

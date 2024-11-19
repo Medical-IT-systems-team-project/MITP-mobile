@@ -7,11 +7,14 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import org.umcs.mobile.composables.case_list_view.doctor.CaseListDoctorFAB
-import org.umcs.mobile.composables.case_list_view.patient.CaseListPatientFAB
+import org.umcs.mobile.composables.case_list_view.doctor.PatientListContent
 import org.umcs.mobile.data.Case
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -19,48 +22,63 @@ import org.umcs.mobile.data.Case
 fun CaseListLayout(
     navigateToCase: (Case) -> Unit,
     navigateBack: () -> Unit,
-    navigateToAddNewPatient : (()->Unit)? = null,
-    navigateToAddNewCase : (()->Unit)? = null,
+    navigateToAddNewPatient: (() -> Unit)? = null,
+    navigateToAddNewCase: (() -> Unit)? = null,
     navigateToShareUUID: (() -> Unit)? = null,
     isDoctor: Boolean = true
 ) {
+    val fabOffset = Modifier.offset(y = (-40).dp)
+    var currentTab by remember { mutableStateOf(CaseListScreens.CASES) }
     val testValues = remember { fetchTestCases() }
-    val contentState = rememberLazyListState()
+    val caseListState = rememberLazyListState()
+    val patientListState = rememberLazyListState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-
-    val scaffoldFAB: @Composable () -> Unit = {
-        val fabOffset = Modifier.offset(y = (-40).dp)
-
-        if (isDoctor) {
-            CaseListDoctorFAB(
-                modifier = fabOffset,
-                navigateToAddNewPatientView = navigateToAddNewPatient!!,
-                navigateToAddNewCaseView = navigateToAddNewCase!!,
-            )
-        } else {
-            CaseListPatientFAB(
-                modifier = fabOffset,
-                shareUUID = navigateToShareUUID!!,
-            )
-        }
-    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { CaseViewTopBar(scrollBehavior, isDoctor) },
-        floatingActionButton = scaffoldFAB,
+        bottomBar = {
+            if (isDoctor) {
+                CaseListBottomBar(
+                    currentTab = currentTab,
+                    navigateToCases = { currentTab = CaseListScreens.CASES },
+                    navigateToPatients = { currentTab = CaseListScreens.PATIENTS },
+                )
+            } else Unit
+        },
+        floatingActionButton = {
+            CaseListLayoutFAB(
+                isDoctor,
+                fabOffset,
+                navigateToAddNewPatient,
+                navigateToAddNewCase,
+                currentTab,
+                navigateToShareUUID
+            )
+        },
     ) { paddingValues ->
-        CaseViewContent(
-            isDoctor = isDoctor,
-            navigateToCase = navigateToCase,
-            contentPadding = paddingValues,
-            cases = testValues,
-            listState = contentState,
-            modifier = Modifier.fillMaxSize()
-        )
+        when (currentTab) {
+            CaseListScreens.CASES -> {
+                CaseViewContent(
+                    isDoctor = isDoctor,
+                    navigateToCase = navigateToCase,
+                    contentPadding = paddingValues,
+                    cases = testValues,
+                    listState = caseListState,
+                    modifier = Modifier.fillMaxSize().nestedScroll(scrollBehavior.nestedScrollConnection),
+                )
+            }
+
+            CaseListScreens.PATIENTS -> {
+                PatientListContent(
+                    contentPadding = paddingValues,
+                    listState = patientListState,
+                    modifier = Modifier.fillMaxSize().nestedScroll(scrollBehavior.nestedScrollConnection)
+                )
+            }
+        }
     }
 }
-
 
 val loremIpsum =
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
