@@ -21,11 +21,11 @@ import org.umcs.mobile.data.Patient
 @Composable
 fun NewPatientLayout(navigateBack: () -> Unit) {
     var newPatient by remember { mutableStateOf(Patient()) }
-    var formState by remember { mutableStateOf(PatientFormState()) }
+    var formState by remember { mutableStateOf(PatientFormState()) } //TODO : Handle errors from client
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
-    val SSNMaxChars = 9
+    val ssnMaxChars = 9
 
     Scaffold(
         modifier = Modifier.fillMaxSize().clickable(
@@ -51,7 +51,7 @@ fun NewPatientLayout(navigateBack: () -> Unit) {
             onGenderChange = { newPatient = newPatient.copy(gender = it) },
             onAgeChange = { newPatient = newPatient.copy(age = it) },
             onSocialSecurityNumberChange = {
-                if (it.length <= SSNMaxChars) {
+                if (it.length <= ssnMaxChars) {
                     newPatient = newPatient.copy(socialSecurityNumber = it)
                 }
             },

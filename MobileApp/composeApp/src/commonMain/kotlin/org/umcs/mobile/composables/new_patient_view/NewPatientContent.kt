@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
@@ -50,14 +50,12 @@ fun NewPatientContent(
     onDateOfBirthChange: (String) -> Unit
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
-    var selectedDate by remember { mutableStateOf<Long?>(null) }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(5.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize().padding(
-            horizontal = 25.dp,
-            vertical = paddingValues.calculateTopPadding() + 20.dp
+        modifier = Modifier.fillMaxSize().padding(horizontal = 25.dp).padding(
+            top = paddingValues.calculateTopPadding() + 20.dp
         )
     ) {
         if (showDatePicker) {
@@ -72,21 +70,21 @@ fun NewPatientContent(
             )
         }
         AppTextField(
-            title = "First Name",
+            title = { Text("First Name") },
             text = newPatient.firstName,
             supportingText = formState.firstNameError,
             focusRequester = focusRequester,
             onTextChange = onFirstNameChange,
         )
         AppTextField(
-            title = "Last Name",
+            title = { Text("Last Name") },
             text = newPatient.lastName,
             supportingText = formState.lastNameError,
             focusRequester = focusRequester,
             onTextChange = onLastNameChange,
         )
         AppTextField(
-            title = "Gender",
+            title = { Text("Gender") },
             text = newPatient.gender,
             supportingText = formState.genderError,
             focusRequester = focusRequester,
@@ -94,7 +92,7 @@ fun NewPatientContent(
         )
         AppTextField(
             keyboardType = KeyboardType.Number,
-            title = "Age",
+            title = { Text("Age") },
             text = newPatient.age,
             supportingText = formState.ageError,
             focusRequester = focusRequester,
@@ -102,7 +100,7 @@ fun NewPatientContent(
         )
         AppTextField(
             keyboardType = KeyboardType.Number,
-            title = "Social Security Number",
+            title = { Text("Social Security Number") },
             text = newPatient.socialSecurityNumber,
             supportingText = formState.socialSecurityNumberError,
             focusRequester = focusRequester,
@@ -111,17 +109,17 @@ fun NewPatientContent(
         AppTextField(
             readOnly = true,
             keyboardType = KeyboardType.Number,
-            title = "Date of Birth ",
+            title = { Text("Date of Birth") },
             text = newPatient.dateOfBirth,
             supportingText = formState.dateOfBirthError,
             focusRequester = focusRequester,
-            placeholder = { Text("MM/DD/YYYY") },
+            placeholder = { Text("DD/MM/YYYY") },
             trailingIcon = {
                 Icon(Icons.Default.DateRange, contentDescription = "Select date")
             },
             onTextChange = onDateOfBirthChange,
             modifier = Modifier
-                .pointerInput(selectedDate) {
+                .pointerInput(newPatient.dateOfBirth) {
                     awaitEachGesture {
                         awaitFirstDown(pass = PointerEventPass.Initial)
                         val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
@@ -131,13 +129,14 @@ fun NewPatientContent(
                     }
                 }
         )
+
         Spacer(modifier = Modifier.height(30.dp))
         Button(
             onClick = {
                 Logger.i(newPatient.toString(),tag ="Patient")
             },
             shape = RoundedCornerShape(16.dp),
-            modifier = Modifier.width(270.dp).height(50.dp),
+            modifier = Modifier.size(width = 270.dp, height = 60.dp),
         ) {
             Text(text = "Create Patient", fontSize = 16.sp)
         }

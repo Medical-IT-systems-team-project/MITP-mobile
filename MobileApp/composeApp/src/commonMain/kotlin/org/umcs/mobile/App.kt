@@ -40,21 +40,25 @@ internal fun App(
     navController: NavHostController,
     testDataStore: DataStore<Preferences>
 ) {
-    //TODO : Add Patient CaseListView  - DONE
-    //TODO : Add Patient sharing QR UUID - DONE
-    //TODO : Case View
+    //!TODO : Add Doctor CaseListView - DONE
+    //!TODO : Add Patient CaseListView  - DONE
+    //!TODO : Add Patient sharing QR UUID - DONE
+    //!TODO : Starting View (either doctor or patient) - DONE
+
+    //TODO : Case Info View - DONE
+    //TODO : Case Treatment View
+    //TODO : Case Medicine View
     //TODO : Modify Case View
-    //TODO : Starting View (either doctor or patient) - DONE
     //TODO : Hold user data (either patient or doctor)
     //TODO : Handle API requests (patient should log in with uuid, doctor should log in with username and password)
+    //TODO : Refactor KtorClient to not be platform specific (didnt know you could just init it without specifics and the platform related stuff would happen by itself)
 
+    val scope = rememberCoroutineScope()
     val counterKey = intPreferencesKey("counter")
     val counter by testDataStore
         .data
         .map { it[counterKey] ?: 0 }
         .collectAsState(0)
-
-    val scope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier

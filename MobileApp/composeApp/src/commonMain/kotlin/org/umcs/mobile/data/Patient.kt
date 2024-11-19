@@ -7,4 +7,8 @@ data class Patient(
     var socialSecurityNumber: String = "",
     var dateOfBirth: String = "",
     var age: String = "",
-)
+){
+    fun getFullName(): String {
+        return "$firstName $lastName"
+    }
+}

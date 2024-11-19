@@ -1,4 +1,4 @@
-package org.umcs.mobile.composables.case_list_view.patient.share_uuid_view
+package org.umcs.mobile.composables.share_uuid_view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -12,9 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,11 +33,12 @@ import io.github.alexzhirkevich.qrose.rememberQrCodePainter
 import mobileapp.composeapp.generated.resources.Res
 import mobileapp.composeapp.generated.resources.cross_logo
 import org.jetbrains.compose.resources.painterResource
+import org.umcs.mobile.composables.shared.AppTopBar
 import org.umcs.mobile.theme.backgroundLight
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-@OptIn(ExperimentalUuidApi::class)
+@OptIn(ExperimentalUuidApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ShareUUIDLayout(
     navigateBack: () -> Unit,
@@ -44,7 +47,11 @@ fun ShareUUIDLayout(
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = { ShareUUIDTopBar(navigateBack = navigateBack) },
+        topBar = { AppTopBar(
+            navigateBack = navigateBack,
+            title = "Your UUID",
+            scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+        ) },
     ) { paddingValues ->
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

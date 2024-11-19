@@ -23,12 +23,13 @@ import co.touchlab.kermit.Logger
 import io.github.alexzhirkevich.qrose.rememberQrCodePainter
 import org.umcs.mobile.App
 import org.umcs.mobile.composables.case_list_view.CaseListLayout
-import org.umcs.mobile.composables.case_list_view.patient.share_uuid_view.ShareUUIDLayout
 import org.umcs.mobile.composables.case_view.CaseLayout
 import org.umcs.mobile.composables.login.ChooseProfileLayout
 import org.umcs.mobile.composables.login.DoctorLoginLayout
 import org.umcs.mobile.composables.login.PatientLoginLayout
+import org.umcs.mobile.composables.new_case_view.NewCaseLayout
 import org.umcs.mobile.composables.new_patient_view.NewPatientLayout
+import org.umcs.mobile.composables.share_uuid_view.ShareUUIDLayout
 import org.umcs.mobile.data.Case
 import org.umcs.mobile.theme.AppTheme
 import kotlin.uuid.ExperimentalUuidApi
@@ -59,11 +60,17 @@ fun NavigationHost(
                     isDoctor = true,
                     navigateToCase = navController::navigate,
                     navigateBack = navController::navigateUp,
-                    navigateToAddNewPatient = { navController.navigate(Routes.NEW_PATIENT) }
+                    navigateToAddNewPatient = { navController.navigate(Routes.NEW_PATIENT) },
+                    navigateToAddNewCase = { navController.navigate(Routes.NEW_CASE) }
                 )
             }
             composable(Routes.NEW_PATIENT) {
                 NewPatientLayout(
+                    navigateBack = navController::navigateUp
+                )
+            }
+            composable(Routes.NEW_CASE) {
+                NewCaseLayout(
                     navigateBack = navController::navigateUp
                 )
             }

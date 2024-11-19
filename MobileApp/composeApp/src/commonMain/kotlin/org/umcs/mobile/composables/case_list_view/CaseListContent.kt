@@ -11,8 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.umcs.mobile.composables.case_list_view.doctor.CaseListItemForDoctor
-import org.umcs.mobile.composables.case_list_view.patient.CaseListItemForPatient
 import org.umcs.mobile.data.Case
 
 @Composable
@@ -32,19 +30,12 @@ fun CaseViewContent(
         verticalArrangement = Arrangement.spacedBy(30.dp)
     ) {
         items(cases) { case ->
-            if (isDoctor) {
-                CaseListItemForDoctor(
-                    navigateToCase = navigateToCase,
-                    currentCase = case,
-                    modifier = Modifier.fillMaxWidth(0.8f).height(80.dp)
-                )
-            } else {
-                CaseListItemForPatient(
-                    navigateToCase = navigateToCase,
-                    currentCase = case,
-                    modifier = Modifier.fillMaxWidth(0.8f).height(80.dp)
-                )
-            }
+            CaseListItem(
+                navigateToCase = navigateToCase,
+                currentCase = case,
+                modifier = Modifier.fillMaxWidth(0.8f).height(80.dp),
+                isDoctor = isDoctor
+            )
         }
     }
 }

@@ -20,6 +20,7 @@ fun CaseListLayout(
     navigateToCase: (Case) -> Unit,
     navigateBack: () -> Unit,
     navigateToAddNewPatient : (()->Unit)? = null,
+    navigateToAddNewCase : (()->Unit)? = null,
     navigateToShareUUID: (() -> Unit)? = null,
     isDoctor: Boolean = true
 ) {
@@ -34,7 +35,7 @@ fun CaseListLayout(
             CaseListDoctorFAB(
                 modifier = fabOffset,
                 navigateToAddNewPatientView = navigateToAddNewPatient!!,
-                navigateToAddNewCaseView = {}
+                navigateToAddNewCaseView = navigateToAddNewCase!!,
             )
         } else {
             CaseListPatientFAB(

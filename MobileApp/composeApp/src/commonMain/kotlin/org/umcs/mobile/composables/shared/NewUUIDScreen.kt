@@ -1,4 +1,4 @@
-package org.umcs.mobile.composables.new_case_view
+package org.umcs.mobile.composables.shared
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
@@ -17,8 +17,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -43,11 +41,12 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import co.touchlab.kermit.Logger
+import compose.icons.FeatherIcons
+import compose.icons.feathericons.ArrowRight
 import mobileapp.composeapp.generated.resources.Res
 import mobileapp.composeapp.generated.resources.qr_scanner
 import mobileapp.composeapp.generated.resources.wrong_uuid
 import org.jetbrains.compose.resources.painterResource
-import org.umcs.mobile.composables.shared.AppFab
 import qrscanner.CameraLens
 import qrscanner.OverlayShape
 import qrscanner.QrScanner
@@ -208,13 +207,13 @@ fun CaseIdentifierRow(
                     !matchUUID(text) -> onSupportingTextChange("Please enter a valid UUID")
                     matchUUID(text) -> {
                         onSupportingTextChange("CORRECT")
-                        //TODO : Fetch the case from server
+                        //TODO : Fetch the user from the backend
                     }
                 }
             },
         ) {
             Icon(
-                imageVector = Icons.Default.Add,
+                imageVector = FeatherIcons.ArrowRight,
                 contentDescription = "Add Case by UUID"
             )
         }

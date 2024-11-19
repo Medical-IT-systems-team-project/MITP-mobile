@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 fun AppTextField(
     modifier: Modifier = Modifier,
     isSingleLine: Boolean = true,
-    title: String,
+    title: @Composable (() -> Unit)? = null,
     text: String,
     supportingText: String,
     focusRequester: FocusRequester,
@@ -46,7 +46,7 @@ fun AppTextField(
         shape = RoundedCornerShape(16.dp),
         value = text,
         onValueChange = onTextChange,
-        label = { Text(title) },
+        label = title,
         modifier = modifier
             .width(270.dp)
             .focusRequester(focusRequester),
