@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.theapache64.rebugger.Rebugger
 import org.umcs.mobile.data.Case
 
 @Composable
@@ -38,4 +39,17 @@ fun CaseViewContent(
             )
         }
     }
+
+    Rebugger(
+        trackMap = mapOf(
+            "modifier" to modifier,
+            "contentPadding" to contentPadding,
+            "cases" to cases,
+            "listState" to listState,
+            "navigateToCase" to navigateToCase,
+            "isDoctor" to isDoctor,
+            "Alignment.CenterHorizontally" to Alignment.CenterHorizontally,
+            "Arrangement.spacedBy(30.dp)" to Arrangement.spacedBy(30.dp),
+        ),
+    )
 }

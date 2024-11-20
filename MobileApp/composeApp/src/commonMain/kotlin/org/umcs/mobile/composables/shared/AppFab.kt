@@ -1,5 +1,6 @@
 package org.umcs.mobile.composables.shared
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -21,7 +22,7 @@ fun AppFab(
         onClick = onClick,
     ) {
         Icon(
-            modifier= Modifier.size(32.dp),
+            modifier= Modifier.padding(10.dp),
             painter = painterResource(iconResource),
             contentDescription = null
         )

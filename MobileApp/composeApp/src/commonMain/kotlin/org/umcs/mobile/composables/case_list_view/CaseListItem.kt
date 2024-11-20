@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.theapache64.rebugger.Rebugger
 import org.umcs.mobile.data.Case
 
 @Composable
@@ -69,4 +70,32 @@ fun CaseListItem(
             modifier = Modifier.padding(start = 12.dp)
         )
     }
+
+    Rebugger(
+        trackMap = mapOf(
+            "isDoctor" to isDoctor,
+            "navigateToCase" to navigateToCase,
+            "modifier" to modifier,
+            "currentCase" to currentCase,
+            "textColor" to textColor,
+            """modifier
+                .fillMaxSize()
+                .clip(shape = MaterialTheme.shapes.medium)
+                .background(MaterialTheme.colorScheme.primary)
+                .padding(top = 8.dp)
+                .clickable {
+                    navigateToCase(currentCase)
+                }"""
+             to modifier
+                .fillMaxSize()
+                .clip(shape = MaterialTheme.shapes.medium)
+                .background(MaterialTheme.colorScheme.primary)
+                .padding(top = 8.dp)
+                .clickable {
+                    navigateToCase(currentCase)
+                },
+            "Alignment.Start" to Alignment.Start,
+            "Arrangement.spacedBy(16.dp)" to Arrangement.spacedBy(16.dp),
+        ),
+    )
 }

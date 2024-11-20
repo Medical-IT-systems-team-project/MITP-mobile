@@ -5,6 +5,8 @@ import androidx.compose.ui.Modifier
 import mobileapp.composeapp.generated.resources.Res
 import mobileapp.composeapp.generated.resources.add_case
 import mobileapp.composeapp.generated.resources.add_patient
+import mobileapp.composeapp.generated.resources.import_case
+import mobileapp.composeapp.generated.resources.import_patient
 import org.umcs.mobile.composables.case_list_view.doctor.CaseListDoctorFAB
 import org.umcs.mobile.composables.case_list_view.patient.CaseListPatientFAB
 
@@ -23,8 +25,8 @@ fun CaseListLayoutFAB(
                 modifier = fabOffset,
                 navigateToAddNewPatientView = navigateToAddNewPatient!!,
                 navigateToAddNewCaseView = navigateToAddNewCase!!,
-                upperIcon = Res.drawable.add_case,
-                lowerIcon = Res.drawable.add_patient
+                upperIcon = Res.drawable.import_case,
+                lowerIcon = Res.drawable.add_case
             )
         }
 
@@ -33,8 +35,8 @@ fun CaseListLayoutFAB(
                 modifier = fabOffset,
                 navigateToAddNewPatientView = navigateToAddNewPatient!!,
                 navigateToAddNewCaseView = navigateToAddNewCase!!,
-                upperIcon = Res.drawable.add_patient,
-                lowerIcon = Res.drawable.add_case
+                upperIcon = Res.drawable.import_patient,
+                lowerIcon = Res.drawable.add_patient
             )
         }
 
