@@ -8,9 +8,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import compose.icons.FeatherIcons
+import compose.icons.feathericons.File
 import mobileapp.composeapp.generated.resources.Res
-import mobileapp.composeapp.generated.resources.info
-import mobileapp.composeapp.generated.resources.stethoscope
+import mobileapp.composeapp.generated.resources.user
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -25,7 +26,7 @@ fun CaseListBottomBar(
         NavigationBarItem(
             icon = {
                 Icon(
-                    painterResource(Res.drawable.info),
+                    imageVector = FeatherIcons.File,
                     contentDescription = null,
                     iconSize
                 )
@@ -41,7 +42,7 @@ fun CaseListBottomBar(
         NavigationBarItem(
             icon = {
                 Icon(
-                    painterResource(Res.drawable.stethoscope),
+                    painterResource(Res.drawable.user),
                     contentDescription = null,
                     iconSize
                 )

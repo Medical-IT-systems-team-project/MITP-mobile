@@ -23,8 +23,8 @@ fun CaseListLayoutFAB(
         isDoctor && currentTab == CaseListScreens.CASES -> {
             CaseListDoctorFAB(
                 modifier = fabOffset,
-                navigateToAddNewPatientView = navigateToAddNewPatient!!,
-                navigateToAddNewCaseView = navigateToAddNewCase!!,
+                upperFabFunction = {},
+                lowerFabFunction = navigateToAddNewCase!!,
                 upperIcon = Res.drawable.import_case,
                 lowerIcon = Res.drawable.add_case
             )
@@ -33,10 +33,10 @@ fun CaseListLayoutFAB(
         isDoctor && currentTab == CaseListScreens.PATIENTS -> {
             CaseListDoctorFAB(
                 modifier = fabOffset,
-                navigateToAddNewPatientView = navigateToAddNewPatient!!,
-                navigateToAddNewCaseView = navigateToAddNewCase!!,
+                upperFabFunction = {},
+                lowerFabFunction = navigateToAddNewPatient!!,
                 upperIcon = Res.drawable.import_patient,
-                lowerIcon = Res.drawable.add_patient
+                lowerIcon = Res.drawable.add_patient,
             )
         }
 

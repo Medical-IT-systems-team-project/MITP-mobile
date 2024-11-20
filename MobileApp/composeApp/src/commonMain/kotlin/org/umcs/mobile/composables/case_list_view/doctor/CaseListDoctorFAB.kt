@@ -12,17 +12,17 @@ import org.umcs.mobile.composables.shared.AppFab
 @Composable
 fun CaseListDoctorFAB(
     modifier: Modifier = Modifier,
-    navigateToAddNewPatientView: () -> Unit,
-    navigateToAddNewCaseView: () -> Unit,
+    upperFabFunction: () -> Unit,
+    lowerFabFunction: () -> Unit,
     upperIcon: DrawableResource,
-    lowerIcon: DrawableResource
+    lowerIcon: DrawableResource,
 ) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        AppFab(iconResource = upperIcon, onClick = navigateToAddNewCaseView)
-        AppFab(iconResource = lowerIcon, onClick = navigateToAddNewPatientView)
+        AppFab(iconResource = upperIcon, onClick = upperFabFunction)
+        AppFab(iconResource = lowerIcon, onClick = lowerFabFunction)
     }
 }
