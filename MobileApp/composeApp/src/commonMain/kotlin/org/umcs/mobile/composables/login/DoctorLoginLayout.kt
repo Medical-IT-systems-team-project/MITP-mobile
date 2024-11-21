@@ -51,10 +51,6 @@ fun DoctorLoginLayout(
         focusedIndicatorColor = Color.Transparent
     )
 
-/*    LaunchedEffect(Unit) {
-        delay(2000)
-        viewModel.fetchData()
-    }*/
 
     Column(
         modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
