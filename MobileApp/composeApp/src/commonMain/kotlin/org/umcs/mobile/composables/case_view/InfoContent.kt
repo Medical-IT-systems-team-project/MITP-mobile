@@ -35,5 +35,6 @@ fun InfoContent(modifier: Modifier = Modifier, paddingValues : PaddingValues, ca
             title = "Diagnosis",
             content = case.description
         )
+
     }
 }
