@@ -37,9 +37,7 @@ fun MedicationContent(paddingValues: PaddingValues, case: Case) {
         horizontalAlignment = Alignment.Start
     ) {
         items(medicineList) { medicine ->
-            MedicineItem(
-                medicine = medicine,
-            )
+            MedicineItem(medicine = medicine)
         }
     }
 }

@@ -103,23 +103,16 @@ private fun PatientDropdownMenu(
             onDismissRequest = onDismiss
         ) {
             DropdownMenuItem(
-                text = { Text("View Details") },
+                text = { Text("Import Patient's Case") },
                 onClick = {
                     // Handle view details
                     onDismiss()
                 }
             )
             DropdownMenuItem(
-                text = { Text("Edit") },
+                text = { Text("Share Patient's UUID") },
                 onClick = {
                     // Handle edit
-                    onDismiss()
-                }
-            )
-            DropdownMenuItem(
-                text = { Text("Delete") },
-                onClick = {
-                    // Handle delete
                     onDismiss()
                 }
             )

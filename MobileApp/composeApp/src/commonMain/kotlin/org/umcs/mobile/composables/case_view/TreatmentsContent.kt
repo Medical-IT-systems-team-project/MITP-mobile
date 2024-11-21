@@ -36,9 +36,7 @@ fun TreatmentsContent(modifier: Modifier = Modifier, paddingValues: PaddingValue
         horizontalAlignment = Alignment.Start
     ) {
         items(treatments) { treatment ->
-            TreatmentItem(
-                treatment = treatment,
-            )
+            TreatmentItem(treatment = treatment)
         }
     }
 }

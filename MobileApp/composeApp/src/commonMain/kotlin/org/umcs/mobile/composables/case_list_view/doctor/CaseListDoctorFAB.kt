@@ -12,9 +12,9 @@ import org.umcs.mobile.composables.shared.AppFab
 @Composable
 fun CaseListDoctorFAB(
     modifier: Modifier = Modifier,
-    upperFabFunction: () -> Unit,
+    upperFabFunction: (() -> Unit)? = null,
     lowerFabFunction: () -> Unit,
-    upperIcon: DrawableResource,
+    upperIcon: DrawableResource? = null,
     lowerIcon: DrawableResource,
 ) {
     Column(
@@ -22,7 +22,9 @@ fun CaseListDoctorFAB(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        AppFab(iconResource = upperIcon, onClick = upperFabFunction)
+        if(upperIcon != null){
+            AppFab(iconResource = upperIcon, onClick = upperFabFunction!!)
+        }
         AppFab(iconResource = lowerIcon, onClick = lowerFabFunction)
     }
 }
