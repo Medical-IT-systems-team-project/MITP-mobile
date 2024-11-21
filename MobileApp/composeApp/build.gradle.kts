@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.room)
     alias(libs.plugins.ksp)
+    id("co.touchlab.skie") version "0.9.3"
 }
 
 kotlin {
@@ -51,12 +52,17 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.room.runtime)
             implementation(libs.composeIcons.featherIcons)
+            implementation(libs.ktor.client.content.negotiation.json)
 
+            implementation("io.github.theapache64:rebugger:1.0.0-rc03")
             implementation(libs.qrose)
-
+            implementation(libs.qr.kit)
+            api(libs.datastore.preferences)
+            api(libs.datastore)
         }
 
         commonTest.dependencies {
+
             implementation(kotlin("test"))
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.uiTest)
@@ -82,7 +88,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        minSdk = 21
+        minSdk = 29
         targetSdk = 35
 
         applicationId = "org.umcs.mobile.androidApp"
@@ -92,6 +98,14 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 }
+
+skie{
+    features{
+        coroutinesInterop.set(true)
+    }
+}
+
+
 
 //https://developer.android.com/develop/ui/compose/testing#setup
 dependencies {
@@ -104,6 +118,7 @@ room {
 }
 
 dependencies {
+
     with(libs.room.compiler) {
         add("kspAndroid", this)
         add("kspIosX64", this)
