@@ -39,6 +39,8 @@ import org.umcs.mobile.data.Patient
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PatientListContent(
+    onImportPatientCase: (Patient) -> Unit,
+    onShareUUID: (Patient) -> Unit,
     contentPadding: PaddingValues,
     patients: List<Patient> = patientList(),
     listState: LazyListState = rememberLazyListState(),
@@ -68,13 +70,16 @@ fun PatientListContent(
                         onClick = {},
                         onLongClick = {
                             showDropdownFor = patient
-                            Logger.d("Long click on patient: ${patient.getFullName()}", tag = "LongClick")
+                            Logger.d(
+                                "Long click on patient: ${patient.getFullName()}",
+                                tag = "LongClick"
+                            )
                         }
                     )
             ) {
                 Icon(Icons.Default.Face, contentDescription = "Select Patient", tint = textColor)
                 Text(
-                    overflow= TextOverflow.Ellipsis,
+                    overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
                     text = patient.getFullName(),
                     fontSize = 20.sp,
@@ -84,7 +89,8 @@ fun PatientListContent(
                 if (showDropdownFor == patient) {
                     PatientDropdownMenu(
                         onDismiss = { showDropdownFor = null },
-                        patient = patient
+                        onImportPatientCase = { onImportPatientCase(patient) },
+                        onShareUUID = { onShareUUID(patient) },
                     )
                 }
             }
@@ -94,8 +100,9 @@ fun PatientListContent(
 
 @Composable
 private fun PatientDropdownMenu(
+    onImportPatientCase: () -> Unit,
+    onShareUUID: () -> Unit,
     onDismiss: () -> Unit,
-    patient: Patient
 ) {
     Surface {
         DropdownMenu(
@@ -105,15 +112,15 @@ private fun PatientDropdownMenu(
             DropdownMenuItem(
                 text = { Text("Import Patient's Case") },
                 onClick = {
-                    // Handle view details
                     onDismiss()
+                    onImportPatientCase()
                 }
             )
             DropdownMenuItem(
                 text = { Text("Share Patient's UUID") },
                 onClick = {
-                    // Handle edit
                     onDismiss()
+                    onShareUUID()
                 }
             )
         }

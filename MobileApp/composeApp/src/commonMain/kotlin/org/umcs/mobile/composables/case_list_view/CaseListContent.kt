@@ -20,8 +20,8 @@ fun CaseViewContent(
     contentPadding: PaddingValues,
     cases: List<Case>,
     listState: LazyListState,
-    navigateToCase: (Case) -> Unit,
-    isDoctor: Boolean,
+    onCaseClicked: (Case) -> Unit,
+    showPatientName: Boolean,
 ) {
     LazyColumn(
         modifier = modifier,
@@ -32,10 +32,10 @@ fun CaseViewContent(
     ) {
         items(items = cases, key = { case -> case.patientName }) { case ->
             CaseListItem(
-                navigateToCase = navigateToCase,
+                onCaseClicked = onCaseClicked,
                 currentCase = case,
                 modifier = Modifier.fillMaxWidth(0.8f).height(80.dp),
-                isDoctor = isDoctor,
+                showPatientName = showPatientName,
             )
         }
     }
@@ -46,8 +46,8 @@ fun CaseViewContent(
             "contentPadding" to contentPadding,
             "cases" to cases,
             "listState" to listState,
-            "navigateToCase" to navigateToCase,
-            "isDoctor" to isDoctor,
+            "navigateToCase" to onCaseClicked,
+            "isDoctor" to showPatientName,
             "Alignment.CenterHorizontally" to Alignment.CenterHorizontally,
             "Arrangement.spacedBy(30.dp)" to Arrangement.spacedBy(30.dp),
         ),

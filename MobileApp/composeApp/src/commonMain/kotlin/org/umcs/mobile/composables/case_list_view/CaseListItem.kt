@@ -21,8 +21,8 @@ import org.umcs.mobile.data.Case
 
 @Composable
 fun CaseListItem(
-    isDoctor: Boolean,
-    navigateToCase: (Case) -> Unit,
+    showPatientName: Boolean,
+    onCaseClicked: (Case) -> Unit,
     modifier: Modifier = Modifier,
     currentCase: Case,
 ) {
@@ -35,7 +35,7 @@ fun CaseListItem(
             .background(MaterialTheme.colorScheme.primary)
             .padding(top = 8.dp)
             .clickable {
-                navigateToCase(currentCase)
+                onCaseClicked(currentCase)
             },
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -48,7 +48,7 @@ fun CaseListItem(
             Text(
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
-                text = if (isDoctor) currentCase.patientName else currentCase.doctorName,
+                text = if (showPatientName) currentCase.patientName else currentCase.doctorName,
                 fontSize = 20.sp,
                 color = textColor,
                 modifier = Modifier.weight(1.9f)
@@ -73,8 +73,8 @@ fun CaseListItem(
 
     Rebugger(
         trackMap = mapOf(
-            "isDoctor" to isDoctor,
-            "navigateToCase" to navigateToCase,
+            "isDoctor" to showPatientName,
+            "navigateToCase" to onCaseClicked,
             "modifier" to modifier,
             "currentCase" to currentCase,
             "textColor" to textColor,
@@ -92,7 +92,7 @@ fun CaseListItem(
                 .background(MaterialTheme.colorScheme.primary)
                 .padding(top = 8.dp)
                 .clickable {
-                    navigateToCase(currentCase)
+                    onCaseClicked(currentCase)
                 },
             "Alignment.Start" to Alignment.Start,
             "Arrangement.spacedBy(16.dp)" to Arrangement.spacedBy(16.dp),

@@ -1,4 +1,4 @@
-package org.umcs.mobile.composables
+package org.umcs.mobile.composables.shared
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

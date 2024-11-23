@@ -38,7 +38,7 @@ import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun DoctorLoginLayout(
-    goToHomeScreen: () -> Unit,
+    navigateToCaseList: () -> Unit,
     viewModel: AppViewModel = viewModel { AppViewModel() },
     loginDataStore: DataStore<Preferences>? = null,
 ) {
@@ -50,7 +50,6 @@ fun DoctorLoginLayout(
         unfocusedIndicatorColor = Color.Transparent,
         focusedIndicatorColor = Color.Transparent
     )
-
 
     Column(
         modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
@@ -107,7 +106,7 @@ fun DoctorLoginLayout(
                 if (login.isEmpty() || password.isEmpty()) {
                     errorMessage = "ERROR MESSAGE"
                 } else {
-                    goToHomeScreen()
+                    navigateToCaseList()
                 }
             },
             shape = shape,

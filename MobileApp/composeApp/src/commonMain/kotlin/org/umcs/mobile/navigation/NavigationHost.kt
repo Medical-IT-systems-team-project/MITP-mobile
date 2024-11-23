@@ -1,17 +1,8 @@
 package org.umcs.mobile.navigation
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.zIndex
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.navigation.NavHostController
@@ -20,10 +11,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import co.touchlab.kermit.Logger
-import io.github.alexzhirkevich.qrose.rememberQrCodePainter
 import org.umcs.mobile.App
 import org.umcs.mobile.composables.case_list_view.CaseListLayout
 import org.umcs.mobile.composables.case_view.CaseLayout
+import org.umcs.mobile.composables.import_patient.ImportPatientCaseLayout
 import org.umcs.mobile.composables.login.ChooseProfileLayout
 import org.umcs.mobile.composables.login.DoctorLoginLayout
 import org.umcs.mobile.composables.login.PatientLoginLayout
@@ -31,9 +22,8 @@ import org.umcs.mobile.composables.new_case_view.NewCaseLayout
 import org.umcs.mobile.composables.new_patient_view.NewPatientLayout
 import org.umcs.mobile.composables.share_uuid_view.ShareUUIDLayout
 import org.umcs.mobile.data.Case
+import org.umcs.mobile.data.Patient
 import org.umcs.mobile.theme.AppTheme
-import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 
 @Composable
@@ -42,7 +32,7 @@ fun NavigationHost(
     loginDataStore: DataStore<Preferences>,
     testDataStore: DataStore<Preferences>,
 ) {
-
+    //TODO : refactor this to serve the new navigation system
     AppTheme {
         NavHost(
             navController = navController,
@@ -61,7 +51,9 @@ fun NavigationHost(
                     navigateToCase = navController::navigate,
                     navigateBack = navController::navigateUp,
                     navigateToAddNewPatient = { navController.navigate(Routes.NEW_PATIENT) },
-                    navigateToAddNewCase = { navController.navigate(Routes.NEW_CASE) }
+                    navigateToAddNewCase = { navController.navigate(Routes.NEW_CASE) },
+                    navigateToImportPatientCase = { patient: Patient -> navController.navigate(patient) },
+                    navigateToSharePatientUUID = {  }
                 )
             }
             composable(Routes.NEW_PATIENT) {
@@ -82,7 +74,7 @@ fun NavigationHost(
                     navigateToShareUUID = { navController.navigate(Routes.SHARE_UUID) }
                 )
             }
-            composable(Routes.SHARE_UUID) {
+            composable(Routes.SHARE_UUID) { //TODO : figure out how to tag this route to differentiate between this and ImportPatientCaseLayout when passing a Patient
                 ShareUUIDLayout(
                     navigateBack = navController::navigateUp,
                     modifier = Modifier.fillMaxSize()
@@ -96,16 +88,32 @@ fun NavigationHost(
                 )
             }
             composable(Routes.PATIENT_LOGIN) {
-                PatientLoginLayout()
+                PatientLoginLayout { navController.navigate(Routes.CASE_LIST_PATIENT) }
             }
             composable(Routes.DOCTOR_LOGIN) {
                 DoctorLoginLayout(
                     loginDataStore = loginDataStore,
-                    goToHomeScreen = { navController.navigate(Routes.HOME) }
+                    navigateToCaseList = { navController.navigate(Routes.CASE_LIST_DOCTOR) }
                 )
             }
+            composable<Patient> { backStackEntry ->
+                val patient: Patient = backStackEntry.toRoute()
+
+                ImportPatientCaseLayout(
+                    navigateBack = navController::navigateUp,
+                    patient = patient,
+                    modifier = Modifier.fillMaxSize(),
+                    onCaseClicked = { case: Case ->
+                        Logger.d("Case: $case", tag = "IMPORT")
+                        navController.navigateUp()
+                    },
+                    //TODO : FETCH Patient's cases
+                )
+            }
+
             composable<Case> { backStackEntry ->
                 val case: Case = backStackEntry.toRoute()
+
                 CaseLayout(
                     case = case,
                     navigateBack = navController::navigateUp,
@@ -115,27 +123,4 @@ fun NavigationHost(
     }
 }
 
-@OptIn(ExperimentalUuidApi::class)
-@Composable
-fun SecondScreen(navController: NavHostController) {
-    val uuid = Uuid.random().toString()
-    Logger.i("UUID: $uuid", tag = "UUID")
-    Box(
-        modifier = Modifier.fillMaxSize().background(Color.DarkGray).clickable(onClick = {
-            navController.navigateUp()
-        }),
-        contentAlignment = Alignment.Center
-    ) {
-        Box(
-            modifier = Modifier.fillMaxWidth(0.8f).aspectRatio(1f).background(Color.White),
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                modifier = Modifier.fillMaxWidth(0.7f).aspectRatio(1f).zIndex(2f),
-                painter = rememberQrCodePainter(data = uuid),
-                contentDescription = "QR code referring to the example.com website"
-            )
-        }
-    }
-}
 

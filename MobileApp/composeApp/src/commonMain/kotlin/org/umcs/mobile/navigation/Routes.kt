@@ -10,8 +10,7 @@ object Routes {
     const val PATIENT_LOGIN = "patient_login"
     const val NEW_CASE = "new_case"
     const val HOME = "home"
-    const val CASE_LIST = "second"
-    const val THIRD = "third"
+    const val IMPORT_PATIENT = "import_patient"
 }
 
 
