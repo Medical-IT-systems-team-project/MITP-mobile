@@ -73,7 +73,7 @@ internal fun App(
     ) {
         ElevatedButton(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp).widthIn(min = 200.dp),
-            onClick = { navController.navigate(Routes.CASE_LIST_DOCTOR) },
+            onClick = { navController.navigate(Routes.CaseListDoctor) },
             content = {
                 Icon(imageVector = FeatherIcons.Moon, contentDescription = null)
                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
@@ -83,7 +83,7 @@ internal fun App(
 
         ElevatedButton(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp).widthIn(min = 200.dp),
-            onClick = { navController.navigate(Routes.CASE_LIST_PATIENT) },
+            onClick = { navController.navigate(Routes.CaseListPatient) },
             content = {
                 Icon(imageVector = FeatherIcons.Moon, contentDescription = null)
                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
@@ -93,7 +93,7 @@ internal fun App(
 
         ElevatedButton(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp).widthIn(min = 200.dp),
-            onClick = { navController.navigate(Routes.PATIENT_LOGIN) },
+            onClick = { navController.navigate(Routes.PatientLogin) },
             content = {
                 Icon(imageVector = FeatherIcons.UserPlus, contentDescription = null)
                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
@@ -103,7 +103,7 @@ internal fun App(
 
         ElevatedButton(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp).widthIn(min = 200.dp),
-            onClick = { navController.navigate(Routes.DOCTOR_LOGIN) },
+            onClick = { navController.navigate(Routes.DoctorLogin) },
             content = {
                 Icon(imageVector = FeatherIcons.UserMinus, contentDescription = null)
                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
@@ -113,7 +113,7 @@ internal fun App(
 
         ElevatedButton(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp).widthIn(min = 200.dp),
-            onClick = { navController.navigate(Routes.CHOOSE_LOGIN) },
+            onClick = { navController.navigate(Routes.ChooseLogin) },
             content = {
                 Icon(imageVector = FeatherIcons.UserMinus, contentDescription = null)
                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))

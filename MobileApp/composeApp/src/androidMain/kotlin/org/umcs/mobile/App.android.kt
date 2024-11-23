@@ -31,10 +31,12 @@ class AppActivity : ComponentActivity() {
             )
         )
         setContent {
-            NavigationHost(
-                loginDataStore = remember {myApplication.loginDataStore},
-                testDataStore = remember {myApplication.testDataStore}
-            )
+            AppTheme {
+                NavigationHost(
+                    loginDataStore = remember { myApplication.loginDataStore },
+                    testDataStore = remember { myApplication.testDataStore }
+                )
+            }
         }
     }
 }

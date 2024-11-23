@@ -25,7 +25,6 @@ fun CaseListLayout(
     navigateBack: () -> Unit,
     navigateToAddNewPatient: (() -> Unit)? = null,
     navigateToAddNewCase: (() -> Unit)? = null,
-    navigateToShareUUID: (() -> Unit)? = null,
     navigateToImportPatientCase: ((Patient) -> Unit)? = null,
     navigateToSharePatientUUID: ((Patient) -> Unit)? = null,
     isDoctor: Boolean = true
@@ -36,6 +35,7 @@ fun CaseListLayout(
     val caseListState = rememberLazyListState()
     val patientListState = rememberLazyListState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val currentPatient = Patient("John","Doevski")
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -51,12 +51,13 @@ fun CaseListLayout(
         },
         floatingActionButton = {
             CaseListLayoutFAB(
-                isDoctor,
-                fabOffset,
-                navigateToAddNewPatient,
-                navigateToAddNewCase,
-                currentTab,
-                navigateToShareUUID
+                isDoctor = isDoctor,
+                fabOffset = fabOffset,
+                navigateToAddNewPatient = navigateToAddNewPatient,
+                navigateToAddNewCase = navigateToAddNewCase,
+                currentTab = currentTab,
+                navigateToShareUUID = navigateToImportPatientCase,
+                currentPatient = currentPatient
             )
         },
     ) { paddingValues ->

@@ -8,6 +8,7 @@ import mobileapp.composeapp.generated.resources.add_patient
 import mobileapp.composeapp.generated.resources.import_patient
 import org.umcs.mobile.composables.case_list_view.doctor.CaseListDoctorFAB
 import org.umcs.mobile.composables.case_list_view.patient.CaseListPatientFAB
+import org.umcs.mobile.data.Patient
 
 @Composable
 fun CaseListLayoutFAB(
@@ -16,7 +17,8 @@ fun CaseListLayoutFAB(
     navigateToAddNewPatient: (() -> Unit)?,
     navigateToAddNewCase: (() -> Unit)?,
     currentTab: CaseListScreens,
-    navigateToShareUUID: (() -> Unit)?
+    navigateToShareUUID: ((Patient) -> Unit)?,
+    currentPatient: Patient
 ) {
     when {
         isDoctor && currentTab == CaseListScreens.CASES -> {
@@ -40,7 +42,7 @@ fun CaseListLayoutFAB(
         !isDoctor -> {
             CaseListPatientFAB(
                 modifier = fabOffset,
-                shareUUID = navigateToShareUUID!!,
+                shareUUID = { navigateToShareUUID!!(currentPatient) },
             )
         }
     }

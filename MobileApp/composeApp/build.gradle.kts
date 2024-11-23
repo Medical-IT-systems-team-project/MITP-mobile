@@ -54,6 +54,7 @@ kotlin {
             implementation(libs.composeIcons.featherIcons)
             implementation(libs.ktor.client.content.negotiation.json)
 
+            implementation("com.eygraber:uri-kmp:0.0.18")
             implementation("io.github.theapache64:rebugger:1.0.0-rc03")
             implementation(libs.qrose)
             implementation(libs.qr.kit)
