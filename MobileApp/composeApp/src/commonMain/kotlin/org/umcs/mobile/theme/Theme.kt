@@ -12,7 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 
-private val lightScheme = lightColorScheme(
+ val lightScheme = lightColorScheme(
     primary = primaryLight,
     onPrimary = onPrimaryLight,
     primaryContainer = primaryContainerLight,
@@ -50,7 +50,7 @@ private val lightScheme = lightColorScheme(
     surfaceContainerHighest = surfaceContainerHighestLight,
 )
 
-private val darkScheme = darkColorScheme(
+ val darkScheme = darkColorScheme(
     primary = primaryDark,
     onPrimary = onPrimaryDark,
     primaryContainer = primaryContainerDark,

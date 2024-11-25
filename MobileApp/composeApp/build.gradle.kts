@@ -54,6 +54,9 @@ kotlin {
             implementation(libs.composeIcons.featherIcons)
             implementation(libs.ktor.client.content.negotiation.json)
 
+            implementation("io.github.alexzhirkevich:cupertino:0.1.0-alpha04")
+            implementation("io.github.alexzhirkevich:cupertino-native:0.1.0-alpha04")
+            implementation("io.github.alexzhirkevich:cupertino-adaptive:0.1.0-alpha04")
             implementation("com.eygraber:uri-kmp:0.0.18")
             implementation("io.github.theapache64:rebugger:1.0.0-rc03")
             implementation(libs.qrose)
@@ -100,12 +103,11 @@ android {
     }
 }
 
-skie{
-    features{
+skie {
+    features {
         coroutinesInterop.set(true)
     }
 }
-
 
 
 //https://developer.android.com/develop/ui/compose/testing#setup
