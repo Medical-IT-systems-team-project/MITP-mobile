@@ -1,17 +1,8 @@
 package org.umcs.mobile.navigation
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.zIndex
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.navigation.NavHostController
@@ -20,10 +11,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import co.touchlab.kermit.Logger
-import io.github.alexzhirkevich.qrose.rememberQrCodePainter
 import org.umcs.mobile.App
 import org.umcs.mobile.composables.case_list_view.CaseListLayout
 import org.umcs.mobile.composables.case_view.CaseLayout
+import org.umcs.mobile.composables.import_patient.ImportPatientCaseLayout
 import org.umcs.mobile.composables.login.ChooseProfileLayout
 import org.umcs.mobile.composables.login.DoctorLoginLayout
 import org.umcs.mobile.composables.login.PatientLoginLayout
@@ -31,9 +22,8 @@ import org.umcs.mobile.composables.new_case_view.NewCaseLayout
 import org.umcs.mobile.composables.new_patient_view.NewPatientLayout
 import org.umcs.mobile.composables.share_uuid_view.ShareUUIDLayout
 import org.umcs.mobile.data.Case
-import org.umcs.mobile.theme.AppTheme
-import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
+import org.umcs.mobile.data.Patient
+import kotlin.reflect.typeOf
 
 
 @Composable
@@ -43,97 +33,119 @@ fun NavigationHost(
     testDataStore: DataStore<Preferences>,
 ) {
 
-    AppTheme {
-        NavHost(
-            navController = navController,
-            modifier = Modifier.fillMaxSize(),
-            startDestination = Routes.HOME
-        ) {
-            composable(Routes.HOME) {
-                App(
-                    navController = navController,
-                    testDataStore = testDataStore
-                )
-            }
-            composable(Routes.CASE_LIST_DOCTOR) {
-                CaseListLayout(
-                    isDoctor = true,
-                    navigateToCase = navController::navigate,
-                    navigateBack = navController::navigateUp,
-                    navigateToAddNewPatient = { navController.navigate(Routes.NEW_PATIENT) },
-                    navigateToAddNewCase = { navController.navigate(Routes.NEW_CASE) }
-                )
-            }
-            composable(Routes.NEW_PATIENT) {
-                NewPatientLayout(
-                    navigateBack = navController::navigateUp
-                )
-            }
-            composable(Routes.NEW_CASE) {
-                NewCaseLayout(
-                    navigateBack = navController::navigateUp
-                )
-            }
-            composable(Routes.CASE_LIST_PATIENT) {
-                CaseListLayout(
-                    isDoctor = false,
-                    navigateToCase = navController::navigate,
-                    navigateBack = navController::navigateUp,
-                    navigateToShareUUID = { navController.navigate(Routes.SHARE_UUID) }
-                )
-            }
-            composable(Routes.SHARE_UUID) {
-                ShareUUIDLayout(
-                    navigateBack = navController::navigateUp,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-            composable(Routes.CHOOSE_LOGIN) {
-                ChooseProfileLayout(
-                    modifier = Modifier.fillMaxSize(),
-                    navigateToPatientLogin = { navController.navigate(Routes.PATIENT_LOGIN) },
-                    navigateToDoctorLogin = { navController.navigate(Routes.DOCTOR_LOGIN) }
-                )
-            }
-            composable(Routes.PATIENT_LOGIN) {
-                PatientLoginLayout()
-            }
-            composable(Routes.DOCTOR_LOGIN) {
-                DoctorLoginLayout(
-                    loginDataStore = loginDataStore,
-                    goToHomeScreen = { navController.navigate(Routes.HOME) }
-                )
-            }
-            composable<Case> { backStackEntry ->
-                val case: Case = backStackEntry.toRoute()
-                CaseLayout(
-                    case = case,
-                    navigateBack = navController::navigateUp,
-                )
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalUuidApi::class)
-@Composable
-fun SecondScreen(navController: NavHostController) {
-    val uuid = Uuid.random().toString()
-    Logger.i("UUID: $uuid", tag = "UUID")
-    Box(
-        modifier = Modifier.fillMaxSize().background(Color.DarkGray).clickable(onClick = {
-            navController.navigateUp()
-        }),
-        contentAlignment = Alignment.Center
+    NavHost(
+        navController = navController,
+        modifier = Modifier.fillMaxSize(),
+        startDestination = Routes.Home
     ) {
-        Box(
-            modifier = Modifier.fillMaxWidth(0.8f).aspectRatio(1f).background(Color.White),
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                modifier = Modifier.fillMaxWidth(0.7f).aspectRatio(1f).zIndex(2f),
-                painter = rememberQrCodePainter(data = uuid),
-                contentDescription = "QR code referring to the example.com website"
+        composable<Routes.Home> {
+            App(
+                navController = navController,
+                testDataStore = testDataStore
+            )
+        }
+        composable<Routes.CaseListDoctor> {
+            CaseListLayout(
+                isDoctor = true,
+                navigateToCase = { case -> navController.navigate(Routes.CaseDetails(case)) },
+                navigateBack = navController::navigateUp,
+                navigateToAddNewPatient = { navController.navigate(Routes.NewPatient) },
+                navigateToAddNewCase = { navController.navigate(Routes.NewCase) },
+                navigateToImportPatientCase = { patient ->
+                    navController.navigate(
+                        Routes.ImportPatient(
+                            patient
+                        )
+                    )
+                },
+                navigateToSharePatientUUID = { patient ->
+                    navController.navigate(
+                        Routes.ShareUUID(
+                            patient
+                        )
+                    )
+                }
+            )
+        }
+        composable<Routes.NewPatient> {
+            NewPatientLayout(
+                navigateBack = navController::navigateUp
+            )
+        }
+        composable<Routes.NewCase> {
+            NewCaseLayout(
+                navigateBack = navController::navigateUp
+            )
+        }
+        composable<Routes.CaseListPatient> {
+            CaseListLayout(
+                isDoctor = false,
+                navigateToCase = { case -> navController.navigate(Routes.CaseDetails(case)) },
+                navigateBack = navController::navigateUp,
+                navigateToSharePatientUUID = { patient ->
+                    navController.navigate(
+                        Routes.ShareUUID(
+                            patient
+                        )
+                    )
+                }
+            )
+        }
+        composable<Routes.ChooseLogin> {
+            ChooseProfileLayout(
+                modifier = Modifier.fillMaxSize(),
+                navigateToPatientLogin = { navController.navigate(Routes.PatientLogin) },
+                navigateToDoctorLogin = { navController.navigate(Routes.DoctorLogin) }
+            )
+        }
+        composable<Routes.PatientLogin> {
+            PatientLoginLayout { navController.navigate(Routes.CaseListPatient) }
+        }
+        composable<Routes.DoctorLogin> {
+            DoctorLoginLayout(
+                loginDataStore = loginDataStore,
+                navigateToCaseList = { navController.navigate(Routes.CaseListDoctor) }
+            )
+        }
+        composable<Routes.ImportPatient>(
+            typeMap = mapOf(
+                typeOf<Patient>() to CustomNavType.PatientType
+            )
+        ) { backStackEntry ->
+            val route = backStackEntry.toRoute<Routes.ImportPatient>()
+
+            ImportPatientCaseLayout(
+                navigateBack = navController::navigateUp,
+                patient = route.patient,
+                modifier = Modifier.fillMaxSize(),
+                onCaseClicked = { case ->
+                    Logger.d("Case: $case", tag = "IMPORT")
+                    navController.navigateUp()
+                }
+            )
+        }
+        composable<Routes.ShareUUID>(
+            typeMap = mapOf(
+                typeOf<Patient>() to CustomNavType.PatientType
+            )
+        ) { backStackEntry ->
+            val route = backStackEntry.toRoute<Routes.ShareUUID>()
+
+            ShareUUIDLayout(
+                navigateBack = navController::navigateUp,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+        composable<Routes.CaseDetails>(
+            typeMap = mapOf(
+                typeOf<Case>() to CustomNavType.CaseType
+            )
+        ){ backStackEntry ->
+            val route = backStackEntry.toRoute<Routes.CaseDetails>()
+
+            CaseLayout(
+                case = route.case,
+                navigateBack = navController::navigateUp
             )
         }
     }

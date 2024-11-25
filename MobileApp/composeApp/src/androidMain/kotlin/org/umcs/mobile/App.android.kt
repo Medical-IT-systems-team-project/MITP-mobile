@@ -1,5 +1,6 @@
 package org.umcs.mobile
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
@@ -21,19 +22,21 @@ class AppActivity : ComponentActivity() {
 
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.light(
-                scrim = android.graphics.Color.TRANSPARENT,
-                darkScrim = android.graphics.Color.TRANSPARENT
+                scrim = Color.TRANSPARENT,
+                darkScrim = Color.TRANSPARENT
             ),
             navigationBarStyle = SystemBarStyle.light(
-                scrim = android.graphics.Color.TRANSPARENT,
-                darkScrim = android.graphics.Color.TRANSPARENT
+                scrim = Color.TRANSPARENT,
+                darkScrim = Color.TRANSPARENT
             )
         )
         setContent {
-            NavigationHost(
-                loginDataStore = remember {myApplication.loginDataStore},
-                testDataStore = remember {myApplication.testDataStore}
-            )
+            AppTheme {
+                NavigationHost(
+                    loginDataStore = remember { myApplication.loginDataStore },
+                    testDataStore = remember { myApplication.testDataStore }
+                )
+            }
         }
     }
 }
@@ -49,7 +52,7 @@ internal fun initKoin() {
 private fun LoginScreenPreviewDark() {
     AppTheme(systemIsDark = true) {
         DoctorLoginLayout(
-            goToHomeScreen = {},
+            navigateToCaseList = TODO(),
         )
     }
 }
@@ -59,7 +62,7 @@ private fun LoginScreenPreviewDark() {
 private fun LoginScreenPreviewLight() {
     AppTheme(systemIsDark = false) {
         DoctorLoginLayout(
-            goToHomeScreen = {},
+            navigateToCaseList = {}
         )
     }
 }
