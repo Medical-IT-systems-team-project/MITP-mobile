@@ -20,8 +20,15 @@ ksp = "2.0.20-1.0.25"
 composeIcons = "1.1.1"
 qrose = "1.0.1"
 datastore = "1.1.1"
+cupertino = "1.0.2"
 
 [libraries]
+
+cupertino = { group = "com.slapps.cupertino", name = "cupertino", version.ref = "cupertino" }
+cupertino-adaptive = { group = "com.slapps.cupertino", name = "cupertino-adaptive", version.ref = "cupertino" }
+cupertino-native = { group = "com.slapps.cupertino", name = "cupertino-native", version.ref = "cupertino" }
+cupertino-icons-extended = { module = "com.slapps.cupertino:cupertino-icons-extended", version.ref = "cupertino" }
+
 datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 androidx-activityCompose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
@@ -34,7 +41,7 @@ kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
-ktor-client-content-negotiation-json = { module = "io.ktor:ktor-serialization-kotlinx-json" , version.ref = "ktor" }
+ktor-client-content-negotiation-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-client-serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktor" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }

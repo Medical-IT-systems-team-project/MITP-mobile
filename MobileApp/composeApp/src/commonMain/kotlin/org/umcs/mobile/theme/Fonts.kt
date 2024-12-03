@@ -5,7 +5,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import io.github.alexzhirkevich.cupertino.theme.Typography
+import com.slapps.cupertino.theme.Typography
 import mobileapp.composeapp.generated.resources.Res
 import mobileapp.composeapp.generated.resources.SF_Pro
 import org.jetbrains.compose.resources.Font

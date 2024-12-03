@@ -90,6 +90,7 @@ import androidx.compose.runtime.remember
 
 internal val LocalThemeIsDark = compositionLocalOf { mutableStateOf(true) }
 
+/*
 @Composable
 internal fun AppTheme(
     systemIsDark: Boolean = isSystemInDarkTheme(), //if something breaks just use it as a val instead of a parameter
@@ -107,6 +108,7 @@ internal fun AppTheme(
         )
     }
 }
+*/
 
 @Composable
 internal expect fun SystemAppearance(isDark: Boolean)
