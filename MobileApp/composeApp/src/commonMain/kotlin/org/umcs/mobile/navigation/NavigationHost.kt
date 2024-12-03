@@ -12,6 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import co.touchlab.kermit.Logger
 import org.umcs.mobile.App
+import org.umcs.mobile.TestAdaptive
 import org.umcs.mobile.composables.case_list_view.CaseListLayout
 import org.umcs.mobile.composables.case_view.CaseLayout
 import org.umcs.mobile.composables.import_patient.ImportPatientCaseLayout
@@ -39,10 +40,11 @@ fun NavigationHost(
         startDestination = Routes.Home
     ) {
         composable<Routes.Home> {
-            App(
+            TestAdaptive()
+            /*App(
                 navController = navController,
                 testDataStore = testDataStore
-            )
+            )*/
         }
         composable<Routes.CaseListDoctor> {
             CaseListLayout(
