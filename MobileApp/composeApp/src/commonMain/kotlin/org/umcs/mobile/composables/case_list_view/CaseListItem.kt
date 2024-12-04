@@ -48,7 +48,7 @@ fun CaseListItem(
             Text(
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
-                text = if (showPatientName) currentCase.patientName else currentCase.doctorName,
+                text = if (showPatientName) currentCase.getFullName() else currentCase.doctorName,
                 fontSize = 20.sp,
                 color = textColor,
                 modifier = Modifier.weight(1.9f)

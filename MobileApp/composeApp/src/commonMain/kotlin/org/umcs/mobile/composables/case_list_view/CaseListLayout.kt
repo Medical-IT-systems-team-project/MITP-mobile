@@ -56,7 +56,7 @@ fun CaseListLayout(
                 navigateToAddNewPatient = navigateToAddNewPatient,
                 navigateToAddNewCase = navigateToAddNewCase,
                 currentTab = currentTab,
-                navigateToShareUUID = navigateToImportPatientCase,
+                navigateToShareUUID = navigateToSharePatientUUID,
                 currentPatient = currentPatient
             )
         },

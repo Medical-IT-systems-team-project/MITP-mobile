@@ -2,6 +2,7 @@ package org.umcs.mobile.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import co.touchlab.kermit.Logger
 import com.slapps.cupertino.adaptive.AdaptiveTheme
 import com.slapps.cupertino.adaptive.CupertinoThemeSpec
@@ -32,9 +33,25 @@ internal fun AppTheme(
         ),
         cupertino = CupertinoThemeSpec(
             colorScheme = if (systemIsDark) {
-                darkColorScheme()
+                darkColorScheme(
+                    accent = primaryLight,
+                    systemBackground = backgroundDark ,//background,
+                    systemFill = onPrimaryDark,//to samo co tekst
+                    label = onSurfaceDark ,//zwykly text i ikonki
+                    systemGroupedBackground = primaryDark,
+                    opaqueSeparator = onSecondaryContainerDark.copy(alpha= 0.5f), //Separator pod topbarem i nad navigation barem
+                    tertiarySystemBackground = backgroundDark,  //topbar i navbar
+                )
             } else {
-                lightColorScheme()
+                lightColorScheme(
+                    accent = primaryLight,
+                    tertiarySystemBackground = backgroundLight,
+                    systemFill = onPrimaryLight,//to samo co tekst
+                    opaqueSeparator = onSecondaryContainerLight.copy(alpha= 0.5f), //Separator pod topbarem i nad navigation barem
+                    label = onSurfaceLight ,//zwykly text i ikonki
+                    systemGroupedBackground = primaryLight,
+                    systemBackground = backgroundLight ,//background,
+                )
             },
             typography = AppleTypography(),
         ),

@@ -40,11 +40,11 @@ fun NavigationHost(
         startDestination = Routes.Home
     ) {
         composable<Routes.Home> {
-            TestAdaptive()
-            /*App(
+        /*    App(
                 navController = navController,
                 testDataStore = testDataStore
             )*/
+            TestAdaptive()
         }
         composable<Routes.CaseListDoctor> {
             CaseListLayout(
@@ -85,11 +85,7 @@ fun NavigationHost(
                 navigateToCase = { case -> navController.navigate(Routes.CaseDetails(case)) },
                 navigateBack = navController::navigateUp,
                 navigateToSharePatientUUID = { patient ->
-                    navController.navigate(
-                        Routes.ShareUUID(
-                            patient
-                        )
-                    )
+                    navController.navigate(Routes.ShareUUID(patient))
                 }
             )
         }

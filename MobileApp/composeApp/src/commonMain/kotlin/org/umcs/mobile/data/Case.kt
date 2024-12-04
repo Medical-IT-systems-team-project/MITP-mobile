@@ -9,4 +9,6 @@ data class Case(
     val doctorName : String,
     val caseDetails : String,
     val description : String
-)
+){
+    fun getFullName() = "$patientName $doctorName"
+}

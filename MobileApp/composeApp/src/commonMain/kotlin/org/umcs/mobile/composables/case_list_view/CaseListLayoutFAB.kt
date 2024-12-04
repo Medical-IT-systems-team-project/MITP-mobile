@@ -2,6 +2,7 @@ package org.umcs.mobile.composables.case_list_view
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import co.touchlab.kermit.Logger
 import mobileapp.composeapp.generated.resources.Res
 import mobileapp.composeapp.generated.resources.add_case
 import mobileapp.composeapp.generated.resources.add_patient
