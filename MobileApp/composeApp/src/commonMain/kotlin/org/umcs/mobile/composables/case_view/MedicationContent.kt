@@ -24,7 +24,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.slapps.cupertino.adaptive.Theme
+import com.slapps.cupertino.theme.CupertinoTheme
 import org.umcs.mobile.data.Case
+import org.umcs.mobile.theme.determineTheme
 
 @Composable
 fun MedicationContent(paddingValues: PaddingValues, case: Case) {
@@ -45,12 +48,13 @@ fun MedicationContent(paddingValues: PaddingValues, case: Case) {
 @Composable
 fun MedicineItem(modifier: Modifier = Modifier, medicine: Medicine) {
     var showMore by remember { mutableStateOf(false) }
+    val style = when (determineTheme()) {
+        Theme.Cupertino -> CupertinoTheme.typography.subhead
+        Theme.Material3 -> MaterialTheme.typography.bodyMedium
+    }
 
     Column(modifier = modifier) {
-        Text(
-            text = "${medicine.startDate} - ${medicine.endDate}",
-            style = MaterialTheme.typography.titleLarge
-        )
+        SectionTitleText("${medicine.startDate} - ${medicine.endDate}")
         Column(
             verticalArrangement = Arrangement.spacedBy(6.dp),
             modifier = Modifier
@@ -66,13 +70,13 @@ fun MedicineItem(modifier: Modifier = Modifier, medicine: Medicine) {
                     indication = null
                 ) { showMore = !showMore }
         ) {
-            Text(text = "${medicine.name} - ${medicine.type}")
+            Text(text = "${medicine.name} - ${medicine.type}", style = style)
             if (showMore) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text(text = medicine.dosage)
-                    Text(text = medicine.frequency)
+                    Text(text = medicine.dosage, style = style)
+                    Text(text = medicine.frequency, style = style)
                 }
-                Text(text = medicine.prescribedBy)
+                Text(text = medicine.prescribedBy, style = style)
             }
         }
     }

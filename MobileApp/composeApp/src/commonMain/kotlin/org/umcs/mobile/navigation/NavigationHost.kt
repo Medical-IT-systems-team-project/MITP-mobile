@@ -40,11 +40,13 @@ fun NavigationHost(
         startDestination = Routes.Home
     ) {
         composable<Routes.Home> {
-        /*    App(
+            App(
                 navController = navController,
                 testDataStore = testDataStore
-            )*/
+            )
+/*
             TestAdaptive()
+*/
         }
         composable<Routes.CaseListDoctor> {
             CaseListLayout(

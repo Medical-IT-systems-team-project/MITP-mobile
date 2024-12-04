@@ -29,7 +29,7 @@ import mobileapp.composeapp.generated.resources.Res
 import mobileapp.composeapp.generated.resources.qr_scanner
 import mobileapp.composeapp.generated.resources.wrong_uuid
 import org.jetbrains.compose.resources.painterResource
-import org.umcs.mobile.composables.shared.AppFab
+import org.umcs.mobile.composables.shared.AdaptiveFAB
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,7 +57,7 @@ fun NewUUIDScreen(
             )
         },
         floatingActionButton = {
-            AppFab(
+            AdaptiveFAB(
                 modifier = Modifier.offset(y = (-40).dp),
                 onClick = { showQrScanner = !showQrScanner },
                 iconResource = Res.drawable.qr_scanner
@@ -87,7 +87,6 @@ fun NewUUIDScreen(
                 onButtonPress = navigateToCaseList,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
                     .padding(16.dp)
             )
         }

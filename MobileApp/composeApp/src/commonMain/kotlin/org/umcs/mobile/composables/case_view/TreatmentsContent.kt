@@ -23,7 +23,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.slapps.cupertino.adaptive.Theme
+import com.slapps.cupertino.adaptive.Theme.*
+import com.slapps.cupertino.theme.CupertinoTheme
 import org.umcs.mobile.data.Case
+import org.umcs.mobile.theme.determineTheme
 
 @Composable
 fun TreatmentsContent(modifier: Modifier = Modifier, paddingValues: PaddingValues, case: Case) {
@@ -44,12 +48,13 @@ fun TreatmentsContent(modifier: Modifier = Modifier, paddingValues: PaddingValue
 @Composable
 fun TreatmentItem(modifier: Modifier = Modifier, treatment: Treatment) {
     var showMore by remember { mutableStateOf(false) }
+    val style = when(determineTheme()){
+        Cupertino -> CupertinoTheme.typography.subhead
+        Material3 -> MaterialTheme.typography.bodyMedium
+    }
 
     Column(modifier = modifier) {
-        Text(
-            text = "${treatment.startDate} - ${treatment.endDate}",
-            style = MaterialTheme.typography.titleLarge
-        )
+        SectionTitleText("${treatment.startDate} - ${treatment.endDate}")
         Column(
             verticalArrangement = Arrangement.spacedBy(6.dp),
             modifier = Modifier
@@ -65,10 +70,10 @@ fun TreatmentItem(modifier: Modifier = Modifier, treatment: Treatment) {
                     indication = null
                 ) { showMore = !showMore }
         ) {
-            Text(text = treatment.details)
+            Text(text = treatment.details, style = style)
             if (showMore) {
-                Text(text = treatment.doctorName)
-                Text(text = treatment.description)
+                Text(text = treatment.doctorName, style = style)
+                Text(text = treatment.description, style = style)
             }
         }
     }

@@ -13,9 +13,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.slapps.cupertino.adaptive.AdaptiveWidget
+import com.slapps.cupertino.theme.CupertinoTheme
 import com.theapache64.rebugger.Rebugger
 import org.umcs.mobile.data.Case
 
@@ -25,20 +28,27 @@ fun CaseListItem(
     onCaseClicked: (Case) -> Unit,
     modifier: Modifier = Modifier,
     currentCase: Case,
+    isCupertino: Boolean = false,
 ) {
     val textColor = MaterialTheme.colorScheme.onPrimary
+    val shape = if (isCupertino) CupertinoTheme.shapes.extraLarge else MaterialTheme.shapes.medium
+    val verticalSpacing = if (isCupertino) 12.dp else 16.dp
+    val nameAndDateStyle =
+        if (isCupertino) CupertinoTheme.typography.title3 else MaterialTheme.typography.titleMedium
+    val detailsStyle =
+        if (isCupertino) CupertinoTheme.typography.callout else MaterialTheme.typography.labelLarge
 
     Column(
         modifier = modifier
             .fillMaxSize()
-            .clip(shape = MaterialTheme.shapes.medium)
+            .clip(shape)
             .background(MaterialTheme.colorScheme.primary)
-            .padding(top = 8.dp)
+            .padding(top = 8.dp, bottom = 4.dp)
             .clickable {
                 onCaseClicked(currentCase)
             },
         horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(verticalSpacing)
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 12.dp),
@@ -49,23 +59,23 @@ fun CaseListItem(
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
                 text = if (showPatientName) currentCase.getFullName() else currentCase.doctorName,
-                fontSize = 20.sp,
+                style = nameAndDateStyle,
                 color = textColor,
                 modifier = Modifier.weight(1.9f)
             )
             Text(
                 maxLines = 1,
+                textAlign = TextAlign.End,
                 text = currentCase.stringDate,
-                fontSize = 18.sp,
+                style = nameAndDateStyle,
                 color = textColor,
                 modifier = Modifier.weight(1.1f)
             )
         }
         Text(
-            style = MaterialTheme.typography.bodySmall,
+            style = detailsStyle,
             maxLines = 1,
             text = currentCase.caseDetails,
-            fontSize = 16.sp,
             color = textColor,
             modifier = Modifier.padding(start = 12.dp)
         )
@@ -86,7 +96,7 @@ fun CaseListItem(
                 .clickable {
                     navigateToCase(currentCase)
                 }"""
-             to modifier
+                    to modifier
                 .fillMaxSize()
                 .clip(shape = MaterialTheme.shapes.medium)
                 .background(MaterialTheme.colorScheme.primary)
@@ -97,5 +107,33 @@ fun CaseListItem(
             "Alignment.Start" to Alignment.Start,
             "Arrangement.spacedBy(16.dp)" to Arrangement.spacedBy(16.dp),
         ),
+    )
+}
+
+@Composable
+fun AdaptiveCase(
+    showPatientName: Boolean,
+    onCaseClicked: (Case) -> Unit,
+    modifier: Modifier = Modifier,
+    currentCase: Case,
+) {
+    AdaptiveWidget(
+        material = {
+            CaseListItem(
+                modifier = modifier,
+                showPatientName = showPatientName,
+                onCaseClicked = onCaseClicked,
+                currentCase = currentCase
+            )
+        },
+        cupertino = {
+            CaseListItem(
+                modifier = modifier,
+                showPatientName = showPatientName,
+                onCaseClicked = onCaseClicked,
+                currentCase = currentCase,
+                isCupertino = true
+            )
+        }
     )
 }

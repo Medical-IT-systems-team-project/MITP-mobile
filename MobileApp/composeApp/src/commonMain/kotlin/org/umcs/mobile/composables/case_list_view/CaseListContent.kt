@@ -2,6 +2,7 @@ package org.umcs.mobile.composables.case_list_view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,13 +32,14 @@ fun CaseViewContent(
         verticalArrangement = Arrangement.spacedBy(30.dp)
     ) {
         items(items = cases, key = { case -> case.patientName }) { case ->
-            CaseListItem(
+            AdaptiveCase(
                 onCaseClicked = onCaseClicked,
                 currentCase = case,
                 modifier = Modifier.fillMaxWidth(0.8f).height(80.dp),
                 showPatientName = showPatientName,
             )
         }
+        item { Spacer(modifier.height(20.dp)) }
     }
 
     Rebugger(

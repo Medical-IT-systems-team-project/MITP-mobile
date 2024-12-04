@@ -7,7 +7,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.DrawableResource
-import org.umcs.mobile.composables.shared.AppFab
+import org.umcs.mobile.composables.shared.AdaptiveFAB
 
 @Composable
 fun CaseListDoctorFAB(
@@ -23,8 +23,8 @@ fun CaseListDoctorFAB(
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         if(upperIcon != null){
-            AppFab(iconResource = upperIcon, onClick = upperFabFunction!!)
+            AdaptiveFAB(iconResource = upperIcon, onClick = upperFabFunction!!)
         }
-        AppFab(iconResource = lowerIcon, onClick = lowerFabFunction)
+        AdaptiveFAB(iconResource = lowerIcon, onClick = lowerFabFunction)
     }
 }

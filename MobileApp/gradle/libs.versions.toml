@@ -1,5 +1,4 @@
 [versions]
-
 datastoreCoreOkio = "1.1.1"
 kotlin = "2.0.20"
 compose = "1.7.1"
@@ -23,7 +22,6 @@ datastore = "1.1.1"
 cupertino = "1.0.2"
 
 [libraries]
-
 cupertino = { group = "com.slapps.cupertino", name = "cupertino", version.ref = "cupertino" }
 cupertino-adaptive = { group = "com.slapps.cupertino", name = "cupertino-adaptive", version.ref = "cupertino" }
 cupertino-native = { group = "com.slapps.cupertino", name = "cupertino-native", version.ref = "cupertino" }

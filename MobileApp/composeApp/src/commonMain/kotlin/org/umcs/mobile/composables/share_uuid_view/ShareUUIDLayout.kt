@@ -25,6 +25,8 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.slapps.cupertino.adaptive.Theme
+import com.slapps.cupertino.theme.CupertinoTheme
 import io.github.alexzhirkevich.qrose.options.Neighbors
 import io.github.alexzhirkevich.qrose.options.QrLogo
 import io.github.alexzhirkevich.qrose.options.QrLogoPadding
@@ -35,6 +37,7 @@ import mobileapp.composeapp.generated.resources.cross_logo
 import org.jetbrains.compose.resources.painterResource
 import org.umcs.mobile.composables.shared.AppTopBar
 import org.umcs.mobile.theme.backgroundLight
+import org.umcs.mobile.theme.determineTheme
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -45,6 +48,11 @@ fun ShareUUIDLayout(
     modifier: Modifier = Modifier,
     patientUUID: String = Uuid.random().toString()
 ) {
+    val style = when(determineTheme()){
+        Theme.Cupertino -> CupertinoTheme.typography.title3
+        Theme.Material3 -> MaterialTheme.typography.titleMedium
+    }
+
     Scaffold(
         modifier = modifier,
         topBar = { AppTopBar(
@@ -89,7 +97,7 @@ fun ShareUUIDLayout(
                 Text(
                     text = patientUUID,
                     maxLines = 1,
-                    fontSize = 20.sp,
+                    style = style,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.fillMaxWidth()

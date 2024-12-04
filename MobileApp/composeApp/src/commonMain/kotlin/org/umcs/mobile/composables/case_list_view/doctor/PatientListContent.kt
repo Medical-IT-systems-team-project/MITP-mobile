@@ -6,6 +6,7 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -29,10 +30,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.touchlab.kermit.Logger
+import org.umcs.mobile.AdaptivePatientListItem
 import org.umcs.mobile.composables.new_case_view.patientList
 import org.umcs.mobile.data.Patient
 
@@ -44,10 +47,9 @@ fun PatientListContent(
     contentPadding: PaddingValues,
     patients: List<Patient> = patientList(),
     listState: LazyListState = rememberLazyListState(),
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    val textColor = MaterialTheme.colorScheme.onPrimary
-    var showDropdownFor by remember { mutableStateOf<Patient?>(null) }
+    var showDropdownForPatient by remember { mutableStateOf<Patient?>(null) }
 
     LazyColumn(
         contentPadding = contentPadding,
@@ -57,72 +59,17 @@ fun PatientListContent(
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         items(patients) { patient ->
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth(0.8f)
-                    .height(50.dp)
-                    .clip(shape = MaterialTheme.shapes.medium)
-                    .background(MaterialTheme.colorScheme.primary)
-                    .padding(horizontal = 12.dp)
-                    .combinedClickable(
-                        onClick = {},
-                        onLongClick = {
-                            showDropdownFor = patient
-                            Logger.d(
-                                "Long click on patient: ${patient.getFullName()}",
-                                tag = "LongClick"
-                            )
-                        }
-                    )
-            ) {
-                Icon(Icons.Default.Face, contentDescription = "Select Patient", tint = textColor)
-                Text(
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1,
-                    text = patient.getFullName(),
-                    fontSize = 20.sp,
-                    color = textColor,
-                )
-
-                if (showDropdownFor == patient) {
-                    PatientDropdownMenu(
-                        onDismiss = { showDropdownFor = null },
-                        onImportPatientCase = { onImportPatientCase(patient) },
-                        onShareUUID = { onShareUUID(patient) },
-                    )
-                }
+            AdaptivePatientListItem(
+                showDropdownForPatient = showDropdownForPatient,
+                patient = patient,
+                onImportPatientCase = onImportPatientCase,
+                onShareUUID = onShareUUID
+            ) { showDropdown : Patient? ->
+                showDropdownForPatient = showDropdown
             }
         }
+        item { Spacer(modifier.height(20.dp)) }
     }
 }
 
-@Composable
-private fun PatientDropdownMenu(
-    onImportPatientCase: () -> Unit,
-    onShareUUID: () -> Unit,
-    onDismiss: () -> Unit,
-) {
-    Surface {
-        DropdownMenu(
-            expanded = true,
-            onDismissRequest = onDismiss
-        ) {
-            DropdownMenuItem(
-                text = { Text("Import Patient's Case") },
-                onClick = {
-                    onDismiss()
-                    onImportPatientCase()
-                }
-            )
-            DropdownMenuItem(
-                text = { Text("Share Patient's UUID") },
-                onClick = {
-                    onDismiss()
-                    onShareUUID()
-                }
-            )
-        }
-    }
-}
+

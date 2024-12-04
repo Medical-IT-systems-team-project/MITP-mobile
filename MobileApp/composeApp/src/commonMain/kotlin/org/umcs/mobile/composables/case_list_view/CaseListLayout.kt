@@ -12,7 +12,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import org.umcs.mobile.composables.case_list_view.doctor.PatientListContent
 import org.umcs.mobile.data.Case
@@ -39,7 +38,10 @@ fun CaseListLayout(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = { CaseViewTopBar(scrollBehavior, isDoctor) },
+        topBar = { MyAdaptiveTopBar(
+            scrollBehavior = scrollBehavior,
+            isDoctor = isDoctor,
+            navigationIcon = {}) },
         bottomBar = {
             if (isDoctor) {
                 CaseListBottomBar(
@@ -68,9 +70,8 @@ fun CaseListLayout(
                     onCaseClicked = navigateToCase,
                     contentPadding = paddingValues,
                     cases = testValues,
+                    modifier = Modifier.fillMaxSize(),
                     listState = caseListState,
-                    modifier = Modifier.fillMaxSize()
-                        .nestedScroll(scrollBehavior.nestedScrollConnection),
                 )
             }
 
@@ -78,8 +79,7 @@ fun CaseListLayout(
                 PatientListContent(
                     listState = patientListState,
                     contentPadding = paddingValues,
-                    modifier = Modifier.fillMaxSize()
-                        .nestedScroll(scrollBehavior.nestedScrollConnection),
+                    modifier = Modifier.fillMaxSize(),
                     onImportPatientCase = navigateToImportPatientCase!!,
                     onShareUUID = navigateToSharePatientUUID!!,
                    //TODO : FETCH DOCTOR'S PATIENTS

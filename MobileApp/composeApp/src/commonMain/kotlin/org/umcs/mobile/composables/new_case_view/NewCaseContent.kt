@@ -18,9 +18,11 @@ import androidx.compose.material.icons.filled.Face
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
@@ -31,10 +33,16 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.touchlab.kermit.Logger
+import com.slapps.cupertino.adaptive.Theme
+import com.slapps.cupertino.adaptive.icons.AdaptiveIcons
+import com.slapps.cupertino.adaptive.icons.DateRange
+import com.slapps.cupertino.adaptive.icons.Face
+import com.slapps.cupertino.theme.CupertinoTheme
 import org.umcs.mobile.composables.shared.AppTextField
 import org.umcs.mobile.composables.shared.DatePickerModal
 import org.umcs.mobile.composables.shared.PatientPicker
 import org.umcs.mobile.data.convertMillisToDate
+import org.umcs.mobile.theme.determineTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,6 +60,13 @@ fun NewCaseContent(
     onShowPatientPickerChange: (Boolean) -> Unit,
     onShowDatePickerChange: (Boolean) -> Unit,
 ) {
+    val theme = remember{determineTheme()}
+    val isCupertino = when(theme){
+        Theme.Cupertino -> true
+        Theme.Material3 -> false
+    }
+    val buttonTextStyle = if(isCupertino) CupertinoTheme.typography.title3 else MaterialTheme.typography.titleMedium.copy(fontSize = 20.sp)
+
     Column(
         verticalArrangement = Arrangement.spacedBy(5.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -92,7 +107,7 @@ fun NewCaseContent(
             focusRequester = focusRequester,
             placeholder = { Text("Patient") },
             trailingIcon = {
-                Icon(Icons.Default.Face, contentDescription = "Select Patient")
+                Icon(AdaptiveIcons.Outlined.Face, contentDescription = "Select Patient")
             },
             modifier = Modifier
                 .pointerInput(fullName) {
@@ -114,7 +129,7 @@ fun NewCaseContent(
             focusRequester = focusRequester,
             placeholder = { Text("Admission date") },
             trailingIcon = {
-                Icon(Icons.Default.DateRange, contentDescription = "Select date")
+                Icon(AdaptiveIcons.Outlined.DateRange, contentDescription = "Select date")
             },
             onTextChange = { onNewCaseChange(newCase.copy(admissionDate = it)) },
             modifier = Modifier
@@ -155,7 +170,7 @@ fun NewCaseContent(
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier.size(width = 270.dp, height = 60.dp),
         ) {
-            Text(text = "Create Case", fontSize = 16.sp)
+            Text(text = "Create Case", style = buttonTextStyle)
         }
     }
 }
