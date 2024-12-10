@@ -25,7 +25,7 @@ fun NewPatientLayout(navigateBack: () -> Unit) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
-    val ssnMaxChars = 9
+    val ssnMaxChars = 11
 
     Scaffold(
         modifier = Modifier.fillMaxSize().clickable(

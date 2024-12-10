@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -37,9 +39,12 @@ fun CaseListItem(
         if (isCupertino) CupertinoTheme.typography.title3 else MaterialTheme.typography.titleMedium
     val detailsStyle =
         if (isCupertino) CupertinoTheme.typography.callout else MaterialTheme.typography.labelLarge
+    val itemModifier = modifier.height(80.dp).then(
+        if(isCupertino) Modifier.fillMaxWidth(0.95f) else Modifier.fillMaxWidth(0.8f)
+    )
 
     Column(
-        modifier = modifier
+        modifier = itemModifier
             .fillMaxSize()
             .clip(shape)
             .background(MaterialTheme.colorScheme.primary)
@@ -80,34 +85,6 @@ fun CaseListItem(
             modifier = Modifier.padding(start = 12.dp)
         )
     }
-
-    Rebugger(
-        trackMap = mapOf(
-            "isDoctor" to showPatientName,
-            "navigateToCase" to onCaseClicked,
-            "modifier" to modifier,
-            "currentCase" to currentCase,
-            "textColor" to textColor,
-            """modifier
-                .fillMaxSize()
-                .clip(shape = MaterialTheme.shapes.medium)
-                .background(MaterialTheme.colorScheme.primary)
-                .padding(top = 8.dp)
-                .clickable {
-                    navigateToCase(currentCase)
-                }"""
-                    to modifier
-                .fillMaxSize()
-                .clip(shape = MaterialTheme.shapes.medium)
-                .background(MaterialTheme.colorScheme.primary)
-                .padding(top = 8.dp)
-                .clickable {
-                    onCaseClicked(currentCase)
-                },
-            "Alignment.Start" to Alignment.Start,
-            "Arrangement.spacedBy(16.dp)" to Arrangement.spacedBy(16.dp),
-        ),
-    )
 }
 
 @Composable

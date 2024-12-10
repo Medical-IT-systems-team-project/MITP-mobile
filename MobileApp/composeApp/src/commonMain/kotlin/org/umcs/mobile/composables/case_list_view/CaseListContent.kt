@@ -35,7 +35,6 @@ fun CaseViewContent(
             AdaptiveCase(
                 onCaseClicked = onCaseClicked,
                 currentCase = case,
-                modifier = Modifier.fillMaxWidth(0.8f).height(80.dp),
                 showPatientName = showPatientName,
             )
         }

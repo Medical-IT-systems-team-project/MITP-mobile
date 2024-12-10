@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.slapps.cupertino.adaptive.AdaptiveTopAppBar
+import com.slapps.cupertino.adaptive.AdaptiveWidget
 import mobileapp.composeapp.generated.resources.Res
 import mobileapp.composeapp.generated.resources.caduceus
 import mobileapp.composeapp.generated.resources.caretrack
@@ -29,36 +30,43 @@ fun MyAdaptiveTopBar(
     isDoctor: Boolean,
     navigationIcon: @Composable () -> Unit,
 ) {
-    AdaptiveTopAppBar(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        title = {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy((-30).dp),
-                modifier = Modifier.height(50.dp)
-            ) {
-                if (isDoctor) {
-                    Icon(
-                        painter = painterResource(Res.drawable.caduceus),
-                        contentDescription = null,
-                    )
-                } else {
-                    Icon(
-                        painter = painterResource(Res.drawable.cross_logo),
-                        contentDescription = null,
-                    )
-                }
-                Icon(
-                    painter = painterResource(Res.drawable.caretrack),
-                    contentDescription = null
-                )
-            }
-        },
-        navigationIcon = navigationIcon,
-        adaptation = {
-            material {
-                isCenterAligned = true
-            }
-        }
-    )
+   AdaptiveWidget(
+       material = {
+           CenterAlignedTopAppBar(
+               colors = TopAppBarDefaults.topAppBarColors(
+                   containerColor = MaterialTheme.colorScheme.background,
+                   scrolledContainerColor = MaterialTheme.colorScheme.background
+               ),
+               scrollBehavior = scrollBehavior,
+               title = {
+                   Row(
+                       verticalAlignment = Alignment.CenterVertically,
+                       horizontalArrangement = Arrangement.spacedBy((-35).dp)
+                   ) {
+                       if (isDoctor) {
+                           Icon(
+                               painter = painterResource(Res.drawable.caduceus),
+                               contentDescription = null,
+                               modifier = Modifier.fillMaxHeight(0.8f)
+                           )
+                       } else {
+                           Icon(
+                               painter = painterResource(Res.drawable.cross_logo),
+                               contentDescription = null,
+                               modifier = Modifier.fillMaxHeight(0.8f)
+                           )
+                       }
+                       Icon(
+                           painter = painterResource(Res.drawable.caretrack),
+                           contentDescription = null
+                       )
+                   }
+               }
+           )
+       },
+       cupertino = {
+
+       }
+   )
 }
+
