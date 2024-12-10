@@ -14,9 +14,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import com.slapps.cupertino.adaptive.Theme
 import org.umcs.mobile.composables.case_list_view.doctor.PatientListContent
 import org.umcs.mobile.data.Case
 import org.umcs.mobile.data.Patient
+import org.umcs.mobile.theme.determineTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,6 +31,10 @@ fun CaseListLayout(
     navigateToSharePatientUUID: ((Patient) -> Unit)? = null,
     isDoctor: Boolean = true
 ) {
+    val isMaterial = when(determineTheme()){
+        Theme.Cupertino -> false
+        Theme.Material3 -> true
+    }
     val fabOffset = Modifier.offset(y = (-40).dp)
     var currentTab by remember { mutableStateOf(CaseListScreens.CASES) }
     val testValues = remember { fetchTestCases() }
@@ -71,7 +77,9 @@ fun CaseListLayout(
                     onCaseClicked = navigateToCase,
                     contentPadding = paddingValues,
                     cases = testValues,
-                    modifier = Modifier.fillMaxSize().nestedScroll(scrollBehavior.nestedScrollConnection),
+                    modifier = Modifier.fillMaxSize().then(
+                        if(isMaterial) Modifier.nestedScroll(scrollBehavior.nestedScrollConnection) else Modifier
+                    ),
                     listState = caseListState,
                 )
             }
@@ -80,7 +88,9 @@ fun CaseListLayout(
                 PatientListContent(
                     listState = patientListState,
                     contentPadding = paddingValues,
-                    modifier = Modifier.fillMaxSize().nestedScroll(scrollBehavior.nestedScrollConnection),
+                    modifier = Modifier.fillMaxSize().then(
+                        if(isMaterial) Modifier.nestedScroll(scrollBehavior.nestedScrollConnection) else Modifier
+                    ),
                     onImportPatientCase = navigateToImportPatientCase!!,
                     onShareUUID = navigateToSharePatientUUID!!,
                    //TODO : FETCH DOCTOR'S PATIENTS

@@ -68,7 +68,7 @@ fun PatientListContent(
                 showDropdownForPatient = showDropdown
             }
         }
-        item { Spacer(modifier.height(20.dp)) }
+        item { Spacer(modifier.height(5.dp)) }
     }
 }
 

@@ -70,6 +70,7 @@ fun NewPatientContent(
             )
         }
         AppTextField(
+            keyboardType = KeyboardType.Text,
             title = { Text("First Name") },
             text = newPatient.firstName,
             supportingText = formState.firstNameError,
@@ -77,6 +78,7 @@ fun NewPatientContent(
             onTextChange = onFirstNameChange,
         )
         AppTextField(
+            keyboardType = KeyboardType.Text,
             title = { Text("Last Name") },
             text = newPatient.lastName,
             supportingText = formState.lastNameError,
@@ -84,6 +86,7 @@ fun NewPatientContent(
             onTextChange = onLastNameChange,
         )
         AppTextField(
+            keyboardType = KeyboardType.Text,
             title = { Text("Gender") },
             text = newPatient.gender,
             supportingText = formState.genderError,
@@ -97,6 +100,14 @@ fun NewPatientContent(
             supportingText = formState.ageError,
             focusRequester = focusRequester,
             onTextChange = onAgeChange,
+        )
+        AppTextField(
+            keyboardType = KeyboardType.Phone,
+            title = { Text("Phone Number") },
+            text = newPatient.firstName,
+            supportingText = formState.firstNameError,
+            focusRequester = focusRequester,
+            onTextChange = onFirstNameChange, //TODO : ADD A NEW FUNCTION FOR THAT
         )
         AppTextField(
             keyboardType = KeyboardType.Number,

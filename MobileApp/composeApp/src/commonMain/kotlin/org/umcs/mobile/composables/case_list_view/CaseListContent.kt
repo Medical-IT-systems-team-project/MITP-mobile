@@ -38,7 +38,7 @@ fun CaseViewContent(
                 showPatientName = showPatientName,
             )
         }
-        item { Spacer(modifier.height(20.dp)) }
+        item { Spacer(modifier.height(5.dp)) }
     }
 
     Rebugger(
