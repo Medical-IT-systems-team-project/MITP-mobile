@@ -14,6 +14,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,11 +32,13 @@ import mobileapp.composeapp.generated.resources.qr_scanner
 import mobileapp.composeapp.generated.resources.wrong_uuid
 import org.jetbrains.compose.resources.painterResource
 import org.umcs.mobile.composables.shared.AdaptiveFAB
+import org.umcs.mobile.composables.shared.AppTopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewUUIDScreen(
-    navigateToCaseList: ()->Unit,
+    navigateBack : (()->Unit)? = null,
+    onSuccessButtonClick: ()->Unit,
     title : String
 ) {
     var showQrScanner by remember { mutableStateOf(false) }
@@ -52,8 +56,10 @@ fun NewUUIDScreen(
             onClick = focusManager::clearFocus
         ),
         topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text(title) }
+            AppTopBar(
+                navigateBack = navigateBack,
+                title = title,
+                scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
             )
         },
         floatingActionButton = {
@@ -84,7 +90,7 @@ fun NewUUIDScreen(
                 onTextChange = { text = it },
                 onFocusChange = { changedFocus -> isFocused = changedFocus },
                 onSupportingTextChange = { supportingText = it },
-                onButtonPress = navigateToCaseList,
+                onButtonPress = onSuccessButtonClick,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)

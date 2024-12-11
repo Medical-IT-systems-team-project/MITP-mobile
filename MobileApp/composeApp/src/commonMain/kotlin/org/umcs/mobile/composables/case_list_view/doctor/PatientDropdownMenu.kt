@@ -5,6 +5,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import com.slapps.cupertino.CupertinoDropdownMenu
 import com.slapps.cupertino.adaptive.AdaptiveWidget
 import com.slapps.cupertino.theme.CupertinoTheme
@@ -40,20 +41,52 @@ fun PatientDropdownMenu(
 }
 
 @Composable
-fun AdaptiveDropdown(
+fun AdaptivePatientDropdown(
     onImportPatientCase: () -> Unit,
     onShareUUID: () -> Unit,
     onDismiss: () -> Unit,
     expanded: Boolean,
 ) {
+    AdaptiveDropdownMenu(
+        onDismiss = onDismiss,
+        expanded = expanded,
+        adaptiveDropdownItemList = listOf(
+            AdaptiveDropdownItem(
+                text = "Import Patient's Case",
+                onClick = {
+                    onDismiss()
+                    onImportPatientCase()
+                }
+            ),
+            AdaptiveDropdownItem(
+                text = "Share Patient's UUID",
+                onClick = {
+                    onDismiss()
+                    onShareUUID()
+                }
+            )
+        )
+    )}
+
+@Composable
+fun AdaptiveDropdownMenu(
+    onDismiss: () -> Unit,
+    expanded: Boolean,
+    adaptiveDropdownItemList: List<AdaptiveDropdownItem>,
+) {
     AdaptiveWidget(
         material = {
-            PatientDropdownMenu(
+            DropdownMenu(
                 expanded = expanded,
-                onDismiss = onDismiss,
-                onImportPatientCase = onImportPatientCase,
-                onShareUUID = onShareUUID,
-            )
+                onDismissRequest = onDismiss,
+            ){
+                adaptiveDropdownItemList.forEach { item ->
+                    DropdownMenuItem(
+                        text =  { Text(item.text) },
+                        onClick = item.onClick
+                    )
+                }
+            }
         },
         cupertino = {
             CupertinoDropdownMenu(
@@ -61,21 +94,18 @@ fun AdaptiveDropdown(
                 expanded = expanded,
                 onDismissRequest = onDismiss,
             ) {
-                DropdownMenuItem(
-                    text = { Text("Import Patient's Case") },
-                    onClick = {
-                        onDismiss()
-                        onImportPatientCase()
-                    }
-                )
-                DropdownMenuItem(
-                    text = { Text("Share Patient's UUID") },
-                    onClick = {
-                        onDismiss()
-                        onShareUUID()
-                    }
-                )
+                adaptiveDropdownItemList.forEach { item ->
+                    DropdownMenuItem(
+                        text =  { Text(item.text) },
+                        onClick = item.onClick
+                    )
+                }
             }
         }
     )
 }
+
+data class AdaptiveDropdownItem(
+    val text: String,
+    val onClick: () -> Unit,
+)

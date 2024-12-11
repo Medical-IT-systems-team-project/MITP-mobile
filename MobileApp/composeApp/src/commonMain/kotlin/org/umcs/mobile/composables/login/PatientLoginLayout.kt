@@ -12,7 +12,7 @@ fun PatientLoginLayout(
     val title = "Login as Patient"
 
     NewUUIDScreen(
-        navigateToCaseList = navigateToCaseList,
-        title = title
+        onSuccessButtonClick = navigateToCaseList,
+        title = title,
     )
 }

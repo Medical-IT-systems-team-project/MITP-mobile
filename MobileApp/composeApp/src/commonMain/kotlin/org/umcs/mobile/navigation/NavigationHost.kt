@@ -12,8 +12,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import co.touchlab.kermit.Logger
 import org.umcs.mobile.App
-import org.umcs.mobile.TestAdaptive
 import org.umcs.mobile.composables.case_list_view.CaseListLayout
+import org.umcs.mobile.composables.case_list_view.doctor.ImportNewPatient
 import org.umcs.mobile.composables.case_view.CaseLayout
 import org.umcs.mobile.composables.import_patient.ImportPatientCaseLayout
 import org.umcs.mobile.composables.login.ChooseProfileLayout
@@ -44,20 +44,21 @@ fun NavigationHost(
                 navController = navController,
                 testDataStore = testDataStore
             )
-/*
-            TestAdaptive()
-*/
+            /*
+                        TestAdaptive()
+            */
         }
         composable<Routes.CaseListDoctor> {
             CaseListLayout(
                 isDoctor = true,
-                navigateToCase = { case -> navController.navigate(Routes.CaseDetails(case)) },
+                navigateToImportNewPatient = {navController.navigate(Routes.ImportPatient)},
+                navigateToCase = { case -> navController.navigate(Routes.CaseDetailsDoctor(case)) },
                 navigateBack = navController::navigateUp,
                 navigateToAddNewPatient = { navController.navigate(Routes.NewPatient) },
                 navigateToAddNewCase = { navController.navigate(Routes.NewCase) },
                 navigateToImportPatientCase = { patient ->
                     navController.navigate(
-                        Routes.ImportPatient(
+                        Routes.ImportCase(
                             patient
                         )
                     )
@@ -84,7 +85,7 @@ fun NavigationHost(
         composable<Routes.CaseListPatient> {
             CaseListLayout(
                 isDoctor = false,
-                navigateToCase = { case -> navController.navigate(Routes.CaseDetails(case)) },
+                navigateToCase = { case -> navController.navigate(Routes.CaseDetailsPatient(case)) },
                 navigateBack = navController::navigateUp,
                 navigateToSharePatientUUID = { patient ->
                     navController.navigate(Routes.ShareUUID(patient))
@@ -101,18 +102,24 @@ fun NavigationHost(
         composable<Routes.PatientLogin> {
             PatientLoginLayout { navController.navigate(Routes.CaseListPatient) }
         }
+        composable<Routes.ImportPatient>{
+            ImportNewPatient(
+                navigateBack = navController::navigateUp,
+                onSuccess = {}
+            )
+        }
         composable<Routes.DoctorLogin> {
             DoctorLoginLayout(
                 loginDataStore = loginDataStore,
                 navigateToCaseList = { navController.navigate(Routes.CaseListDoctor) }
             )
         }
-        composable<Routes.ImportPatient>(
+        composable<Routes.ImportCase>(
             typeMap = mapOf(
                 typeOf<Patient>() to CustomNavType.PatientType
             )
         ) { backStackEntry ->
-            val route = backStackEntry.toRoute<Routes.ImportPatient>()
+            val route = backStackEntry.toRoute<Routes.ImportCase>()
 
             ImportPatientCaseLayout(
                 navigateBack = navController::navigateUp,
@@ -136,18 +143,36 @@ fun NavigationHost(
                 modifier = Modifier.fillMaxSize()
             )
         }
-        composable<Routes.CaseDetails>(
+
+        composable<Routes.CaseDetailsDoctor>(
             typeMap = mapOf(
                 typeOf<Case>() to CustomNavType.CaseType
             )
-        ){ backStackEntry ->
-            val route = backStackEntry.toRoute<Routes.CaseDetails>()
+        ) { backStackEntry ->
+            val route = backStackEntry.toRoute<Routes.CaseDetailsDoctor>()
 
             CaseLayout(
+                isDoctor = true,
                 case = route.case,
                 navigateBack = navController::navigateUp
             )
         }
+
+        composable<Routes.CaseDetailsPatient>(
+            typeMap = mapOf(
+                typeOf<Case>() to CustomNavType.CaseType
+            )
+        ) { backStackEntry ->
+            val route = backStackEntry.toRoute<Routes.CaseDetailsDoctor>()
+
+            CaseLayout(
+                isDoctor = false,
+                case = route.case,
+                navigateBack = navController::navigateUp
+            )
+        }
+
+
     }
 }
 

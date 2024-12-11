@@ -10,17 +10,30 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.slapps.cupertino.adaptive.icons.AdaptiveIcons
+import com.slapps.cupertino.adaptive.icons.AddCircle
+import org.umcs.mobile.composables.shared.AdaptiveFAB
 import org.umcs.mobile.composables.shared.AppTopBar
 import org.umcs.mobile.data.Case
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CaseLayout(case: Case, navigateBack: () -> Unit) {
+fun CaseLayout(case: Case, navigateBack: () -> Unit, isDoctor: Boolean) {
     var currentTab by remember { mutableStateOf(CaseScreens.INFO) }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        floatingActionButton = {
+            if (isDoctor) {
+                CaseLayoutFAB(
+                    currentTab = currentTab,
+                    infoOnClick = {},
+                    treatmentsOnClick = {},
+                    medicationOnClick = {}
+                )
+            }
+        },
         topBar = {
             AppTopBar(
                 scrollBehavior = scrollBehavior,
@@ -37,15 +50,17 @@ fun CaseLayout(case: Case, navigateBack: () -> Unit) {
             )
         }
     ) { paddingValues ->
-        when(currentTab){
+        when (currentTab) {
             CaseScreens.INFO -> InfoContent(
                 paddingValues = paddingValues,
                 case = case
             )
+
             CaseScreens.TREATMENTS -> TreatmentsContent(
                 paddingValues = paddingValues,
                 case = case
             )
+
             CaseScreens.MEDICATIONS -> MedicationContent(
                 paddingValues = paddingValues,
                 case = case
@@ -54,6 +69,36 @@ fun CaseLayout(case: Case, navigateBack: () -> Unit) {
     }
 }
 
+@Composable
+fun CaseLayoutFAB(
+    currentTab: CaseScreens,
+    infoOnClick: () -> Unit,
+    treatmentsOnClick: () -> Unit,
+    medicationOnClick: () -> Unit,
+) {
+    when (currentTab) {
+        CaseScreens.INFO -> {
+            AdaptiveFAB(
+                onClick = infoOnClick,
+                iconVector = AdaptiveIcons.Outlined.AddCircle
+            )
+        }
+
+        CaseScreens.TREATMENTS -> {
+            AdaptiveFAB(
+                onClick = treatmentsOnClick,
+                iconVector = AdaptiveIcons.Outlined.AddCircle
+            )
+        }
+
+        CaseScreens.MEDICATIONS -> {
+            AdaptiveFAB(
+                onClick = medicationOnClick,
+                iconVector = AdaptiveIcons.Outlined.AddCircle
+            )
+        }
+    }
+}
 
 
 

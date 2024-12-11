@@ -39,7 +39,6 @@ import org.umcs.mobile.AdaptivePatientListItem
 import org.umcs.mobile.composables.new_case_view.patientList
 import org.umcs.mobile.data.Patient
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PatientListContent(
     onImportPatientCase: (Patient) -> Unit,

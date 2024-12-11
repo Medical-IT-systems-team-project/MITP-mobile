@@ -35,12 +35,10 @@ fun CaseListItem(
     val textColor = MaterialTheme.colorScheme.onPrimary
     val shape = if (isCupertino) CupertinoTheme.shapes.extraLarge else MaterialTheme.shapes.medium
     val verticalSpacing = if (isCupertino) 12.dp else 16.dp
-    val nameAndDateStyle =
-        if (isCupertino) CupertinoTheme.typography.title3 else MaterialTheme.typography.titleMedium
-    val detailsStyle =
-        if (isCupertino) CupertinoTheme.typography.callout else MaterialTheme.typography.labelLarge
-    val itemModifier = modifier.height(80.dp).then(
-        if(isCupertino) Modifier.fillMaxWidth(0.95f) else Modifier.fillMaxWidth(0.8f)
+    val nameAndDateStyle = if (isCupertino) CupertinoTheme.typography.title3 else MaterialTheme.typography.titleMedium
+    val detailsStyle = if (isCupertino) CupertinoTheme.typography.callout else MaterialTheme.typography.labelLarge
+    val itemModifier = modifier.then(
+        if(isCupertino) Modifier.fillMaxWidth(0.95f).height(70.dp) else Modifier.fillMaxWidth(0.8f).height(80.dp)
     )
 
     Column(
@@ -63,7 +61,7 @@ fun CaseListItem(
             Text(
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
-                text = if (showPatientName) currentCase.getFullName() else currentCase.doctorName,
+                text = if (showPatientName) currentCase.patientName else currentCase.doctorName,
                 style = nameAndDateStyle,
                 color = textColor,
                 modifier = Modifier.weight(1.9f)

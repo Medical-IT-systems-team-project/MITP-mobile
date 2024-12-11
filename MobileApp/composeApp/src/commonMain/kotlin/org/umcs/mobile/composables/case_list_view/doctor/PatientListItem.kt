@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -37,6 +38,8 @@ fun PatientListItem(
     val shape = if (isCupertino) CupertinoTheme.shapes.extraLarge else MaterialTheme.shapes.medium
     val nameStyle =
         if (isCupertino) CupertinoTheme.typography.title3 else MaterialTheme.typography.titleMedium
+    val onDismiss = { changeShowDropdown(null) }
+
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -64,12 +67,11 @@ fun PatientListItem(
             color = textColor,
         )
 
-        AdaptiveDropdown(
+        AdaptivePatientDropdown(
             expanded = showDropdownForPatient == patient,
             onDismiss = { changeShowDropdown(null) },
             onImportPatientCase = { onImportPatientCase(patient) },
             onShareUUID = { onShareUUID(patient) },
         )
-
     }
 }

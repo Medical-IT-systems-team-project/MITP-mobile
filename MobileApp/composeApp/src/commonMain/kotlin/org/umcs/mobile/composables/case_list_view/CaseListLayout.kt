@@ -28,6 +28,7 @@ fun CaseListLayout(
     navigateToAddNewPatient: (() -> Unit)? = null,
     navigateToAddNewCase: (() -> Unit)? = null,
     navigateToImportPatientCase: ((Patient) -> Unit)? = null,
+    navigateToImportNewPatient: (() -> Unit)? = null,
     navigateToSharePatientUUID: ((Patient) -> Unit)? = null,
     isDoctor: Boolean = true
 ) {
@@ -66,7 +67,8 @@ fun CaseListLayout(
                 navigateToAddNewCase = navigateToAddNewCase,
                 currentTab = currentTab,
                 navigateToShareUUID = navigateToSharePatientUUID,
-                currentPatient = currentPatient
+                currentPatient = currentPatient,
+                navigateToImportNewPatient = navigateToImportNewPatient
             )
         },
     ) { paddingValues ->

@@ -1,9 +1,12 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package org.umcs.mobile.composables.case_view
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -46,6 +49,11 @@ fun MedicationContent(paddingValues: PaddingValues, case: Case) {
 }
 
 @Composable
+fun AdaptiveMedicineDropdown() {
+
+}
+
+@Composable
 fun MedicineItem(modifier: Modifier = Modifier, medicine: Medicine) {
     var showMore by remember { mutableStateOf(false) }
     val style = when (determineTheme()) {
@@ -53,11 +61,12 @@ fun MedicineItem(modifier: Modifier = Modifier, medicine: Medicine) {
         Theme.Material3 -> MaterialTheme.typography.bodyMedium
     }
 
-    Column(modifier = modifier) {
+
+    Column {
         SectionTitleText("${medicine.startDate} - ${medicine.endDate}")
         Column(
             verticalArrangement = Arrangement.spacedBy(6.dp),
-            modifier = Modifier
+            modifier = modifier
                 .padding(top = 4.dp)
                 .background(
                     color = MaterialTheme.colorScheme.surfaceVariant,
@@ -65,10 +74,12 @@ fun MedicineItem(modifier: Modifier = Modifier, medicine: Medicine) {
                 )
                 .padding(8.dp)
                 .animateContentSize(animationSpec = tween(durationMillis = 130))
-                .clickable(
+                .combinedClickable(
                     interactionSource = remember { MutableInteractionSource() },
-                    indication = null
-                ) { showMore = !showMore }
+                    indication = null,
+                    onClick =  { showMore = !showMore },
+                    onLongClick = {}
+                )
         ) {
             Text(text = "${medicine.name} - ${medicine.type}", style = style)
             if (showMore) {

@@ -29,7 +29,7 @@ val longCase = Case(
 @Composable
 private fun CaseListViewPreviewDark() {
     AppTheme(systemIsDark = true) {
-        CaseLayout(case , {})
+        CaseLayout(case, {}, true)
     }
 }
 
@@ -37,7 +37,7 @@ private fun CaseListViewPreviewDark() {
 @Composable
 private fun CaseListViewPreviewLight() {
     AppTheme(systemIsDark = false) {
-        CaseLayout(case , {})
+        CaseLayout(case, {}, true)
     }
 }
 
@@ -45,7 +45,7 @@ private fun CaseListViewPreviewLight() {
 @Composable
 private fun CaseListViewPreviewDarkLong() {
     AppTheme(systemIsDark = true) {
-        CaseLayout(longCase , {})
+        CaseLayout(longCase, {}, true)
     }
 }
 
@@ -53,7 +53,7 @@ private fun CaseListViewPreviewDarkLong() {
 @Composable
 private fun CaseListViewPreviewLightLong() {
     AppTheme(systemIsDark = false) {
-        CaseLayout(longCase , {})
+        CaseLayout(longCase, {}, true)
     }
 }
 

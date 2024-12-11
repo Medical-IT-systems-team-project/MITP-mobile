@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.slapps.cupertino.adaptive.AdaptiveSurface
 import mobileapp.composeapp.generated.resources.Res
 import mobileapp.composeapp.generated.resources.caduceus
 import mobileapp.composeapp.generated.resources.cross_logo
@@ -54,20 +55,22 @@ fun ChooseProfileLayout(
     navigateToPatientLogin: () -> Unit,
     navigateToDoctorLogin: () -> Unit
 ) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(50.dp, Alignment.CenterVertically),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        ChooseProfileButton(
-            onClick = navigateToPatientLogin,
-            drawableResource = Res.drawable.cross_logo,
-            bottomText = "Patient"
-        )
-        ChooseProfileButton(
-            onClick = navigateToDoctorLogin,
-            drawableResource = Res.drawable.caduceus,
-            bottomText = "Doctor"
-        )
+    AdaptiveSurface {
+        Column(
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(50.dp, Alignment.CenterVertically),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            ChooseProfileButton(
+                onClick = navigateToPatientLogin,
+                drawableResource = Res.drawable.cross_logo,
+                bottomText = "Patient"
+            )
+            ChooseProfileButton(
+                onClick = navigateToDoctorLogin,
+                drawableResource = Res.drawable.caduceus,
+                bottomText = "Doctor"
+            )
+        }
     }
 }

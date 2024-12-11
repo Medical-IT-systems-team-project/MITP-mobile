@@ -32,11 +32,11 @@ import org.umcs.mobile.theme.determineTheme
 @Composable
 fun AppTopBar(
     modifier: Modifier = Modifier,
-    navigateBack: () -> Unit,
+    navigateBack: (() -> Unit)? = null,
     title: String,
-    scrollBehavior: TopAppBarScrollBehavior
+    scrollBehavior: TopAppBarScrollBehavior,
 ) {
-    val isCupertino = when(determineTheme()){
+    val isCupertino = when (determineTheme()) {
         Theme.Cupertino -> true
         Theme.Material3 -> false
     }
@@ -46,12 +46,18 @@ fun AppTopBar(
         title = {
             Text(
                 text = title,
-                style = if(isCupertino) CupertinoTheme.typography.title2 else MaterialTheme.typography.titleLarge,
+                style = if (isCupertino) CupertinoTheme.typography.title2 else MaterialTheme.typography.titleLarge,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
         },
-        navigationIcon = { BackButton(navigateBack = navigateBack) },
+        navigationIcon = {
+            if (navigateBack != null) {
+                BackButton(navigateBack = navigateBack)
+            } else {
+                Unit
+            }
+        },
         adaptation = {
             material {
                 isCenterAligned = true
