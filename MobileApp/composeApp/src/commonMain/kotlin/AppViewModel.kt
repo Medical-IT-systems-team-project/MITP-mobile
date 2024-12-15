@@ -2,6 +2,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import org.koin.dsl.module
 
 class AppViewModel : ViewModel() {
@@ -21,6 +22,3 @@ class AppViewModel : ViewModel() {
     }*/
 }
 
-val appModule = module {
-    single { AppViewModel() }
-}

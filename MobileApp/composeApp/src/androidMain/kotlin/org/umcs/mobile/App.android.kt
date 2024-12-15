@@ -9,7 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
-import appModule
+import org.appModule
 import org.koin.core.context.startKoin
 import org.umcs.mobile.composables.login.DoctorLoginLayout
 import org.umcs.mobile.navigation.NavigationHost
