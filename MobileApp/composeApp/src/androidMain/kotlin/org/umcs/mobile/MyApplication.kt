@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import co.touchlab.kermit.Logger
 import com.theapache64.rebugger.RebuggerConfig
+import org.umcs.mobile.network.GlobalKtorClient
 import org.umcs.mobile.persistence.createDataStore
 
 class MyApplication : Application() {
@@ -16,6 +17,7 @@ class MyApplication : Application() {
         loginDataStore = createDataStore(applicationContext)
         testDataStore = createDataStore(applicationContext)
         initKoin()
+        GlobalKtorClient.initClient()
         RebuggerConfig.init(
             tag = "Rebugger",
             logger = { tag, message -> Logger.i(message,tag = tag) }

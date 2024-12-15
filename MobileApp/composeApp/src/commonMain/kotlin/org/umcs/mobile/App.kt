@@ -130,7 +130,7 @@ internal fun App(
 
             LaunchedEffect(Unit){
                 try {
-                    val test = GlobalKtorClient.getRandomJson()
+                    val test = GlobalKtorClient.testNewPatient()
                     Logger.i("$test",tag = "Ktor")
                 }catch(e : Exception){
                     Logger.i("wyjebalo sie", tag= "Ktor")
