@@ -52,11 +52,11 @@ fun CaseListLayout(
             .pointerInput(Unit) {
                 detectHorizontalDragGestures { change, dragAmount ->
                     change.consume()
-                    if (dragAmount > 0) {
+                    if (dragAmount < 0) {
                         if (isDoctor && currentTab != CaseListScreens.PATIENTS) {
                             currentTab = CaseListScreens.PATIENTS
                         }
-                    } else if (dragAmount < 0) {
+                    } else if (dragAmount > 0) {
                         if (isDoctor && currentTab != CaseListScreens.CASES) {
                             currentTab = CaseListScreens.CASES
                         }
