@@ -85,7 +85,7 @@ private fun CupertinoWheelDateTimePicker(
                     year = 2020,
                     monthNumber = 1,
                     dayOfMonth = 1,
-                    hour = 12,
+                    hour = 0,
                     minute = 0
                 ),
                 maxDateTime = LocalDateTime(
@@ -133,7 +133,7 @@ private fun MaterialWheelDateTimePicker(
                     year = 2020,
                     monthNumber = 1,
                     dayOfMonth = 1,
-                    hour = 12,
+                    hour = 0,
                     minute = 0
                 ),
                 maxDateTime = LocalDateTime(

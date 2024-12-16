@@ -1,6 +1,5 @@
 import androidx.compose.runtime.remember
 import androidx.compose.ui.window.ComposeUIViewController
-import androidx.navigation.compose.rememberNavController
 import org.appModule
 import org.koin.core.context.startKoin
 import org.umcs.mobile.navigation.NavigationHost
@@ -29,13 +28,13 @@ fun MainViewController(): UIViewController {
     override fun viewDidLoad() {
         super.viewDidLoad()
 
-        val swipeGesture = UISwipeGestureRecognizer(target = this, action = NSSelectorFromString("handleSwipe:"))
-        swipeGesture.direction = UISwipeGestureRecognizerDirectionRight
-        view.addGestureRecognizer(swipeGesture)
+        val edgePanGesture = UIScreenEdgePanGestureRecognizer(target = this, action = NSSelectorFromString("handleEdgePan:"))
+        edgePanGesture.edges = UIRectEdgeRight
+        view.addGestureRecognizer(edgePanGesture)
     }
 
     @ObjCAction
-    fun handleSwipe(gesture: UISwipeGestureRecognizer) {
+    fun handleEdgePan(gesture: UIScreenEdgePanGestureRecognizer) {
         if (gesture.state == UIGestureRecognizerStateEnded) {
             onBackPressed()
         }
