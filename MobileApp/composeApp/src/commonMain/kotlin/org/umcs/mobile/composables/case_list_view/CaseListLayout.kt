@@ -1,5 +1,6 @@
 package org.umcs.mobile.composables.case_list_view
 
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -13,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.slapps.cupertino.adaptive.Theme
 import org.umcs.mobile.composables.case_list_view.doctor.PatientListContent
@@ -30,9 +32,9 @@ fun CaseListLayout(
     navigateToImportPatientCase: ((Patient) -> Unit)? = null,
     navigateToImportNewPatient: (() -> Unit)? = null,
     navigateToSharePatientUUID: ((Patient) -> Unit)? = null,
-    isDoctor: Boolean = true
+    isDoctor: Boolean = true,
 ) {
-    val isMaterial = when(determineTheme()){
+    val isMaterial = when (determineTheme()) {
         Theme.Cupertino -> false
         Theme.Material3 -> true
     }
@@ -42,14 +44,31 @@ fun CaseListLayout(
     val caseListState = rememberLazyListState()
     val patientListState = rememberLazyListState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-    val currentPatient = Patient("John","Doevski")
+    val currentPatient = Patient("John", "Doevski")
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = { MyAdaptiveTopBar(
-            scrollBehavior = scrollBehavior,
-            isDoctor = isDoctor,
-            navigationIcon = {}) },
+        modifier = Modifier
+            .fillMaxSize()
+            .pointerInput(Unit) {
+                detectHorizontalDragGestures { change, dragAmount ->
+                    change.consume()
+                    if (dragAmount > 0) {
+                        if (isDoctor && currentTab != CaseListScreens.PATIENTS) {
+                            currentTab = CaseListScreens.PATIENTS
+                        }
+                    } else if (dragAmount < 0) {
+                        if (isDoctor && currentTab != CaseListScreens.CASES) {
+                            currentTab = CaseListScreens.CASES
+                        }
+                    }
+                }
+            },
+        topBar = {
+            MyAdaptiveTopBar(
+                scrollBehavior = scrollBehavior,
+                isDoctor = isDoctor,
+                navigationIcon = {})
+        },
         bottomBar = {
             if (isDoctor) {
                 CaseListBottomBar(
@@ -80,7 +99,7 @@ fun CaseListLayout(
                     contentPadding = paddingValues,
                     cases = testValues,
                     modifier = Modifier.fillMaxSize().then(
-                        if(isMaterial) Modifier.nestedScroll(scrollBehavior.nestedScrollConnection) else Modifier
+                        if (isMaterial) Modifier.nestedScroll(scrollBehavior.nestedScrollConnection) else Modifier
                     ),
                     listState = caseListState,
                 )
@@ -91,11 +110,11 @@ fun CaseListLayout(
                     listState = patientListState,
                     contentPadding = paddingValues,
                     modifier = Modifier.fillMaxSize().then(
-                        if(isMaterial) Modifier.nestedScroll(scrollBehavior.nestedScrollConnection) else Modifier
+                        if (isMaterial) Modifier.nestedScroll(scrollBehavior.nestedScrollConnection) else Modifier
                     ),
                     onImportPatientCase = navigateToImportPatientCase!!,
                     onShareUUID = navigateToSharePatientUUID!!,
-                   //TODO : FETCH DOCTOR'S PATIENTS
+                    //TODO : FETCH DOCTOR'S PATIENTS
                 )
             }
         }
