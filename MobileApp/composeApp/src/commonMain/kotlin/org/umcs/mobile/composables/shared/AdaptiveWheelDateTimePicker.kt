@@ -17,7 +17,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -64,7 +63,7 @@ fun AdaptiveWheelDateTimePicker(sheetState: SheetState, dismiss: (LocalDateTime)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CupertinoWheelDateTimePicker(
+private fun CupertinoWheelDateTimePicker(
     sheetState: SheetState,
     dismiss: (LocalDateTime) -> Unit,
     currentlyPickedDateTime: LocalDateTime,
@@ -84,17 +83,17 @@ fun CupertinoWheelDateTimePicker(
                 startDateTime = startDateTime,
                 minDateTime = LocalDateTime(
                     year = 2020,
-                    monthNumber = 10,
-                    dayOfMonth = 20,
-                    hour = 5,
-                    minute = 30
+                    monthNumber = 1,
+                    dayOfMonth = 1,
+                    hour = 12,
+                    minute = 0
                 ),
                 maxDateTime = LocalDateTime(
                     year = 2030,
-                    monthNumber = 10,
-                    dayOfMonth = 20,
-                    hour = 5,
-                    minute = 30
+                    monthNumber = 12,
+                    dayOfMonth = 31,
+                    hour = 23,
+                    minute = 59
                 ),
                 size = DpSize(375.dp, 240.dp),
                 rowCount = 5,
@@ -132,17 +131,17 @@ private fun MaterialWheelDateTimePicker(
                 startDateTime = startDateTime,
                 minDateTime = LocalDateTime(
                     year = 2020,
-                    monthNumber = 10,
-                    dayOfMonth = 20,
-                    hour = 5,
-                    minute = 30
+                    monthNumber = 1,
+                    dayOfMonth = 1,
+                    hour = 12,
+                    minute = 0
                 ),
                 maxDateTime = LocalDateTime(
                     year = 2030,
-                    monthNumber = 10,
-                    dayOfMonth = 20,
-                    hour = 5,
-                    minute = 30
+                    monthNumber = 12,
+                    dayOfMonth = 31,
+                    hour = 23,
+                    minute = 59
                 ),
                 size = DpSize(400.dp, 250.dp),
                 rowCount = 5,
