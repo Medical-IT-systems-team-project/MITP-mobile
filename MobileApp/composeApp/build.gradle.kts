@@ -19,7 +19,7 @@ allprojects {
         maven {
             url = uri("https://maven.pkg.github.com/schott12521/compose-cupertino")
             credentials {
-                username = System.getenv("github_user")
+                username = "MichalRymarski"
                 password = System.getenv("github_password")
             }
         }
@@ -74,6 +74,7 @@ kotlin {
             implementation(libs.cupertino.native)
             implementation(libs.cupertino.icons.extended)
 
+            implementation("io.github.darkokoa:datetime-wheel-picker:1.0.2-compose1.7")
             implementation("com.eygraber:uri-kmp:0.0.18")
             implementation("io.github.theapache64:rebugger:1.0.0-rc03")
             implementation(libs.qrose)

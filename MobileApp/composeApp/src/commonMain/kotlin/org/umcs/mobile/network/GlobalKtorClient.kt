@@ -28,8 +28,8 @@ import org.umcs.mobile.network.dto.login.JwtResponseDto
 import org.umcs.mobile.network.dto.login.TokenRequestDto
 
 object GlobalKtorClient {
-     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-    private lateinit var tokens : BearerTokens
+    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private lateinit var tokens: BearerTokens
     private val client = HttpClient {
         defaultRequest {
             contentType(ContentType.Application.Json)
@@ -62,13 +62,14 @@ object GlobalKtorClient {
         }
     }
 
-    fun initClient(){
-        scope.launch{
+    fun initClient() {
+        scope.launch {
             loginAndGetTokens()
         }
     }
 
-    suspend fun loginAndGetTokens(){
+
+    suspend fun loginAndGetTokens() {
         val tokenResponse: JwtResponseDto = client.post("login") {
             contentType(ContentType.Application.Json)
             setBody(TokenRequestDto(login = "bazinga", password = "bazinga"))
@@ -78,21 +79,35 @@ object GlobalKtorClient {
         tokens = BearerTokens(accessToken = tokenResponse.token, refreshToken = null)
     }
 
-    suspend fun testNewPatient(){
+    suspend fun testNewCase() {
+        val testCase = """
+        {
+         "patientId": 3,
+         "admissionReason": "bazinga",
+         "admissionDate": "2024-12-20T05:30",
+         "description": "testowe przyjecie",
+         "attendingDoctorId": 102
+        }"""
+        val response = client.post("/medicalCase/newCase") {
+            setBody(testCase)
+        }
+    }
+
+    suspend fun testNewPatient() {
         val testPatient = """
             {
-              "socialSecurityNumber": "10041173121",
+              "socialSecurityNumber": "13041373121",
               "firstName": "strisng",
               "lastName": "strsing",
               "age": 2,
               "gender": "string",
               "address": "string",
               "phoneNumber": "361660134",
-              "email": "gG3XTcr2u3.oiI6M054_WeoLRnhiJPbgGW%6ip6.@Z1YpMh2mJZnaFMJEoDiu-mNAhav8dhKZlaeCE6rudCAcW4TUaxQAg.nxWuRyEteYDcOGDPHVSDqgGcNPEWHdZXWnKhsFdItxIvs",
+              "email": "gG3XTcr2u33.oiI6M054_WeoLRnhiJPbgGW%6ip6.@Z1YpMh2mJZnaFMJEoDiu-mNAhav8dhKZlaeCE6rudCAcW4TUaxQAg.nxWuRyEteYDcOGDPHVSDqgGcNPEWHdZXWnKhsFdItxIvs",
               "birthDate": "2024-12-15T14:27:01.075Z"
             }
         """
-        val response = client.post("patient/new"){
+        val response = client.post("patient/new") {
             setBody(testPatient)
         }
 

@@ -12,15 +12,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Face
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -38,10 +36,10 @@ import com.slapps.cupertino.adaptive.icons.AdaptiveIcons
 import com.slapps.cupertino.adaptive.icons.DateRange
 import com.slapps.cupertino.adaptive.icons.Face
 import com.slapps.cupertino.theme.CupertinoTheme
+import kotlinx.datetime.LocalDateTime
 import org.umcs.mobile.composables.shared.AppTextField
-import org.umcs.mobile.composables.shared.DatePickerModal
 import org.umcs.mobile.composables.shared.PatientPicker
-import org.umcs.mobile.data.convertMillisToDate
+import org.umcs.mobile.composables.shared.AdaptiveWheelDateTimePicker
 import org.umcs.mobile.theme.determineTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,7 +83,15 @@ fun NewCaseContent(
             )
         }
         if (showDatePicker) {
-            DatePickerModal(
+            AdaptiveWheelDateTimePicker(
+                sheetState = rememberModalBottomSheetState(),
+                dismiss = { newDateTime : LocalDateTime ->
+                    onShowDatePickerChange(false)
+                    val newDate = newDateTime.toString().replace('-','/').replace('T',' ')
+                    onNewCaseChange(newCase.copy(admissionDate =  newDate))
+                }
+            )
+         /*   DatePickerModal(
                 onDateSelected = { dateInMillis ->
                     if (dateInMillis != null) {
                         val newDate = convertMillisToDate(dateInMillis)
@@ -96,7 +102,7 @@ fun NewCaseContent(
                     onShowDatePickerChange(false)
                     focusManager.clearFocus()
                 }
-            )
+            )*/
         }
         AppTextField(
             readOnly = true,
