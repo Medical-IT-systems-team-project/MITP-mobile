@@ -1,6 +1,6 @@
 package org.umcs.mobile.network.dto.case
 
-enum class ItemStatus{
+enum class MedicalStatus{
     PLANNED,
     ONGOING,
     COMPLETED,

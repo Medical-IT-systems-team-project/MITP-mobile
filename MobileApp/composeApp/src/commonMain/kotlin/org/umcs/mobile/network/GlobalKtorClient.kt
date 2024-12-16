@@ -10,7 +10,6 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
-import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -25,8 +24,8 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
-import org.umcs.mobile.network.dto.dozapytania.JwtResponseDto
-import org.umcs.mobile.network.dto.dozapytania.TokenRequestDto
+import org.umcs.mobile.network.dto.login.JwtResponseDto
+import org.umcs.mobile.network.dto.login.TokenRequestDto
 
 object GlobalKtorClient {
      private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())

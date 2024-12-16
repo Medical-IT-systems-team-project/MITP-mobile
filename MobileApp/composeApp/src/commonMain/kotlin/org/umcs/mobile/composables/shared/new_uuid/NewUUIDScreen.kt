@@ -8,14 +8,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,7 +36,8 @@ import org.umcs.mobile.composables.shared.AppTopBar
 fun NewUUIDScreen(
     navigateBack : (()->Unit)? = null,
     onSuccessButtonClick: ()->Unit,
-    title : String
+    title : String,
+    label : String,
 ) {
     var showQrScanner by remember { mutableStateOf(false) }
     var text by remember { mutableStateOf("") }
@@ -82,7 +80,8 @@ fun NewUUIDScreen(
                 Logger.i(UUID, tag = "UUID")
             })
 
-            CaseUUIDInput(
+            AccessIDInput(
+                label = label,
                 text = text,
                 supportingText = supportingText,
                 isFocused = isFocused,

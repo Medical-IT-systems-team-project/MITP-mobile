@@ -9,6 +9,7 @@ fun ImportNewPatient(navigateBack: () -> Unit, onSuccess: () -> Unit) {
     NewUUIDScreen(
         onSuccessButtonClick = onSuccess,
         title = "Import Patient",
-        navigateBack = navigateBack
+        navigateBack = navigateBack,
+        label = "Patient's Access ID "
     )
 }

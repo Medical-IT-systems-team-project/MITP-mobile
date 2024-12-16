@@ -137,10 +137,13 @@ fun NavigationHost(
             )
         ) { backStackEntry ->
             val route = backStackEntry.toRoute<Routes.ShareUUID>()
+            val patient = route.patient
 
             ShareUUIDLayout(
                 navigateBack = navController::navigateUp,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                patientAccessID = patient.socialSecurityNumber,
+                patientName = patient.firstName,
             )
         }
 

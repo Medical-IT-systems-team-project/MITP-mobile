@@ -1,4 +1,4 @@
-package org.umcs.mobile.network.dto.dozapytania
+package org.umcs.mobile.network.dto.login
 
 import kotlinx.serialization.*
 

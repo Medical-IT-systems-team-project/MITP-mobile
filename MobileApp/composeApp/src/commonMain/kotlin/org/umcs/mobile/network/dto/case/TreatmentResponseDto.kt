@@ -13,7 +13,7 @@ data class TreatmentResponseDto(
     val endDate: LocalDate,
     val details : String,
     val medicalDoctorName : String,
-    val status : ItemStatus
+    val status : MedicalStatus
 )
 
 

@@ -15,5 +15,5 @@ data class MedicationResponseDto  (
     val strength : String,
     val unit : String,
     val medicalDoctorName : String,
-    val status : ItemStatus
+    val status : MedicalStatus
 )

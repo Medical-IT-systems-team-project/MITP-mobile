@@ -7,12 +7,14 @@ import org.umcs.mobile.composables.shared.new_uuid.NewUUIDScreen
 @Composable
 fun PatientLoginLayout(
     modifier: Modifier = Modifier,
-    navigateToCaseList : ()->Unit
+    navigateToCaseList: () -> Unit,
 ) {
     val title = "Login as Patient"
+    val label = "Access ID"
 
     NewUUIDScreen(
         onSuccessButtonClick = navigateToCaseList,
         title = title,
+        label = label,
     )
 }

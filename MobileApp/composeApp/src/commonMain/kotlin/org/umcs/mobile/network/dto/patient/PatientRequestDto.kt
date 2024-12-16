@@ -1,12 +1,7 @@
 package org.umcs.mobile.network.dto.patient
 
 import kotlinx.datetime.LocalDate
-import kotlinx.serialization.*
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.Serializable
 import org.umcs.mobile.network.dto.serializer.EmailPatternSerializer
 import org.umcs.mobile.network.dto.serializer.LocalDateSerializer
 import org.umcs.mobile.network.dto.serializer.PhoneNumberPatternSerializer
@@ -26,5 +21,5 @@ data class PatientRequestDto (
     @Serializable(with = EmailPatternSerializer::class)
     val email : String,
     @Serializable(with = LocalDateSerializer::class)
-    val birthDate: LocalDate //TODO : force format dd/mm/yyyy or something similar
+    val birthDate: LocalDate
 )
