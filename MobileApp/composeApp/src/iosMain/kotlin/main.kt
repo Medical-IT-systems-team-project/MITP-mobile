@@ -1,5 +1,6 @@
 import androidx.compose.runtime.remember
 import androidx.compose.ui.window.ComposeUIViewController
+import androidx.navigation.compose.rememberNavController
 import org.appModule
 import org.koin.core.context.startKoin
 import org.umcs.mobile.navigation.NavigationHost
@@ -12,6 +13,7 @@ fun MainViewController(): UIViewController {
     GlobalKtorClient.initClient()
     initKoin()
     return ComposeUIViewController {
+        val s = rememberNavController()
         AppTheme {
             NavigationHost(
                 loginDataStore = remember { createDataStore() },

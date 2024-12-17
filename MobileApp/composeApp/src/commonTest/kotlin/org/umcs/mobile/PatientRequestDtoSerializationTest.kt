@@ -5,7 +5,7 @@ import org.umcs.mobile.network.dto.patient.PatientRequestDto
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
-class PatientRequestDtoTest {
+class PatientRequestDtoSerializationTest {
 
     private val json = Json { isLenient = true; ignoreUnknownKeys = true }
 
@@ -92,7 +92,7 @@ class PatientRequestDtoTest {
         }"""
         val invalidEmail = """{
             "socialSecurityNumber": "12345678901",
-            "firstName": "John",
+            "firstName": "John",1
             "lastname": "Doe",
             "age": 30,
             "gender": "Male",

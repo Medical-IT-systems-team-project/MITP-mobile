@@ -10,10 +10,8 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
-import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.encodedPath
@@ -110,22 +108,5 @@ object GlobalKtorClient {
         val response = client.post("patient/new") {
             setBody(testPatient)
         }
-
-    }
-
-    /*  suspend fun registerTest() {
-          val testRegisterDoctorData = """{
-              "login": "bazinga",
-              "password": "bazinga"
-          }"""
-          val response = client.post("register"){
-              setBody(testRegisterDoctorData)
-          }
-      }*/
-
-
-    suspend fun getRandomJson(): String {
-        val response = client.get("https://reqres.in/api/users/2")
-        return response.bodyAsText()
     }
 }
