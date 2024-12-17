@@ -79,7 +79,7 @@ class DoctorEndpointTest {
     }
 
     @Test
-    fun `create new treatment should return 201-Created with random data for medicalCaseId and medicalDoctorId equal 1 `() = runTest {
+    fun `create new treatment should return 201-Created with medicalCaseId and medicalDoctorId equal 1 and random data `() = runTest {
         val randomTreatment = generateRandomTreatmentJson()
         val randomTreatmentResponse = client.post("doctor/new/Treatment"){
             setBody(randomTreatment)
@@ -90,7 +90,7 @@ class DoctorEndpointTest {
     }
 
     @Test
-    fun `create new medication should return 201-Created with random data for medicalCaseId and medicalDoctorId equal 1 `() = runTest {
+    fun `create new medication should return 201-Created  medicalCaseId and medicalDoctorId equal 1 and random data`() = runTest {
         val randomMedication = generateRandomMedicationJson()
         val randomTreatmentResponse = client.post("doctor/new/Medication"){
             setBody(randomMedication)
@@ -100,4 +100,5 @@ class DoctorEndpointTest {
         assertEquals(HttpStatusCode.Created,randomTreatmentResponse.status)
     }
 
+    //TODO : create tests for status endpoints
 }
