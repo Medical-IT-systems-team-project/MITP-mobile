@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +25,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Logger
+import kotlinx.coroutines.launch
 import mobileapp.composeapp.generated.resources.Res
 import mobileapp.composeapp.generated.resources.qr_scanner
 import mobileapp.composeapp.generated.resources.wrong_uuid
@@ -34,11 +36,12 @@ import org.umcs.mobile.composables.shared.AppTopBar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewUUIDScreen(
-    navigateBack : (()->Unit)? = null,
-    onSuccessButtonClick: ()->Unit,
-    title : String,
-    label : String,
+    navigateBack: (() -> Unit)? = null,
+    onSuccessButtonClick: suspend (String) -> String?,
+    title: String,
+    label: String,
 ) {
+    val scope = rememberCoroutineScope()
     var showQrScanner by remember { mutableStateOf(false) }
     var text by remember { mutableStateOf("") }
     var supportingText by remember { mutableStateOf("") }
@@ -89,7 +92,22 @@ fun NewUUIDScreen(
                 onTextChange = { text = it },
                 onFocusChange = { changedFocus -> isFocused = changedFocus },
                 onSupportingTextChange = { supportingText = it },
-                onButtonPress = onSuccessButtonClick,
+                onButtonPress = {
+                    when {
+                        text.isEmpty() -> supportingText = "Please enter the access ID"
+                        !matchAccessID(text) -> supportingText = "Please a valid  access ID"
+                        matchAccessID(text) -> {
+                            scope.launch {
+                                val errorMessage = onSuccessButtonClick(text)
+
+                                if(errorMessage != null){
+                                    supportingText = errorMessage
+                                    text = ""
+                                }
+                            }
+                        }
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
@@ -109,15 +127,15 @@ fun ErrorIcon(modifier: Modifier = Modifier) {
     )
 }
 
-fun matchUUID(uuid: String): Boolean {
+fun matchAccessID(accessID: String): Boolean {
     val regex =
-        Regex("^[0-9a-fA-F]{8}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{12}\$")
+        Regex("^[0-9a-zA-Z]{10}\$")
 
-    return if (regex.matches(uuid)) {
-        Logger.i("UUID is valid", tag = "UUID")
+    return if (regex.matches(accessID)) {
+        Logger.i("ID is valid", tag = "UUID")
         true
     } else {
-        Logger.i("UUID is invalid", tag = "UUID")
+        Logger.i("ID is invalid", tag = "UUID")
         false
     }
 }

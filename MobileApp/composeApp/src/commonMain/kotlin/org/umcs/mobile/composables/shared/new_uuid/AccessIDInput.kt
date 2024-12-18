@@ -53,7 +53,7 @@ fun AccessIDInput(
             value = text,
             onValueChange = onTextChange,
             label = { Text(label) },
-            enabled = !matchUUID(text),
+            enabled = !matchAccessID(text),
             modifier = Modifier
                 .weight(1f)
                 .focusRequester(focusRequester)
@@ -66,7 +66,7 @@ fun AccessIDInput(
                     }
                 },
             trailingIcon = {
-                if (!matchUUID(text) && text.isNotEmpty() && !isFocused) {
+                if (!matchAccessID(text) && text.isNotEmpty() && !isFocused) {
                     ErrorIcon()
                 }
             },
@@ -79,14 +79,7 @@ fun AccessIDInput(
         AdaptiveFilledIconButton(
             modifier = Modifier.size(56.dp),
             onClick = {
-                when {
-                    text.isEmpty() -> onSupportingTextChange("Please enter the identification")
-                    !matchUUID(text) -> onSupportingTextChange("Please enter a valid UUID")
-                    matchUUID(text) -> {
-                        onSupportingTextChange("CORRECT")
-                        onButtonPress()
-                    }
-                }
+                onButtonPress()
             },
         ) {
             Icon(

@@ -1,15 +1,15 @@
 package org.umcs.mobile.network.dto.case
 
-import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
-import org.umcs.mobile.network.dto.serializer.LocalDateSerializer
+import org.umcs.mobile.network.dto.serializer.LocalDateTimeSerializer
 
 @Serializable
 data class MedicalCaseRequestDto(
     val patientId : Int,
+    @Serializable(with = LocalDateTimeSerializer::class)
+    val admissionDate: LocalDateTime,
     val admissionReason:String,
-    @Serializable(with = LocalDateSerializer::class)
-    val admissionDate:LocalDate,
     val description : String,
     val attendingDoctorId:Int
 )

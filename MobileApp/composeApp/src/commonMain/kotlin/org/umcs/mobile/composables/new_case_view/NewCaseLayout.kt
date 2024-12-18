@@ -52,8 +52,6 @@ fun NewCaseLayout(navigateBack: () -> Unit, modifier: Modifier = Modifier) {
             showDatePicker = showDatePicker,
             patientPickerState = patientPickerState,
             newCase = newCase,
-            formState = formState,
-            fullName = fullName,
             focusRequester = focusRequester,
             focusManager = focusManager,
             onNewCaseChange = { newCase = it },

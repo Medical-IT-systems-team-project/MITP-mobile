@@ -152,7 +152,7 @@ private fun handleLogin(
 
     if (login.isNotBlank() && password.isNotBlank()) {
         loginScope.launch {
-            val successful = GlobalKtorClient.login(login, password)
+            val successful = GlobalKtorClient.loginAsDoctor(login, password)
             if (successful) {
                 navigateToCaseList()
             } else {

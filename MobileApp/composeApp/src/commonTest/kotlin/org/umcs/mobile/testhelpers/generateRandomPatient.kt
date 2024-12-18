@@ -36,7 +36,7 @@ fun generateRandomPatientJson(): String {
         put("firstName", randomString(6))
         put("lastName", randomString(6))
         put("age", Random.nextInt(0, 120))
-        put("gender", listOf("Male", "Female", "Other").random())
+        put("gender", listOf("MALE", "FEMALE").random())
         put("address", randomString(15))
         put("phoneNumber", Random.nextLong(100000000L, 999999999L).toString()) // 9 digits
         put("email", randomEmail())

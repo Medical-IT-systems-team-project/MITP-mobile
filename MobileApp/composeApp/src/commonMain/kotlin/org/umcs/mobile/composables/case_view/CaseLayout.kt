@@ -78,12 +78,11 @@ fun CaseLayoutFAB(
 ) {
     when (currentTab) {
         CaseScreens.INFO -> {
-            AdaptiveFAB(
+            /*AdaptiveFAB(
                 onClick = infoOnClick,
                 iconVector = AdaptiveIcons.Outlined.AddCircle
-            )
+            )*/
         }
-
         CaseScreens.TREATMENTS -> {
             AdaptiveFAB(
                 onClick = treatmentsOnClick,

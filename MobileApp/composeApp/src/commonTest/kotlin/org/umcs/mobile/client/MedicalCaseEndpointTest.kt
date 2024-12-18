@@ -68,7 +68,7 @@ class MedicalCaseEndpointTest {
     fun getTokens() = runBlocking {
         val tokenResponse: JwtResponseDto = client.post("login") {
             contentType(ContentType.Application.Json)
-            setBody(TokenRequestDto(login = "bazinga", password = "bazinga"))
+            setBody(TokenRequestDto(login = "test", password = "test"))
         }.body()
         tokens = BearerTokens(accessToken = tokenResponse.token, refreshToken = null)
     }

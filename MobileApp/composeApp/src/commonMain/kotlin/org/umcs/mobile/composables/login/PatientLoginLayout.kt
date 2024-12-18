@@ -3,6 +3,7 @@ package org.umcs.mobile.composables.login
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import org.umcs.mobile.composables.shared.new_uuid.NewUUIDScreen
+import org.umcs.mobile.network.GlobalKtorClient
 
 @Composable
 fun PatientLoginLayout(
@@ -13,7 +14,13 @@ fun PatientLoginLayout(
     val label = "Access ID"
 
     NewUUIDScreen(
-        onSuccessButtonClick = navigateToCaseList,
+        onSuccessButtonClick = { accessID ->
+            val errorMessage = GlobalKtorClient.loginAsPatient(accessID)
+            if(errorMessage == null){
+                navigateToCaseList()
+            }
+            errorMessage
+        },
         title = title,
         label = label,
     )

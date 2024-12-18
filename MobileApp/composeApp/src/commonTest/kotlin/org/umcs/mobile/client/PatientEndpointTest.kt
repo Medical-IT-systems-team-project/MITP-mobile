@@ -55,8 +55,8 @@ class PatientEndpointTest {
                         tokens
                     }
                     sendWithoutRequest { request ->
-                        // Only send the Authorization header if the request is not for the login endpoint
-                        !request.url.encodedPath.contains("login")
+                        !request.url.encodedPath.contains("login") &&
+                                !(request.url.encodedPath.contains("patient/") && !request.url.encodedPath.equals("patient/new"))
                     }
                 }
             }
@@ -67,7 +67,7 @@ class PatientEndpointTest {
     fun getTokens() = runBlocking {
         val tokenResponse: JwtResponseDto = client.post("login") {
             contentType(ContentType.Application.Json)
-            setBody(TokenRequestDto(login = "bazinga", password = "bazinga"))
+            setBody(TokenRequestDto(login = "test", password = "test"))
         }.body()
         tokens = BearerTokens(accessToken = tokenResponse.token, refreshToken = null)
     }

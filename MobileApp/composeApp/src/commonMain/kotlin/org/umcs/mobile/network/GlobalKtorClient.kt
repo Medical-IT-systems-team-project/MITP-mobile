@@ -13,6 +13,7 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.http.encodedPath
 import io.ktor.serialization.kotlinx.json.json
@@ -53,7 +54,9 @@ object GlobalKtorClient {
                     tokens
                 }
                 sendWithoutRequest { request ->
-                    !request.url.encodedPath.contains("login")
+                    !request.url.encodedPath.contains("login") &&
+                            !(request.url.encodedPath.contains("patient/") && !request.url.encodedPath.equals("patient/new"))
+
                 }
             }
         }
@@ -75,7 +78,7 @@ object GlobalKtorClient {
         tokens = BearerTokens(accessToken = tokenResponse.token, refreshToken = null)
     }
 
-    suspend fun login(login: String, password: String): Boolean {
+    suspend fun loginAsDoctor(login: String, password: String): Boolean {
         return try {
             val tokenResponse: JwtResponseDto = client.post("login") {
                 contentType(ContentType.Application.Json)
@@ -88,6 +91,28 @@ object GlobalKtorClient {
         } catch (e: Exception) {
             Logger.e("Login failed: ${e.message}", tag = "Ktor")
             false
+        }
+    }
+
+    suspend fun loginAsPatient(accessID: String): String? {
+        return try {
+            val patientResponse = client.post("patient/$accessID") {
+                contentType(ContentType.Application.Json)
+            }
+
+            if(patientResponse.status == HttpStatusCode.OK){
+                null
+            }
+            else if (patientResponse.status == HttpStatusCode.NotFound) {
+                throw NoSuchElementException("No patient found with that access ID")
+            }else if(patientResponse.status != HttpStatusCode.OK){
+                Logger.e("${patientResponse.status}", tag = "Ktor error")
+                throw IllegalStateException("${patientResponse.status}  \uD83E\uDD21 ")
+            }
+            null
+        } catch (e: Exception) {
+            Logger.e("Login failed: ${e.message}", tag = "Ktor")
+            e.message
         }
     }
 }
