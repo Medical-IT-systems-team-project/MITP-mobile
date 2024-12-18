@@ -53,7 +53,6 @@ object GlobalKtorClient {
                     tokens
                 }
                 sendWithoutRequest { request ->
-                    // Only send the Authorization header if the request is not for the login endpoint
                     !request.url.encodedPath.contains("login")
                 }
             }
@@ -62,10 +61,9 @@ object GlobalKtorClient {
 
     fun initClient() {
         scope.launch {
-            loginAndGetTokens()
+            //  loginAndGetTokens()
         }
     }
-
 
     suspend fun loginAndGetTokens() {
         val tokenResponse: JwtResponseDto = client.post("login") {
@@ -77,36 +75,19 @@ object GlobalKtorClient {
         tokens = BearerTokens(accessToken = tokenResponse.token, refreshToken = null)
     }
 
-    suspend fun testNewCase() {
-        val testCase = """
-        {
-         "patientId": 3,
-         "admissionReason": "bazinga",
-         "admissionDate": "2024-12-20T05:30",
-         "description": "testowe przyjecie",
-         "attendingDoctorId": 102
-        }"""
-        val response = client.post("/medicalCase/newCase") {
-            setBody(testCase)
-        }
-    }
+    suspend fun login(login: String, password: String): Boolean {
+        return try {
+            val tokenResponse: JwtResponseDto = client.post("login") {
+                contentType(ContentType.Application.Json)
+                setBody(TokenRequestDto(login, password))
+            }.body()
+            Logger.i("TOKEN : $tokenResponse", tag = "Ktor")
 
-    suspend fun testNewPatient() {
-        val testPatient = """
-            {
-              "socialSecurityNumber": "13041373121",
-              "firstName": "strisng",
-              "lastName": "strsing",
-              "age": 2,
-              "gender": "string",
-              "address": "string",
-              "phoneNumber": "361660134",
-              "email": "gG3XTcr2u33.oiI6M054_WeoLRnhiJPbgGW%6ip6.@Z1YpMh2mJZnaFMJEoDiu-mNAhav8dhKZlaeCE6rudCAcW4TUaxQAg.nxWuRyEteYDcOGDPHVSDqgGcNPEWHdZXWnKhsFdItxIvs",
-              "birthDate": "2024-12-15T14:27:01.075Z"
-            }
-        """
-        val response = client.post("patient/new") {
-            setBody(testPatient)
+            tokens = BearerTokens(accessToken = tokenResponse.token, refreshToken = null)
+            true
+        } catch (e: Exception) {
+            Logger.e("Login failed: ${e.message}", tag = "Ktor")
+            false
         }
     }
 }

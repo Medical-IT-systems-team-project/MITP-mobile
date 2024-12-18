@@ -17,28 +17,29 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import mobileapp.composeapp.generated.resources.Res
 import mobileapp.composeapp.generated.resources.caretrack
 import mobileapp.composeapp.generated.resources.cross_logo
 import org.jetbrains.compose.resources.painterResource
 import org.umcs.mobile.composables.shared.AppTextField
+import org.umcs.mobile.network.GlobalKtorClient
 
 @Composable
 fun DoctorLoginLayout(
@@ -48,7 +49,11 @@ fun DoctorLoginLayout(
 ) {
     var login by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var errorMessage = ""
+    var errorMessage by remember{mutableStateOf("")}
+    val loginScope = rememberCoroutineScope()
+    var loginError by remember { mutableStateOf("") }
+    var passwordError by remember { mutableStateOf("") }
+
     val shape = RoundedCornerShape(16.dp)
     val focusRequester = remember { FocusRequester() }
 
@@ -86,7 +91,7 @@ fun DoctorLoginLayout(
             keyboardType = KeyboardType.Email,
             title = { Text("Username/Email") },
             text = login,
-            supportingText = "",
+            supportingText = loginError,
             focusRequester = focusRequester,
             onTextChange = { newLogin ->
                 login = newLogin
@@ -98,7 +103,7 @@ fun DoctorLoginLayout(
             keyboardType = KeyboardType.Password,
             title = { Text("Password") },
             text = password,
-            supportingText = "",
+            supportingText = passwordError,
             focusRequester = focusRequester,
             onTextChange = { newPassword ->
                 password = newPassword
@@ -108,11 +113,15 @@ fun DoctorLoginLayout(
 
         Button(
             onClick = {
-                if (login.isEmpty() || password.isEmpty()) {
-                    errorMessage = "ERROR MESSAGE"
-                } else {
-                    navigateToCaseList()
-                }
+                handleLogin(
+                    changeLoginError = { newLoginError -> loginError = newLoginError},
+                    changePasswordError = { newPasswordError -> passwordError = newPasswordError},
+                    changeErrorMessage = { newErrorMessage -> errorMessage = newErrorMessage},
+                    login = login,
+                    password = password,
+                    loginScope = loginScope,
+                    navigateToCaseList = navigateToCaseList
+                )
             },
             shape = shape,
             modifier = Modifier.width(270.dp)
@@ -121,10 +130,44 @@ fun DoctorLoginLayout(
         }
         Spacer(Modifier.height(30.dp))
 
-        errorMessage.let {
-            Text(text = it, color = MaterialTheme.colorScheme.error, fontSize = 15.sp)
+        if (errorMessage.isNotBlank()) {
+            Text(text = errorMessage, color = MaterialTheme.colorScheme.error, fontSize = 15.sp)
             Spacer(Modifier.height(20.dp))
         }
     }
 }
+
+private fun handleLogin(
+    changeLoginError: (String) -> Unit,
+    changePasswordError: (String) -> Unit,
+    changeErrorMessage: (String) -> Unit,
+    login: String,
+    password: String,
+    loginScope: CoroutineScope,
+    navigateToCaseList: () -> Unit,
+) {
+    changeLoginError("")
+    changePasswordError("")
+    changeErrorMessage("")
+
+    if (login.isNotBlank() && password.isNotBlank()) {
+        loginScope.launch {
+            val successful = GlobalKtorClient.login(login, password)
+            if (successful) {
+                navigateToCaseList()
+            } else {
+                changeErrorMessage("Something went wrong")
+            }
+        }
+    } else if (login.isBlank() && password.isBlank()) {
+        changeLoginError("This field can't be blank")
+        changePasswordError("This field can't be blank")
+    } else if (login.isBlank()) {
+        changeLoginError("This field can't be blank")
+    } else if (password.isBlank()) {
+        changePasswordError("This field can't be blank")
+    }
+}
+
+
 

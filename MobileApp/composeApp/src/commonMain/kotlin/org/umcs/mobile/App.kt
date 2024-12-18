@@ -33,7 +33,6 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.navigation.NavHostController
-import co.touchlab.kermit.Logger
 import com.slapps.cupertino.adaptive.AdaptiveScaffold
 import com.slapps.cupertino.adaptive.AdaptiveTextButton
 import com.slapps.cupertino.adaptive.ExperimentalAdaptiveApi
@@ -47,7 +46,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.umcs.mobile.composables.shared.AdaptiveWheelDateTimePicker
 import org.umcs.mobile.navigation.Routes
-import org.umcs.mobile.network.GlobalKtorClient
 import org.umcs.mobile.theme.determineTheme
 
 @OptIn(ExperimentalAdaptiveApi::class, ExperimentalMaterial3Api::class)
@@ -122,12 +120,12 @@ internal fun App(
             )
 
             LaunchedEffect(Unit) {
-                try {
+             /*   try {
                     val test = GlobalKtorClient.testNewCase()
                     Logger.i("$test", tag = "Ktor")
                 } catch (e: Exception) {
                     Logger.i("wyjebalo sie", tag = "Ktor")
-                }
+                }*/
             }
 
             ElevatedButton(
