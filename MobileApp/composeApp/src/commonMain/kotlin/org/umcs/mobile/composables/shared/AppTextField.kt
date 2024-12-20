@@ -9,12 +9,16 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.slapps.cupertino.adaptive.Theme
+import com.slapps.cupertino.theme.CupertinoTheme
+import org.umcs.mobile.theme.determineTheme
 
 @Composable
 fun AppTextField(
@@ -31,7 +35,16 @@ fun AppTextField(
     placeholder: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
 ) {
+    val theme = remember { determineTheme() }
+    val isCupertino = when (theme) {
+        Theme.Cupertino -> true
+        Theme.Material3 -> false
+    }
+    val supportStyle = if (isCupertino) CupertinoTheme.typography.footnote else MaterialTheme.typography.bodySmall
+    val textStyle = if(isCupertino) CupertinoTheme.typography.body else MaterialTheme.typography.bodyMedium
+
     TextField(
+        textStyle = textStyle,
         maxLines = maxLines,
         trailingIcon = trailingIcon,
         placeholder = placeholder,
@@ -39,7 +52,8 @@ fun AppTextField(
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         supportingText = {
             Text(
-                supportingText,
+                style = supportStyle,
+                text = supportingText,
                 color = MaterialTheme.colorScheme.error,
                 modifier = Modifier.padding(start = 16.dp)
             )
