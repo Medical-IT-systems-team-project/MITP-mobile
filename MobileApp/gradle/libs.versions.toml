@@ -1,7 +1,7 @@
 [versions]
 datastoreCoreOkio = "1.1.1"
 kotlin = "2.0.20"
-compose = "1.7.1"
+compose = "1.7.3"
 agp = "8.6.1"
 androidx-activityCompose = "1.9.3"
 androidx-uiTest = "1.7.4"
