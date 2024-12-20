@@ -18,7 +18,13 @@ import org.umcs.mobile.data.Case
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CaseLayout(case: Case, navigateBack: () -> Unit, isDoctor: Boolean) {
+fun CaseLayout(
+    case: Case,
+    navigateBack: () -> Unit,
+    isDoctor: Boolean,
+    navigateToNewTreatment: (Int) -> Unit,
+    navigateToNewMedication: (Int) -> Unit
+) {
     var currentTab by remember { mutableStateOf(CaseScreens.INFO) }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
@@ -29,8 +35,8 @@ fun CaseLayout(case: Case, navigateBack: () -> Unit, isDoctor: Boolean) {
                 CaseLayoutFAB(
                     currentTab = currentTab,
                     infoOnClick = {},
-                    treatmentsOnClick = {},
-                    medicationOnClick = {}
+                    treatmentsOnClick = { navigateToNewTreatment(1) }, //TODO : change that number to case ID
+                    medicationOnClick = { navigateToNewMedication(1) }
                 )
             }
         },

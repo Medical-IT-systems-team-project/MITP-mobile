@@ -31,9 +31,13 @@ import kotlinx.datetime.toLocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AdaptiveWheelDateTimePicker(sheetState: SheetState, dismiss: (LocalDateTime) -> Unit) {
-    val startDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-    var currentlyPickedDateTime by remember { mutableStateOf(startDateTime) }
+fun AdaptiveWheelDateTimePicker(
+    sheetState: SheetState,
+    dismiss: (LocalDateTime) -> Unit,
+    passedStartDateTime: LocalDateTime? = null,
+) {
+    val currentDateTime = if (passedStartDateTime != null) passedStartDateTime else Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+    var currentlyPickedDateTime by remember { mutableStateOf(currentDateTime) }
 
     AdaptiveWidget(
         material = {
@@ -41,7 +45,7 @@ fun AdaptiveWheelDateTimePicker(sheetState: SheetState, dismiss: (LocalDateTime)
                 sheetState = sheetState,
                 dismiss = dismiss,
                 currentlyPickedDateTime = currentlyPickedDateTime,
-                startDateTime = startDateTime,
+                startDateTime = currentDateTime,
                 changeCurrentlyPickedDateTime = { snappedDateTime ->
                     currentlyPickedDateTime = snappedDateTime
                 }
@@ -52,7 +56,7 @@ fun AdaptiveWheelDateTimePicker(sheetState: SheetState, dismiss: (LocalDateTime)
                 sheetState = sheetState,
                 dismiss = dismiss,
                 currentlyPickedDateTime = currentlyPickedDateTime,
-                startDateTime = startDateTime,
+                startDateTime = currentDateTime,
                 changeCurrentlyPickedDateTime = { snappedDateTime ->
                     currentlyPickedDateTime = snappedDateTime
                 }
@@ -71,7 +75,7 @@ private fun CupertinoWheelDateTimePicker(
     changeCurrentlyPickedDateTime: (LocalDateTime) -> Unit,
 ) {
     ModalBottomSheet(
-        dragHandle = {BottomSheetDefaults.HiddenShape},
+        dragHandle = { BottomSheetDefaults.HiddenShape },
         sheetState = sheetState,
         onDismissRequest = { dismiss(currentlyPickedDateTime) }
     ) {
@@ -119,7 +123,7 @@ private fun MaterialWheelDateTimePicker(
     changeCurrentlyPickedDateTime: (LocalDateTime) -> Unit,
 ) {
     ModalBottomSheet(
-        dragHandle = {BottomSheetDefaults.HiddenShape},
+        dragHandle = { BottomSheetDefaults.HiddenShape },
         sheetState = sheetState,
         onDismissRequest = { dismiss(currentlyPickedDateTime) }
     ) {

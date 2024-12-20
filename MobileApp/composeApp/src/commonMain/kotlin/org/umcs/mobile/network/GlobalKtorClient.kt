@@ -22,7 +22,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.json.Json
+import org.umcs.mobile.composables.new_case_view.MedicalCase
+import org.umcs.mobile.composables.new_treatment_view.MedicalTreatment
+import org.umcs.mobile.network.dto.case.MedicalCaseRequestDto
+import org.umcs.mobile.network.dto.case.TreatmentRequestDto
 import org.umcs.mobile.network.dto.login.JwtResponseDto
 import org.umcs.mobile.network.dto.login.TokenRequestDto
 
@@ -55,7 +60,9 @@ object GlobalKtorClient {
                 }
                 sendWithoutRequest { request ->
                     !request.url.encodedPath.contains("login") &&
-                            !(request.url.encodedPath.contains("patient/") && !request.url.encodedPath.equals("patient/new"))
+                            !(request.url.encodedPath.contains("patient/") && !request.url.encodedPath.equals(
+                                "patient/new"
+                            ))
 
                 }
             }
@@ -68,20 +75,27 @@ object GlobalKtorClient {
         }
     }
 
-    suspend fun loginAndGetTokens() {
-        val tokenResponse: JwtResponseDto = client.post("login") {
-            contentType(ContentType.Application.Json)
-            setBody(TokenRequestDto(login = "bazinga", password = "bazinga"))
-        }.body()
-        Logger.i("TOKEN : $tokenResponse", tag = "Ktor")
-
-        tokens = BearerTokens(accessToken = tokenResponse.token, refreshToken = null)
+    suspend fun createNewCase(newCase: MedicalCase, doctorId: Int) {
+        return try {
+            val medicalCaseRequestDto = MedicalCaseRequestDto(
+                patientId = 1, //TODO : change patient data class to hold id
+                admissionDate = LocalDateTime.parse(newCase.admissionDate),
+                admissionReason = newCase.admissionReason,
+                description = newCase.description,
+                attendingDoctorId = doctorId
+            )
+            val medicalCaseResponse = client.post("medicalCase/newCase"){
+                setBody(medicalCaseRequestDto)
+            }
+            Logger.v(medicalCaseResponse.status.toString(), tag = "new case")
+        }catch (e : Exception){
+            Logger.v(e.message.toString(), tag = "new case")
+        }
     }
 
     suspend fun loginAsDoctor(login: String, password: String): Boolean {
         return try {
             val tokenResponse: JwtResponseDto = client.post("login") {
-                contentType(ContentType.Application.Json)
                 setBody(TokenRequestDto(login, password))
             }.body()
             Logger.i("TOKEN : $tokenResponse", tag = "Ktor")
@@ -100,12 +114,11 @@ object GlobalKtorClient {
                 contentType(ContentType.Application.Json)
             }
 
-            if(patientResponse.status == HttpStatusCode.OK){
+            if (patientResponse.status == HttpStatusCode.OK) {
                 null
-            }
-            else if (patientResponse.status == HttpStatusCode.NotFound) {
+            } else if (patientResponse.status == HttpStatusCode.NotFound) {
                 throw NoSuchElementException("No patient found with that access ID")
-            }else if(patientResponse.status != HttpStatusCode.OK){
+            } else if (patientResponse.status != HttpStatusCode.OK) {
                 Logger.e("${patientResponse.status}", tag = "Ktor error")
                 throw IllegalStateException("${patientResponse.status}  \uD83E\uDD21 ")
             }
@@ -114,5 +127,26 @@ object GlobalKtorClient {
             Logger.e("Login failed: ${e.message}", tag = "Ktor")
             e.message
         }
+    }
+
+    suspend fun createNewTreatment(newTreatment: MedicalTreatment, doctorID: Int, medicalCaseID: Int) {
+       return try{
+        val treatmentRequestDto = TreatmentRequestDto(
+            description = newTreatment.description,
+            startDate = LocalDateTime.parse(newTreatment.startDate),
+            endDate = LocalDateTime.parse(newTreatment.endDate),
+            details = newTreatment.details,
+            name = newTreatment.name,
+            medicalDoctorId = doctorID,
+            medicalCaseId = medicalCaseID
+        )
+        val treatmentResponse = client.post("doctor/new/treatment"){
+            setBody(treatmentRequestDto)
+        }
+        Logger.v(treatmentResponse.status.toString(), tag = "new case")
+    }catch (e : Exception){
+        Logger.v(e.message.toString(), tag = "new case")
+    }
+
     }
 }

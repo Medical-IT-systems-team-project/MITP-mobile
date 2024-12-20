@@ -1,3 +1,4 @@
+/*
 package org.umcs.mobile.preview
 
 import androidx.compose.runtime.Composable
@@ -57,3 +58,4 @@ private fun CaseListViewPreviewLightLong() {
     }
 }
 
+*/

@@ -1,12 +1,11 @@
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import org.koin.dsl.module
 
 class AppViewModel : ViewModel() {
-    var data by mutableStateOf("poczekaj chwile")
+    var doctorID = 1
+        private set
+    fun setDoctorId(id : Int){
+        doctorID = id
+    }
 
    /* fun fetchData() {
             viewModelScope.launch {

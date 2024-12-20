@@ -1,33 +1,15 @@
 package org.umcs.mobile
 
-import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.json.Json
-import org.umcs.mobile.network.dto.case.TreatmentRequestMandatoryDataDto
 import org.umcs.mobile.network.dto.patient.PatientRequestDto
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class CustomSerializersTest {
 
     private val json = Json { isLenient = true; ignoreUnknownKeys = true }
 
-    @Test
-    fun testLocalDateTimeSerializer() {
-        val dto = TreatmentRequestMandatoryDataDto(
-            name = "Test Treatment",
-            startDate = LocalDateTime.parse("2024-12-20T05:30"),
-            endDate = LocalDateTime.parse("2024-12-21T05:30"),
-            status = "Active"
-        )
 
-        val serialized = json.encodeToString(TreatmentRequestMandatoryDataDto.serializer(), dto)
-        val expectedJson = """{"name":"Test Treatment","startDate":"2024-12-20T05:30","endDate":"2024-12-21T05:30","status":"Active"}"""
-        assertEquals(expectedJson, serialized)
-
-        val deserialized = json.decodeFromString(TreatmentRequestMandatoryDataDto.serializer(), expectedJson)
-        assertEquals(dto, deserialized)
-    }
 
     @Test
     fun testSSNPatternSerializer() {

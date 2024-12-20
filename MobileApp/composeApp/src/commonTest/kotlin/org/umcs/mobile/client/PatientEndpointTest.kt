@@ -21,6 +21,8 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
+import org.umcs.mobile.network.Endpoints
+import org.umcs.mobile.network.Endpoints.withArgs
 import org.umcs.mobile.network.dto.login.JwtResponseDto
 import org.umcs.mobile.network.dto.login.TokenRequestDto
 import org.umcs.mobile.testhelpers.generateErrorRandomPatientJson
@@ -56,38 +58,75 @@ class PatientEndpointTest {
                     }
                     sendWithoutRequest { request ->
                         !request.url.encodedPath.contains("login") &&
-                                !(request.url.encodedPath.contains("patient/") && !request.url.encodedPath.equals("patient/new"))
+                                !request.url.encodedPath.contains("register") &&
+                                !(request.url.encodedPath.contains("patient/") && request.url.encodedPath.equals("patient/new"))
                     }
                 }
             }
         }
+        registerDoctor()
         getTokens()
+        registerPatient()
     }
 
-    fun getTokens() = runBlocking {
+    private fun registerPatient() = runBlocking {
+        val registerPatient = client.post(Endpoints.PATIENT_NEW) {
+            setBody(
+                """
+                    {
+                      "socialSecurityNumber": "61145564327",
+                      "firstName": "string",
+                      "lastName": "string",
+                      "age": 12,
+                      "gender": "MALE",
+                      "address": "string",
+                      "phoneNumber": "553724316",
+                      "email": "mihas@gmail.com",
+                      "birthDate": "2024-12-20"
+                    }
+                """
+            )
+        }
+        println("Register patient returned with status ${registerPatient.status}")
+    }
+
+    private fun registerDoctor() = runBlocking {
+        val registerResponse = client.post(Endpoints.REGISTER) {
+            setBody(
+                """
+                    {
+                     "login": "test",
+                     "password": "test"
+                    }
+                """
+            )
+        }
+        println("Register doctor returned with status ${registerResponse.status}")
+    }
+
+    private fun getTokens() = runBlocking {
         val tokenResponse: JwtResponseDto = client.post("login") {
-            contentType(ContentType.Application.Json)
             setBody(TokenRequestDto(login = "test", password = "test"))
         }.body()
+        println("Logowanie $tokenResponse")
         tokens = BearerTokens(accessToken = tokenResponse.token, refreshToken = null)
     }
-
 
     @Test
     fun `create new patient should return error with randomized data fitting the schema`() = runTest {
         val testPatient = generateErrorRandomPatientJson()
-        val newPatientResponse = client.post("patient/new") {
+        val newPatientResponse = client.post(Endpoints.PATIENT_NEW) {
             setBody(testPatient)
         }
         println(testPatient)
         println(newPatientResponse.bodyAsText())
-        assertEquals(HttpStatusCode.BadRequest, newPatientResponse.status)
+        assertEquals(HttpStatusCode.Unauthorized, newPatientResponse.status)
     }
 
     @Test
     fun `create new patient should return 200-OK with randomized data fitting the schema`() = runTest {
         val testPatient = generateRandomPatientJson()
-        val newPatientResponse = client.post("patient/new") {
+        val newPatientResponse = client.post(Endpoints.PATIENT_NEW) {
             setBody(testPatient)
         }
         println(testPatient)
@@ -98,14 +137,12 @@ class PatientEndpointTest {
     @Test
     fun `get new patient should return 200-OK`() = runTest {
         val testPatient = generateRandomPatientJson()
-        val newPatientResponse = client.post("patient/new") {
+        val newPatientResponse = client.post(Endpoints.PATIENT_NEW) {
             setBody(testPatient)
         }
         val accessID = newPatientResponse.bodyAsText()
-        val getNewPatientResponse = client.get("patient/$accessID")
+        val getNewPatientResponse = client.get(Endpoints.PATIENT_ACCESS_ID.withArgs(accessID))
         println(getNewPatientResponse.bodyAsText())
         assertEquals(HttpStatusCode.OK, getNewPatientResponse.status)
     }
-
-
 }

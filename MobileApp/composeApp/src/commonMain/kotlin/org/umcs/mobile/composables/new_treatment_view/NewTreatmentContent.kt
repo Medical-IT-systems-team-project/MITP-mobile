@@ -1,4 +1,4 @@
-package org.umcs.mobile.composables.new_case_view
+package org.umcs.mobile.composables.new_treatment_view
 
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
@@ -18,7 +18,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,29 +37,29 @@ import co.touchlab.kermit.Logger
 import com.slapps.cupertino.adaptive.Theme
 import com.slapps.cupertino.adaptive.icons.AdaptiveIcons
 import com.slapps.cupertino.adaptive.icons.DateRange
-import com.slapps.cupertino.adaptive.icons.Face
 import com.slapps.cupertino.theme.CupertinoTheme
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 import org.umcs.mobile.composables.shared.AdaptiveWheelDateTimePicker
 import org.umcs.mobile.composables.shared.AppTextField
-import org.umcs.mobile.composables.shared.PatientPicker
 import org.umcs.mobile.network.GlobalKtorClient
 import org.umcs.mobile.theme.determineTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewCaseContent( //TODO: add navigating back after success
+fun NewTreatmentContent(
     paddingValues: PaddingValues,
-    showPatientPicker: Boolean,
-    showDatePicker: Boolean,
-    patientPickerState: SheetState,
-    newCase: MedicalCase,
+    showStartDatePicker: Boolean,
+    showEndDatePicker: Boolean,
+    startDatePickerState: SheetState,
+    endDatePickerState: SheetState,
+    onShowStartDatePickerChange: (Boolean) -> Unit,
+    onShowEndDatePickerChange: (Boolean) -> Unit,
+    onNewTreatmentChange: (MedicalTreatment) -> Unit,
+    newTreatment: MedicalTreatment,
     focusRequester: FocusRequester,
     focusManager: FocusManager,
-    onNewCaseChange: (MedicalCase) -> Unit,
-    onShowPatientPickerChange: (Boolean) -> Unit,
-    onShowDatePickerChange: (Boolean) -> Unit,
+    medicalCaseID: Int,
     doctorID: Int,
 ) {
     val theme = remember { determineTheme() }
@@ -72,16 +71,19 @@ fun NewCaseContent( //TODO: add navigating back after success
         if (isCupertino) CupertinoTheme.typography.title3 else MaterialTheme.typography.titleMedium.copy(
             fontSize = 20.sp
         )
-    var shownDate by remember { mutableStateOf("") }
-    var patientError by remember { mutableStateOf("") }
-    var dateError by remember { mutableStateOf("") }
-    var reasonError by remember { mutableStateOf("") }
+    var shownStartDate by remember { mutableStateOf("") }
+    var shownEndDate by remember { mutableStateOf("") }
     var descriptionError by remember { mutableStateOf("") }
+    var startDateError by remember { mutableStateOf("") }
+    var endDateError by remember { mutableStateOf("") }
+    var detailsError by remember { mutableStateOf("") }
+    var nameError by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
-    val isFormValid = newCase.getPatientFullName().isNotBlank() &&
-            newCase.admissionDate.isNotBlank() &&
-            newCase.admissionReason.isNotBlank() &&
-            newCase.description.isNotBlank()
+    val isFormValid = newTreatment.description.isNotBlank() &&
+            newTreatment.startDate.isNotBlank() &&
+            newTreatment.endDate.isNotBlank() &&
+            newTreatment.name.isNotBlank() &&
+            newTreatment.details.isNotBlank()
 
     Column(
         verticalArrangement = Arrangement.spacedBy(5.dp),
@@ -90,56 +92,46 @@ fun NewCaseContent( //TODO: add navigating back after success
             top = paddingValues.calculateTopPadding() + 20.dp
         )
     ) {
-        if (showPatientPicker) {
-            PatientPicker(
-                pickPatient = { onNewCaseChange(newCase.copy(patient = it)) },
-                patientPickerState = patientPickerState,
-                onDismiss = {
-                    onShowPatientPickerChange(false)
-                    focusManager.clearFocus()
-                },
-            )
-        }
-        if (showDatePicker) {
+        if (showStartDatePicker) {
             AdaptiveWheelDateTimePicker(
-                sheetState = rememberModalBottomSheetState(),
+                sheetState = startDatePickerState,
                 dismiss = { newDateTime: LocalDateTime ->
-                    onShowDatePickerChange(false)
-                    onNewCaseChange(newCase.copy(admissionDate = newDateTime.toString()))
-                    shownDate = newDateTime.toString().replace('-', '/').replace('T', ' ')
+                    onShowStartDatePickerChange(false)
+                    onNewTreatmentChange(newTreatment.copy(startDate = newDateTime.toString()))
+                    shownStartDate = newDateTime.toString().replace('-', '/').replace('T', ' ')
                 }
             )
-            /*   DatePickerModal(
-                   onDateSelected = { dateInMillis ->
-                       if (dateInMillis != null) {
-                           val newDate = convertMillisToDate(dateInMillis)
-                           onNewCaseChange(newCase.copy(admissionDate = newDate))
-                       }
-                   },
-                   onDismiss = {
-                       onShowDatePickerChange(false)
-                       focusManager.clearFocus()
-                   }
-               )*/
+        }
+        if (showEndDatePicker) {
+            AdaptiveWheelDateTimePicker(
+                sheetState = endDatePickerState,
+                dismiss = { newDateTime: LocalDateTime ->
+                    onShowEndDatePickerChange(false)
+                    onNewTreatmentChange(newTreatment.copy(endDate = newDateTime.toString()))
+                    shownEndDate = newDateTime.toString().replace('-', '/').replace('T', ' ')
+                },
+                passedStartDateTime = if (newTreatment.startDate.isNotBlank()) LocalDateTime.parse(newTreatment.startDate) else null
+            )
         }
         AppTextField(
             readOnly = true,
-            title = { Text("Patient ") },
-            text = newCase.getPatientFullName(),
-            supportingText = patientError,
-            onTextChange = { },
+            keyboardType = KeyboardType.Number,
+            title = { Text("Start Date") },
+            text = shownStartDate,
+            supportingText = startDateError,
             focusRequester = focusRequester,
-            placeholder = { Text("Patient") },
+            placeholder = { Text("Start Date") },
             trailingIcon = {
-                Icon(AdaptiveIcons.Outlined.Face, contentDescription = "Select Patient")
+                Icon(AdaptiveIcons.Outlined.DateRange, contentDescription = "Select start date")
             },
+            onTextChange = { onNewTreatmentChange(newTreatment.copy(startDate = it)) },
             modifier = Modifier
-                .pointerInput(newCase.getPatientFullName()) {
+                .pointerInput(newTreatment.startDate) {
                     awaitEachGesture {
                         awaitFirstDown(pass = PointerEventPass.Initial)
                         val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
                         if (upEvent != null) {
-                            onShowPatientPickerChange(true)
+                            onShowStartDatePickerChange(true)
                         }
                     }
                 }
@@ -147,78 +139,88 @@ fun NewCaseContent( //TODO: add navigating back after success
         AppTextField(
             readOnly = true,
             keyboardType = KeyboardType.Number,
-            title = { Text("Admission date") },
-            text = shownDate,
-            supportingText = dateError,
+            title = { Text("End Date") },
+            text = shownEndDate,
+            supportingText = endDateError,
             focusRequester = focusRequester,
-            placeholder = { Text("Admission date") },
+            placeholder = { Text("End Date") },
             trailingIcon = {
-                Icon(AdaptiveIcons.Outlined.DateRange, contentDescription = "Select date")
+                Icon(AdaptiveIcons.Outlined.DateRange, contentDescription = "Select end date")
             },
-            onTextChange = { onNewCaseChange(newCase.copy(admissionDate = it)) },
+            onTextChange = { onNewTreatmentChange(newTreatment.copy(endDate = it)) },
             modifier = Modifier
-                .pointerInput(newCase.admissionDate) {
+                .pointerInput(newTreatment.endDate) {
                     awaitEachGesture {
                         awaitFirstDown(pass = PointerEventPass.Initial)
                         val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
                         if (upEvent != null) {
-                            onShowDatePickerChange(true)
+                            onShowEndDatePickerChange(true)
                         }
                     }
                 }
         )
         AppTextField(
-            title = { Text("Admission Reason") },
-            text = newCase.admissionReason,
-            supportingText = reasonError,
-            onTextChange = { onNewCaseChange(newCase.copy(admissionReason = it)) },
+            title = { Text("Name") },
+            text = newTreatment.name,
+            supportingText = nameError,
+            onTextChange = { onNewTreatmentChange(newTreatment.copy(name = it)) },
             focusRequester = focusRequester,
-            placeholder = { Text("Admission Reason") },
+            placeholder = { Text("Name") },
         )
         AppTextField(
-            maxLines = 5,
-            isSingleLine = false,
             title = { Text("Description") },
-            text = newCase.description,
+            text = newTreatment.description,
             supportingText = descriptionError,
-            onTextChange = { onNewCaseChange(newCase.copy(description = it)) },
+            onTextChange = { onNewTreatmentChange(newTreatment.copy(description = it)) },
             focusRequester = focusRequester,
             placeholder = { Text("Description") },
         )
+        AppTextField(
+            title = { Text("Details") },
+            text = newTreatment.details,
+            supportingText = detailsError,
+            onTextChange = { onNewTreatmentChange(newTreatment.copy(details = it)) },
+            focusRequester = focusRequester,
+            placeholder = { Text("Details") },
+        )
 
-        Spacer(modifier = Modifier.height(30.dp)) //fixme 
+        Spacer(modifier = Modifier.height(30.dp))
         Button(
             onClick = {
-                patientError = ""
-                dateError = ""
-                reasonError = ""
                 descriptionError = ""
+                startDateError = ""
+                endDateError = ""
+                detailsError = ""
+                nameError = ""
 
                 if (isFormValid) {
                     scope.launch {
-                        GlobalKtorClient.createNewCase(newCase,doctorID)
+                        GlobalKtorClient.createNewTreatment(newTreatment, doctorID, medicalCaseID)
                     }
                 } else {
-                    newCase.getPatientFullName().ifBlank {
-                        patientError = "This field can't be blank"
-                    }
-                    newCase.admissionDate.ifBlank {
-                        dateError = "This field can't be blank"
-                    }
-                    newCase.admissionReason.ifBlank {
-                        reasonError = "This field can't be blank"
-                    }
-                    newCase.description.ifBlank {
+                    newTreatment.description.ifBlank {
                         descriptionError = "This field can't be blank"
+                    }
+                    newTreatment.startDate.ifBlank {
+                        startDateError = "This field can't be blank"
+                    }
+                    newTreatment.endDate.ifBlank {
+                        endDateError = "This field can't be blank"
+                    }
+                    newTreatment.details.ifBlank {
+                        detailsError = "This field can't be blank"
+                    }
+                    newTreatment.name.ifBlank {
+                        nameError = "This field can't be blank"
                     }
                 }
 
-                Logger.i(newCase.toString(), tag = "Case")
+                Logger.i(newTreatment.toString(), tag = "Treatment")
             },
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier.size(width = 270.dp, height = 60.dp),
         ) {
-            Text(text = "Create Case", style = buttonTextStyle)
+            Text(text = "Create Treatment", style = buttonTextStyle)
         }
     }
 }

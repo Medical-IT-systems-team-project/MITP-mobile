@@ -20,7 +20,9 @@ import org.umcs.mobile.composables.login.ChooseProfileLayout
 import org.umcs.mobile.composables.login.DoctorLoginLayout
 import org.umcs.mobile.composables.login.PatientLoginLayout
 import org.umcs.mobile.composables.new_case_view.NewCaseLayout
+import org.umcs.mobile.composables.new_medication_view.NewMedicationLayout
 import org.umcs.mobile.composables.new_patient_view.NewPatientLayout
+import org.umcs.mobile.composables.new_treatment_view.NewTreatmentLayout
 import org.umcs.mobile.composables.share_uuid_view.ShareUUIDLayout
 import org.umcs.mobile.data.Case
 import org.umcs.mobile.data.Patient
@@ -80,6 +82,22 @@ fun NavigationHost(
         composable<Routes.NewCase> {
             NewCaseLayout(
                 navigateBack = navController::navigateUp
+            )
+        }
+        composable<Routes.NewTreatment> {backStackEntry ->
+            val caseID = backStackEntry.toRoute<Routes.NewTreatment>().medicalCaseID
+
+            NewTreatmentLayout(
+                navigateBack = navController::navigateUp,
+                medicalCaseID = caseID
+            )
+        }
+        composable<Routes.NewMedication> { backStackEntry ->
+            val caseID = backStackEntry.toRoute<Routes.NewMedication>().medicalCaseID
+
+            NewMedicationLayout(
+                navigateBack = navController::navigateUp,
+                medicalCaseID = caseID
             )
         }
         composable<Routes.CaseListPatient> {
@@ -157,7 +175,9 @@ fun NavigationHost(
             CaseLayout(
                 isDoctor = true,
                 case = route.case,
-                navigateBack = navController::navigateUp
+                navigateBack = navController::navigateUp,
+                navigateToNewTreatment = { medicalCaseID : Int -> navController.navigate(Routes.NewTreatment(medicalCaseID)) },
+                navigateToNewMedication = { medicalCaseID : Int -> navController.navigate(Routes.NewMedication(medicalCaseID)) }
             )
         }
 
@@ -171,7 +191,9 @@ fun NavigationHost(
             CaseLayout(
                 isDoctor = false,
                 case = route.case,
-                navigateBack = navController::navigateUp
+                navigateBack = navController::navigateUp,
+                navigateToNewTreatment = { medicalCaseID : Int -> navController.navigate(Routes.NewTreatment(medicalCaseID)) },
+                navigateToNewMedication = { medicalCaseID : Int -> navController.navigate(Routes.NewMedication(medicalCaseID)) }
             )
         }
 

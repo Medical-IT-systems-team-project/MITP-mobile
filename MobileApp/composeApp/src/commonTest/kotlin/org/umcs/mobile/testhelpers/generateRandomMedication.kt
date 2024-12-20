@@ -9,12 +9,12 @@ fun generateRandomMedicationJson(): String {
     // Build the JSON object
     val jsonObject: JsonObject = buildJsonObject {
         put("name", randomString(10))
-        put("startDate", randomIsoDateTime())
-        put("endDate", randomIsoDateTime())
+        put("startDate", getEndDateTime())
+        put("endDate", getEndDateTime())
         put("details", randomString(20))
         put("medicalCaseId", 1) // Fixed value
         put("medicalDoctorId", 1) // Fixed value
-        put("dosage form", randomString(15))
+        put("dosageForm", randomString(15))
         put("strength", randomString(15))
         put("unit", randomString(15))
     }

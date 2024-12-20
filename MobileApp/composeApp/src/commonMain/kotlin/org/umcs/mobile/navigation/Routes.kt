@@ -35,6 +35,12 @@ sealed class Routes {
     data object NewCase : Routes()
 
     @Serializable
+    data class NewTreatment(val medicalCaseID : Int): Routes()
+
+    @Serializable
+    data class NewMedication(val medicalCaseID : Int) : Routes()
+
+    @Serializable
     data object ImportPatient : Routes()
 
     @Serializable
