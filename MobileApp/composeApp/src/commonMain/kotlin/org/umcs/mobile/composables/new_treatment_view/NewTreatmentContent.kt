@@ -61,6 +61,7 @@ fun NewTreatmentContent(
     focusManager: FocusManager,
     medicalCaseID: Int,
     doctorID: Int,
+    modifier: Modifier,
 ) {
     val theme = remember { determineTheme() }
     val isCupertino = when (theme) {
@@ -88,7 +89,7 @@ fun NewTreatmentContent(
     Column(
         verticalArrangement = Arrangement.spacedBy(5.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize().padding(horizontal = 25.dp).padding(
+        modifier = modifier.fillMaxSize().padding(horizontal = 25.dp).padding(
             top = paddingValues.calculateTopPadding() + 20.dp
         )
     ) {

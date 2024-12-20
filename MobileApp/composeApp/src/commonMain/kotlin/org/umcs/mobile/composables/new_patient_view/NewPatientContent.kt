@@ -72,7 +72,6 @@ fun NewPatientContent(
         if (isCupertino) CupertinoTheme.typography.title3 else MaterialTheme.typography.titleMedium.copy(
             fontSize = 20.sp
         )
-
     var shownDateOfBirth by remember { mutableStateOf("") }
 
     var ssnError by remember { mutableStateOf("") }
@@ -283,11 +282,12 @@ fun GenderSelection(
     ) else MaterialTheme.typography.bodyLarge
     val textStyle =
         if (isCupertino) CupertinoTheme.typography.body else MaterialTheme.typography.bodyMedium
+    val width = if(isCupertino) 300.dp else 270.dp
 
     Column {
         Text("Gender", style = titleStyle)
         Row(
-            modifier = Modifier.width(270.dp),
+            modifier = Modifier.width(width),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             genderOptions.forEach { gender ->

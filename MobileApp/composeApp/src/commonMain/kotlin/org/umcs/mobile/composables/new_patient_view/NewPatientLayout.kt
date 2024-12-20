@@ -17,10 +17,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
-import com.slapps.cupertino.adaptive.Theme
 import org.umcs.mobile.composables.shared.AppTopBar
 import org.umcs.mobile.data.Patient
-import org.umcs.mobile.theme.determineTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,10 +30,6 @@ fun NewPatientLayout(navigateBack: () -> Unit) {
     val datePickerState = rememberModalBottomSheetState()
     val interactionSource = remember { MutableInteractionSource() }
     val scrollState = rememberScrollState()
-    val scrollEnabled = when(determineTheme()){
-        Theme.Cupertino -> false
-        Theme.Material3 -> true
-    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize().clickable(
@@ -59,7 +53,7 @@ fun NewPatientLayout(navigateBack: () -> Unit) {
             datePickerState = datePickerState,
             onShowDatePickerChange = {showDatePicker = it},
             onNewPatientChange = {newPatient =it},
-            modifier = Modifier.verticalScroll(state = scrollState, enabled = scrollEnabled)
+            modifier = Modifier.verticalScroll(state = scrollState)
         )
     }
 }

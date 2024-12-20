@@ -42,6 +42,7 @@ fun AppTextField(
     }
     val supportStyle = if (isCupertino) CupertinoTheme.typography.footnote else MaterialTheme.typography.bodySmall
     val textStyle = if(isCupertino) CupertinoTheme.typography.body else MaterialTheme.typography.bodyMedium
+    val width = if(isCupertino) 300.dp else 270.dp
 
     TextField(
         textStyle = textStyle,
@@ -64,7 +65,7 @@ fun AppTextField(
         onValueChange = onTextChange,
         label = title,
         modifier = modifier
-            .width(270.dp)
+            .width(width)
             .focusRequester(focusRequester),
         colors = TextFieldDefaults.colors(
             disabledIndicatorColor = Color.Transparent,

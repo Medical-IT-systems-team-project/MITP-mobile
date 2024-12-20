@@ -125,7 +125,6 @@ val loremIpsum =
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 
 fun fetchTestCases(): List<Case> {
-
     return listOf(
         Case(
             caseDetails = "Broken arm",
@@ -151,7 +150,7 @@ fun fetchTestCases(): List<Case> {
         Case(
             caseDetails = "Dislocated shoulder",
             stringDate = "2023-04-01",
-            patientName = "Bob Brownnnnnnnnnnnnnn",
+            patientName = "Bob Brown",
             doctorName = "Dr. Brown",
             description = loremIpsum
         ),
