@@ -68,7 +68,6 @@ fun NewTreatmentLayout(
     }
 }
 
-
 data class MedicalTreatment(
     val description: String = "",
     val startDate: String = "",

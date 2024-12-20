@@ -196,8 +196,6 @@ fun NavigationHost(
                 navigateToNewMedication = { medicalCaseID : Int -> navController.navigate(Routes.NewMedication(medicalCaseID)) }
             )
         }
-
-
     }
 }
 

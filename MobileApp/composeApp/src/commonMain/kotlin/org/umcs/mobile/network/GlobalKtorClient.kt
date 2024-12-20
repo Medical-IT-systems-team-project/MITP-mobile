@@ -12,6 +12,7 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
@@ -22,11 +23,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.json.Json
 import org.umcs.mobile.composables.new_case_view.MedicalCase
+import org.umcs.mobile.composables.new_medication_view.Medication
 import org.umcs.mobile.composables.new_treatment_view.MedicalTreatment
+import org.umcs.mobile.network.Endpoints.withArgs
 import org.umcs.mobile.network.dto.case.MedicalCaseRequestDto
+import org.umcs.mobile.network.dto.case.MedicationRequestDto
 import org.umcs.mobile.network.dto.case.TreatmentRequestDto
 import org.umcs.mobile.network.dto.login.JwtResponseDto
 import org.umcs.mobile.network.dto.login.TokenRequestDto
@@ -60,9 +65,7 @@ object GlobalKtorClient {
                 }
                 sendWithoutRequest { request ->
                     !request.url.encodedPath.contains("login") &&
-                            !(request.url.encodedPath.contains("patient/") && !request.url.encodedPath.equals(
-                                "patient/new"
-                            ))
+                            !(request.url.encodedPath.contains("patient/") && request.url.encodedPath != "patient/new")
 
                 }
             }
@@ -84,18 +87,18 @@ object GlobalKtorClient {
                 description = newCase.description,
                 attendingDoctorId = doctorId
             )
-            val medicalCaseResponse = client.post("medicalCase/newCase"){
+            val medicalCaseResponse = client.post(Endpoints.MEDICAL_CASE_NEW) {
                 setBody(medicalCaseRequestDto)
             }
             Logger.v(medicalCaseResponse.status.toString(), tag = "new case")
-        }catch (e : Exception){
+        } catch (e: Exception) {
             Logger.v(e.message.toString(), tag = "new case")
         }
     }
 
     suspend fun loginAsDoctor(login: String, password: String): Boolean {
         return try {
-            val tokenResponse: JwtResponseDto = client.post("login") {
+            val tokenResponse: JwtResponseDto = client.post(Endpoints.LOGIN) {
                 setBody(TokenRequestDto(login, password))
             }.body()
             Logger.i("TOKEN : $tokenResponse", tag = "Ktor")
@@ -110,10 +113,9 @@ object GlobalKtorClient {
 
     suspend fun loginAsPatient(accessID: String): String? {
         return try {
-            val patientResponse = client.post("patient/$accessID") {
+            val patientResponse = client.post(Endpoints.PATIENT_ACCESS_ID.withArgs(accessID)) {
                 contentType(ContentType.Application.Json)
             }
-
             if (patientResponse.status == HttpStatusCode.OK) {
                 null
             } else if (patientResponse.status == HttpStatusCode.NotFound) {
@@ -129,24 +131,50 @@ object GlobalKtorClient {
         }
     }
 
-    suspend fun createNewTreatment(newTreatment: MedicalTreatment, doctorID: Int, medicalCaseID: Int) {
-       return try{
-        val treatmentRequestDto = TreatmentRequestDto(
-            description = newTreatment.description,
-            startDate = LocalDateTime.parse(newTreatment.startDate),
-            endDate = LocalDateTime.parse(newTreatment.endDate),
-            details = newTreatment.details,
-            name = newTreatment.name,
-            medicalDoctorId = doctorID,
-            medicalCaseId = medicalCaseID
-        )
-        val treatmentResponse = client.post("doctor/new/treatment"){
-            setBody(treatmentRequestDto)
+    suspend fun createNewTreatment(
+        newTreatment: MedicalTreatment,
+        doctorID: Int,
+        medicalCaseID: Int,
+    ) {
+        return try {
+            val treatmentRequestDto = TreatmentRequestDto(
+                description = newTreatment.description,
+                startDate = LocalDateTime.parse(newTreatment.startDate),
+                endDate = LocalDateTime.parse(newTreatment.endDate),
+                details = newTreatment.details,
+                name = newTreatment.name,
+                medicalDoctorId = doctorID,
+                medicalCaseId = medicalCaseID
+            )
+            val treatmentResponse = client.post(Endpoints.DOCTOR_NEW_TREATMENT) {
+                setBody(treatmentRequestDto)
+            }
+            Logger.v(treatmentResponse.status.toString(), tag = "new case")
+        } catch (e: Exception) {
+            Logger.v(e.message.toString(), tag = "new case")
         }
-        Logger.v(treatmentResponse.status.toString(), tag = "new case")
-    }catch (e : Exception){
-        Logger.v(e.message.toString(), tag = "new case")
     }
 
+    suspend fun createNewMedication(newMedication: Medication, doctorID: Int, medicalCaseID: Int) {
+        return try {
+            val treatmentRequestDto = MedicationRequestDto(
+                startDate = LocalDate.parse(newMedication.startDate),
+                endDate = LocalDate.parse(newMedication.endDate),
+                details = newMedication.details,
+                name = newMedication.name,
+                medicalDoctorId = doctorID,
+                medicalCaseId = medicalCaseID,
+                dosageForm = newMedication.dosageForm,
+                strength = newMedication.strength,
+                unit = newMedication.unit
+            )
+            val treatmentResponse = client.post(Endpoints.DOCTOR_NEW_MEDICATION) {
+                setBody(treatmentRequestDto)
+            }
+            Logger.v(treatmentResponse.status.toString(), tag = "new case")
+            Logger.v(treatmentResponse.bodyAsText(), tag = "new case")
+        } catch (e: Exception) {
+            Logger.v(e.message.toString(), tag = "new case")
+        }
     }
 }

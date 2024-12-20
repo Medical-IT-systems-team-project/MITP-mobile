@@ -17,6 +17,7 @@ object Endpoints { //TODO : figure out how to use this without String.format()
     const val MEDICAL_CASE_ID_TREATMENT_ALL = "medical-case/%s/treatment/all"
     const val MEDICAL_CASE_ID_MEDICATION_ALL = "medical-case/%s/medication/all"
 
+    const val LOGIN = "login"
     // doctor-controller
     const val DOCTOR_NEW_TREATMENT = "doctor/new/treatment"
     const val DOCTOR_NEW_MEDICATION = "doctor/new/medication"
