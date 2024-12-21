@@ -59,7 +59,7 @@ class PatientEndpointTest {
                     sendWithoutRequest { request ->
                         !request.url.encodedPath.contains("login") &&
                                 !request.url.encodedPath.contains("register") &&
-                                !(request.url.encodedPath.contains("patient/") && request.url.encodedPath.equals("patient/new"))
+                                !(request.url.encodedPath.contains("patient/") && request.url.encodedPath != "patient/new")
                     }
                 }
             }

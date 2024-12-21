@@ -10,6 +10,7 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
@@ -22,7 +23,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.json.Json
@@ -72,12 +72,6 @@ object GlobalKtorClient {
         }
     }
 
-    fun initClient() {
-        scope.launch {
-            //  loginAndGetTokens()
-        }
-    }
-
     suspend fun createNewCase(newCase: MedicalCase, doctorId: Int) {
         return try {
             val medicalCaseRequestDto = MedicalCaseRequestDto(
@@ -113,7 +107,7 @@ object GlobalKtorClient {
 
     suspend fun loginAsPatient(accessID: String): String? {
         return try {
-            val patientResponse = client.post(Endpoints.PATIENT_ACCESS_ID.withArgs(accessID)) {
+            val patientResponse = client.get(Endpoints.PATIENT_ACCESS_ID.withArgs(accessID)) {
                 contentType(ContentType.Application.Json)
             }
             if (patientResponse.status == HttpStatusCode.OK) {

@@ -79,6 +79,12 @@ fun patientList() = listOf(
     Patient(firstName = "Sarah", lastName = "Wilson", socialSecurityNumber = "89012345678"),
     Patient(firstName = "David", lastName = "Taylor", socialSecurityNumber = "23456789012"),
     Patient(firstName = "Emily", lastName = "Anderson", socialSecurityNumber = "56789012345"),
+    Patient(firstName = "Emily", lastName = "Anderson", socialSecurityNumber = "56789012345"),
+    Patient(firstName = "Emily", lastName = "Anderson", socialSecurityNumber = "56789012345"),
+    Patient(firstName = "Emily", lastName = "Anderson", socialSecurityNumber = "56789012345"),
+    Patient(firstName = "Emily", lastName = "Anderson", socialSecurityNumber = "56789012345"),
+    Patient(firstName = "Emily", lastName = "Anderson", socialSecurityNumber = "56789012345"),
+    Patient(firstName = "Emily", lastName = "Anderson", socialSecurityNumber = "56789012345"),
     Patient(firstName = "James", lastName = "Martinez", socialSecurityNumber = "90123456789")
 )
 

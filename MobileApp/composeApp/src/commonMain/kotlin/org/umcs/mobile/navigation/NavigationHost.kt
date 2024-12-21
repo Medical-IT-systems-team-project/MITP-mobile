@@ -160,7 +160,6 @@ fun NavigationHost(
             ShareUUIDLayout(
                 navigateBack = navController::navigateUp,
                 modifier = Modifier.fillMaxSize(),
-                patientAccessID = patient.socialSecurityNumber,
                 patientName = patient.firstName,
             )
         }

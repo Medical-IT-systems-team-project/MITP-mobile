@@ -61,6 +61,16 @@ fun NewPatientContent(
     newPatient: Patient,
     focusRequester: FocusRequester,
 ) {
+    var shownDateOfBirth by remember { mutableStateOf("") }
+    var ssnError by remember { mutableStateOf("") }
+    var firstNameError by remember { mutableStateOf("") }
+    var lastNameError by remember { mutableStateOf("") }
+    var ageError by remember { mutableStateOf("") }
+    var genderError by remember { mutableStateOf("") }
+    var addressError by remember { mutableStateOf("") }
+    var phoneNumberError by remember { mutableStateOf("") }
+    var emailError by remember { mutableStateOf("") }
+    var dateOfBirthError by remember { mutableStateOf("") }
     val ssnMaxChars = 11
     val maxPhoneNumberChars = 9
     val theme = remember { determineTheme() }
@@ -72,18 +82,6 @@ fun NewPatientContent(
         if (isCupertino) CupertinoTheme.typography.title3 else MaterialTheme.typography.titleMedium.copy(
             fontSize = 20.sp
         )
-    var shownDateOfBirth by remember { mutableStateOf("") }
-
-    var ssnError by remember { mutableStateOf("") }
-    var firstNameError by remember { mutableStateOf("") }
-    var lastNameError by remember { mutableStateOf("") }
-    var ageError by remember { mutableStateOf("") }
-    var genderError by remember { mutableStateOf("") }
-    var addressError by remember { mutableStateOf("") }
-    var phoneNumberError by remember { mutableStateOf("") }
-    var emailError by remember { mutableStateOf("") }
-    var dateOfBirthError by remember { mutableStateOf("") }
-
     val scope = rememberCoroutineScope()
     val isFormValid = newPatient.socialSecurityNumber.isNotBlank() &&
             newPatient.firstName.isNotBlank() &&
