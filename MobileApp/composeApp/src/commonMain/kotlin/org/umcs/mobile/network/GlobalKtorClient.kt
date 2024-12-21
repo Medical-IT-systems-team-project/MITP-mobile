@@ -19,10 +19,6 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.http.encodedPath
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.json.Json
@@ -35,9 +31,9 @@ import org.umcs.mobile.network.dto.case.MedicationRequestDto
 import org.umcs.mobile.network.dto.case.TreatmentRequestDto
 import org.umcs.mobile.network.dto.login.JwtResponseDto
 import org.umcs.mobile.network.dto.login.TokenRequestDto
+import org.umcs.mobile.network.dto.patient.PatientResponseDto
 
 object GlobalKtorClient {
-    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private lateinit var tokens: BearerTokens
     private val client = HttpClient {
         defaultRequest {
@@ -105,23 +101,22 @@ object GlobalKtorClient {
         }
     }
 
-    suspend fun loginAsPatient(accessID: String): String? {
+    suspend fun loginAsPatient(accessID: String): LoginResult {
         return try {
             val patientResponse = client.get(Endpoints.PATIENT_ACCESS_ID.withArgs(accessID)) {
                 contentType(ContentType.Application.Json)
             }
             if (patientResponse.status == HttpStatusCode.OK) {
-                null
+                val patientDto : PatientResponseDto = patientResponse.body()
+                LoginResult.Success(patientDto)
             } else if (patientResponse.status == HttpStatusCode.NotFound) {
                 throw NoSuchElementException("No patient found with that access ID")
-            } else if (patientResponse.status != HttpStatusCode.OK) {
-                Logger.e("${patientResponse.status}", tag = "Ktor error")
+            } else {
                 throw IllegalStateException("${patientResponse.status}  \uD83E\uDD21 ")
             }
-            null
         } catch (e: Exception) {
             Logger.e("Login failed: ${e.message}", tag = "Ktor")
-            e.message
+            LoginResult.Error(e.message ?: "Unknown error")
         }
     }
 

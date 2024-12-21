@@ -161,6 +161,7 @@ fun NavigationHost(
                 navigateBack = navController::navigateUp,
                 modifier = Modifier.fillMaxSize(),
                 patientName = patient.firstName,
+                patientAccessID = patient.accessID
             )
         }
 

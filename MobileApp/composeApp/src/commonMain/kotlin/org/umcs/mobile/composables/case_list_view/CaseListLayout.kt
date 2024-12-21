@@ -1,5 +1,6 @@
 package org.umcs.mobile.composables.case_list_view
 
+import AppViewModel
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
@@ -17,6 +18,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.slapps.cupertino.adaptive.Theme
+import org.koin.compose.viewmodel.koinViewModel
 import org.umcs.mobile.composables.case_list_view.doctor.PatientListContent
 import org.umcs.mobile.data.Case
 import org.umcs.mobile.data.Patient
@@ -32,6 +34,7 @@ fun CaseListLayout(
     navigateToImportPatientCase: ((Patient) -> Unit)? = null,
     navigateToImportNewPatient: (() -> Unit)? = null,
     navigateToSharePatientUUID: ((Patient) -> Unit)? = null,
+    viewModel: AppViewModel = koinViewModel(),
     isDoctor: Boolean = true,
 ) {
     val isMaterial = when (determineTheme()) {
@@ -44,7 +47,7 @@ fun CaseListLayout(
     val caseListState = rememberLazyListState()
     val patientListState = rememberLazyListState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-    val currentPatient = Patient(firstName = "John", lastName = "Doevski")
+    val currentPatient = viewModel.patient
 
     Scaffold(
         modifier = Modifier

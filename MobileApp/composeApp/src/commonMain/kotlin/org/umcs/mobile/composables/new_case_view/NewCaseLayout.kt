@@ -16,8 +16,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.lifecycle.viewmodel.compose.viewModel
 import co.touchlab.kermit.Logger
+import org.koin.compose.viewmodel.koinViewModel
 import org.umcs.mobile.composables.shared.AppTopBar
 import org.umcs.mobile.data.Patient
 
@@ -26,8 +26,8 @@ import org.umcs.mobile.data.Patient
 fun NewCaseLayout(
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: AppViewModel = viewModel { AppViewModel() },
-    ) {
+    viewModel: AppViewModel = koinViewModel(),
+) {
     var newCase by remember { mutableStateOf(MedicalCase()) }
     val patientPickerState = rememberModalBottomSheetState()
     var showPatientPicker by remember { mutableStateOf(false) }
@@ -60,7 +60,7 @@ fun NewCaseLayout(
             focusManager = focusManager,
             onNewCaseChange = {
                 newCase = it
-                Logger.i(newCase.toString(), tag ="new case")
+                Logger.i(newCase.toString(), tag = "new case")
             },
             onShowPatientPickerChange = { showPatientPicker = it },
             onShowDatePickerChange = { showDatePicker = it },

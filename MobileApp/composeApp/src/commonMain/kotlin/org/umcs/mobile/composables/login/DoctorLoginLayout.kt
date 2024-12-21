@@ -31,20 +31,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import mobileapp.composeapp.generated.resources.Res
 import mobileapp.composeapp.generated.resources.caretrack
 import mobileapp.composeapp.generated.resources.cross_logo
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.viewmodel.koinViewModel
 import org.umcs.mobile.composables.shared.AppTextField
 import org.umcs.mobile.network.GlobalKtorClient
 
 @Composable
 fun DoctorLoginLayout(
     navigateToCaseList: () -> Unit,
-    viewModel: AppViewModel = viewModel { AppViewModel() },
+    viewModel: AppViewModel = koinViewModel(),
     loginDataStore: DataStore<Preferences>? = null,
 ) {
     var login by remember { mutableStateOf("") }

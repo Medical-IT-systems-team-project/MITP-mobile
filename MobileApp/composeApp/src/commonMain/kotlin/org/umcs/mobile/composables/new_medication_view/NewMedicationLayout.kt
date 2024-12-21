@@ -18,7 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.compose.viewmodel.koinViewModel
 import org.umcs.mobile.composables.shared.AppTopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -27,7 +27,7 @@ fun NewMedicationLayout(
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     medicalCaseID: Int,
-    viewModel: AppViewModel = viewModel { AppViewModel() },
+    viewModel: AppViewModel = koinViewModel(),
 ) {
     var newMedication by remember { mutableStateOf(Medication()) }
     val startDatePickerState = rememberModalBottomSheetState()

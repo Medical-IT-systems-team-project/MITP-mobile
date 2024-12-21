@@ -22,7 +22,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.slapps.cupertino.adaptive.Theme
@@ -38,9 +37,8 @@ import org.jetbrains.compose.resources.painterResource
 import org.umcs.mobile.composables.shared.AppTopBar
 import org.umcs.mobile.theme.backgroundLight
 import org.umcs.mobile.theme.determineTheme
-import kotlin.uuid.ExperimentalUuidApi
 
-@OptIn(ExperimentalUuidApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShareUUIDLayout(
     navigateBack: () -> Unit,

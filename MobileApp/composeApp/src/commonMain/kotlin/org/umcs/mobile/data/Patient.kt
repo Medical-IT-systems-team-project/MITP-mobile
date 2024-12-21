@@ -13,6 +13,7 @@ data class Patient(
     var phoneNumber: String = "",
     var email: String = "",
     var birthDate: String = "",
+    var accessID : String = ""
 ){
     fun getFullName(): String {
         return "$firstName $lastName"
