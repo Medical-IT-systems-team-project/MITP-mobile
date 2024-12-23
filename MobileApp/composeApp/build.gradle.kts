@@ -74,7 +74,7 @@ kotlin {
             implementation(libs.cupertino.native)
             implementation(libs.cupertino.icons.extended)
 
-            implementation("io.github.darkokoa:datetime-wheel-picker:1.0.2-compose1.7")
+            implementation("io.github.darkokoa:datetime-wheel-picker:1.0.2-compose1.7.0-beta01") // NIE ZMIENIAJ WERSJIIII
             implementation("com.eygraber:uri-kmp:0.0.18")
             implementation("io.github.theapache64:rebugger:1.0.0-rc03")
             implementation(libs.qrose)

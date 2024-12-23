@@ -19,7 +19,7 @@ ksp = "2.0.20-1.0.25"
 composeIcons = "1.1.1"
 qrose = "1.0.1"
 datastore = "1.1.1"
-cupertino = "1.0.2"
+cupertino = "1.1.0"
 
 [libraries]
 cupertino = { group = "com.slapps.cupertino", name = "cupertino", version.ref = "cupertino" }

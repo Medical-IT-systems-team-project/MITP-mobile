@@ -35,6 +35,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.navigation.NavHostController
 import com.slapps.cupertino.adaptive.AdaptiveScaffold
 import com.slapps.cupertino.adaptive.AdaptiveTextButton
+import com.slapps.cupertino.adaptive.AdaptiveTonalButton
 import com.slapps.cupertino.adaptive.ExperimentalAdaptiveApi
 import com.slapps.cupertino.adaptive.Theme
 import com.slapps.cupertino.theme.CupertinoTheme
@@ -61,11 +62,11 @@ internal fun App(
     //!TODO : Starting View (either doctor or patient) - DONE
 
     //TODO : Case Info View - DONE
-    //TODO : Case Treatment View
-    //TODO : Case Medicine View
-    //TODO : Modify Case View
-    //TODO : Hold user data (either patient or doctor)
-    //TODO : Handle API requests (patient should log in with uuid, doctor should log in with username and password)
+    //TODO : Case Treatment View DONE
+    //TODO : Case Medicine View DONE
+    //TODO : Modify Case View DONE
+    //TODO : Hold user data (either patient or doctor) DONE
+    //TODO : Handle API requests (patient should log in with uuid, doctor should log in with username and password) DONE
     //TODO : Refactor KtorClient to not be platform specific (didnt know you could just init it without specifics and the platform related stuff would happen by itself)
 
     val scope = rememberCoroutineScope()
@@ -178,6 +179,13 @@ internal fun App(
                 )
             }
 
+            var text by remember { mutableStateOf("") }
+
+            AdaptiveTonalButton(
+                onClick = {}
+            ){
+                Text("Some long ass text")
+            }
             /* CupertinoWheelPicker(
                  state = rememberCupertinoPickerState(),
                  items = List(100) { it + 1 },

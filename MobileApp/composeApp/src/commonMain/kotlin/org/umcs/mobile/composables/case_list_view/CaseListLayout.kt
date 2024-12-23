@@ -47,7 +47,7 @@ fun CaseListLayout(
     val caseListState = rememberLazyListState()
     val patientListState = rememberLazyListState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-    val currentPatient = viewModel.patient
+    val currentPatient = Patient("SSN","Michas")
 
     Scaffold(
         modifier = Modifier

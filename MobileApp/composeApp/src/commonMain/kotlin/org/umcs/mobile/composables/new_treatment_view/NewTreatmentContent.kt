@@ -40,8 +40,8 @@ import com.slapps.cupertino.adaptive.icons.DateRange
 import com.slapps.cupertino.theme.CupertinoTheme
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
+import org.umcs.mobile.composables.shared.AdaptiveTextField
 import org.umcs.mobile.composables.shared.AdaptiveWheelDateTimePicker
-import org.umcs.mobile.composables.shared.AppTextField
 import org.umcs.mobile.network.GlobalKtorClient
 import org.umcs.mobile.theme.determineTheme
 
@@ -72,6 +72,7 @@ fun NewTreatmentContent(
         if (isCupertino) CupertinoTheme.typography.title3 else MaterialTheme.typography.titleMedium.copy(
             fontSize = 20.sp
         )
+    val verticalSpacing = if(isCupertino) 15.dp else 5.dp
     var shownStartDate by remember { mutableStateOf("") }
     var shownEndDate by remember { mutableStateOf("") }
     var descriptionError by remember { mutableStateOf("") }
@@ -87,7 +88,7 @@ fun NewTreatmentContent(
             newTreatment.details.isNotBlank()
 
     Column(
-        verticalArrangement = Arrangement.spacedBy(5.dp),
+        verticalArrangement = Arrangement.spacedBy(verticalSpacing),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize().padding(horizontal = 25.dp).padding(
             top = paddingValues.calculateTopPadding() + 20.dp
@@ -114,12 +115,13 @@ fun NewTreatmentContent(
                 passedStartDateTime = if (newTreatment.startDate.isNotBlank()) LocalDateTime.parse(newTreatment.startDate) else null
             )
         }
-        AppTextField(
+        AdaptiveTextField(
             readOnly = true,
             keyboardType = KeyboardType.Number,
             title = { Text("Start Date") },
             text = shownStartDate,
             supportingText = startDateError,
+            changeSupportingText = { startDateError= it },
             focusRequester = focusRequester,
             placeholder = { Text("Start Date") },
             trailingIcon = {
@@ -137,12 +139,13 @@ fun NewTreatmentContent(
                     }
                 }
         )
-        AppTextField(
+        AdaptiveTextField(
             readOnly = true,
             keyboardType = KeyboardType.Number,
             title = { Text("End Date") },
             text = shownEndDate,
             supportingText = endDateError,
+            changeSupportingText = { endDateError= it },
             focusRequester = focusRequester,
             placeholder = { Text("End Date") },
             trailingIcon = {
@@ -160,26 +163,29 @@ fun NewTreatmentContent(
                     }
                 }
         )
-        AppTextField(
+        AdaptiveTextField(
             title = { Text("Name") },
             text = newTreatment.name,
             supportingText = nameError,
+            changeSupportingText = { nameError= it },
             onTextChange = { onNewTreatmentChange(newTreatment.copy(name = it)) },
             focusRequester = focusRequester,
             placeholder = { Text("Name") },
         )
-        AppTextField(
+        AdaptiveTextField(
             title = { Text("Description") },
             text = newTreatment.description,
             supportingText = descriptionError,
+            changeSupportingText = { descriptionError= it },
             onTextChange = { onNewTreatmentChange(newTreatment.copy(description = it)) },
             focusRequester = focusRequester,
             placeholder = { Text("Description") },
         )
-        AppTextField(
+        AdaptiveTextField(
             title = { Text("Details") },
             text = newTreatment.details,
             supportingText = detailsError,
+            changeSupportingText = { detailsError= it },
             onTextChange = { onNewTreatmentChange(newTreatment.copy(details = it)) },
             focusRequester = focusRequester,
             placeholder = { Text("Details") },

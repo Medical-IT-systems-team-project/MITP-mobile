@@ -39,8 +39,8 @@ import com.slapps.cupertino.adaptive.icons.DateRange
 import com.slapps.cupertino.theme.CupertinoTheme
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
+import org.umcs.mobile.composables.shared.AdaptiveTextField
 import org.umcs.mobile.composables.shared.AdaptiveWheelDatePicker
-import org.umcs.mobile.composables.shared.AppTextField
 import org.umcs.mobile.network.GlobalKtorClient
 import org.umcs.mobile.theme.determineTheme
 
@@ -70,7 +70,7 @@ fun NewMedicationContent(
         if (isCupertino) CupertinoTheme.typography.title3 else MaterialTheme.typography.titleMedium.copy(
             fontSize = 20.sp
         )
-
+    val verticalSpacing = if(isCupertino) 15.dp else 5.dp
     var shownStartDate by remember { mutableStateOf("") }
     var shownEndDate by remember { mutableStateOf("") }
 
@@ -92,7 +92,7 @@ fun NewMedicationContent(
             newMedication.unit.isNotBlank()
 
     Column(
-        verticalArrangement = Arrangement.spacedBy(5.dp),
+        verticalArrangement = Arrangement.spacedBy(verticalSpacing),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize().padding(horizontal = 25.dp).padding(
             top = paddingValues.calculateTopPadding() + 20.dp
@@ -119,12 +119,13 @@ fun NewMedicationContent(
                 passedStartDate = if (newMedication.startDate.isNotBlank()) LocalDate.parse(newMedication.startDate) else null
             )
         }
-        AppTextField(
+        AdaptiveTextField(
             readOnly = true,
             keyboardType = KeyboardType.Number,
             title = { Text("Start Date") },
             text = shownStartDate,
             supportingText = startDateError,
+            changeSupportingText = { startDateError = it },
             focusRequester = focusRequester,
             placeholder = { Text("Start Date") },
             trailingIcon = {
@@ -142,12 +143,13 @@ fun NewMedicationContent(
                     }
                 }
         )
-        AppTextField(
+        AdaptiveTextField(
             readOnly = true,
             keyboardType = KeyboardType.Number,
             title = { Text("End Date") },
             text = shownEndDate,
             supportingText = endDateError,
+            changeSupportingText = { endDateError = it },
             focusRequester = focusRequester,
             placeholder = { Text("End Date") },
             trailingIcon = {
@@ -165,42 +167,47 @@ fun NewMedicationContent(
                     }
                 }
         )
-        AppTextField(
+        AdaptiveTextField(
             title = { Text("Name") },
             text = newMedication.name,
             supportingText = nameError,
+            changeSupportingText = { nameError = it },
             onTextChange = { onNewMedicationChange(newMedication.copy(name = it)) },
             focusRequester = focusRequester,
             placeholder = { Text("Name") },
         )
-        AppTextField(
+        AdaptiveTextField(
             title = { Text("Details") },
             text = newMedication.details,
             supportingText = detailsError,
+            changeSupportingText = { detailsError= it },
             onTextChange = { onNewMedicationChange(newMedication.copy(details = it)) },
             focusRequester = focusRequester,
             placeholder = { Text("Details") },
         )
-        AppTextField(
+        AdaptiveTextField(
             title = { Text("Dosage Form") },
             text = newMedication.dosageForm,
             supportingText = dosageError,
+            changeSupportingText = { dosageError = it },
             onTextChange = { onNewMedicationChange(newMedication.copy(dosageForm = it)) },
             focusRequester = focusRequester,
             placeholder = { Text("Dosage Form") },
         )
-        AppTextField(
+        AdaptiveTextField(
             title = { Text("Strength") },
             text = newMedication.strength,
             supportingText = strengthError,
+            changeSupportingText = { strengthError= it },
             onTextChange = { onNewMedicationChange(newMedication.copy(strength = it)) },
             focusRequester = focusRequester,
             placeholder = { Text("Strength") },
         )
-        AppTextField(
+        AdaptiveTextField(
             title = { Text("Unit") },
             text = newMedication.unit,
             supportingText = unitError,
+            changeSupportingText = { unitError = it },
             onTextChange = { onNewMedicationChange(newMedication.copy(unit = it)) },
             focusRequester = focusRequester,
             placeholder = { Text("Unit") },

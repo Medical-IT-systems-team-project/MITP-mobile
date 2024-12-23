@@ -43,8 +43,8 @@ import com.slapps.cupertino.adaptive.icons.DateRange
 import com.slapps.cupertino.theme.CupertinoTheme
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
+import org.umcs.mobile.composables.shared.AdaptiveTextField
 import org.umcs.mobile.composables.shared.AdaptiveWheelDatePicker
-import org.umcs.mobile.composables.shared.AppTextField
 import org.umcs.mobile.data.Gender
 import org.umcs.mobile.data.Patient
 import org.umcs.mobile.theme.determineTheme
@@ -78,6 +78,7 @@ fun NewPatientContent(
         Theme.Cupertino -> true
         Theme.Material3 -> false
     }
+    val verticalSpacing = if(isCupertino) 15.dp else 5.dp
     val buttonTextStyle =
         if (isCupertino) CupertinoTheme.typography.title3 else MaterialTheme.typography.titleMedium.copy(
             fontSize = 20.sp
@@ -94,7 +95,7 @@ fun NewPatientContent(
             newPatient.birthDate.isNotBlank()
 
     Column(
-        verticalArrangement = Arrangement.spacedBy(5.dp),
+        verticalArrangement = Arrangement.spacedBy(verticalSpacing),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize().padding(horizontal = 25.dp).padding(
             top = paddingValues.calculateTopPadding() + 20.dp,
@@ -115,27 +116,30 @@ fun NewPatientContent(
             selectedGender = newPatient.gender,
             onGenderSelected = { onNewPatientChange(newPatient.copy(gender = it)) },
         )
-        AppTextField(
+        AdaptiveTextField(
             title = { Text("First Name") },
             text = newPatient.firstName,
             supportingText = firstNameError,
+            changeSupportingText = { firstNameError = it },
             onTextChange = { onNewPatientChange(newPatient.copy(firstName = it)) },
             focusRequester = focusRequester,
             placeholder = { Text("First Name") },
         )
-        AppTextField(
+        AdaptiveTextField(
             title = { Text("Last Name") },
             text = newPatient.lastName,
             supportingText = lastNameError,
+            changeSupportingText = { lastNameError= it },
             onTextChange = { onNewPatientChange(newPatient.copy(lastName = it)) },
             focusRequester = focusRequester,
             placeholder = { Text("Last Name") },
         )
-        AppTextField(
+        AdaptiveTextField(
             keyboardType = KeyboardType.Number,
             title = { Text("Social Security Number") },
             text = newPatient.socialSecurityNumber,
             supportingText = ssnError,
+            changeSupportingText = { ssnError = it },
             onTextChange = {
                 if (it.length <= ssnMaxChars) {
                     onNewPatientChange(newPatient.copy(socialSecurityNumber = it))
@@ -144,12 +148,13 @@ fun NewPatientContent(
             focusRequester = focusRequester,
             placeholder = { Text("Social Security Number") },
         )
-        AppTextField(
+        AdaptiveTextField(
             readOnly = true,
             keyboardType = KeyboardType.Number,
             title = { Text("Date of Birth") },
             text = shownDateOfBirth,
             supportingText = dateOfBirthError,
+            changeSupportingText = { dateOfBirthError= it },
             focusRequester = focusRequester,
             placeholder = { Text("Date of Birth") },
             trailingIcon = {
@@ -167,27 +172,30 @@ fun NewPatientContent(
                     }
                 }
         )
-        AppTextField(
+        AdaptiveTextField(
             title = { Text("Age") },
             text = newPatient.age,
             supportingText = ageError,
+            changeSupportingText = { ageError = it },
             onTextChange = { onNewPatientChange(newPatient.copy(age = it)) },
             focusRequester = focusRequester,
             placeholder = { Text("Age") },
         )
-        AppTextField(
+        AdaptiveTextField(
             title = { Text("Address") },
             text = newPatient.address,
             supportingText = addressError,
+            changeSupportingText = { addressError= it },
             onTextChange = { onNewPatientChange(newPatient.copy(address = it)) },
             focusRequester = focusRequester,
             placeholder = { Text("Address") },
         )
-        AppTextField(
+        AdaptiveTextField(
             keyboardType = KeyboardType.Phone,
             title = { Text("Phone Number") },
             text = newPatient.phoneNumber,
             supportingText = phoneNumberError,
+            changeSupportingText = { phoneNumberError= it },
             onTextChange = {
                 if (it.length <= maxPhoneNumberChars) {
                     onNewPatientChange(newPatient.copy(phoneNumber = it))
@@ -196,11 +204,12 @@ fun NewPatientContent(
             focusRequester = focusRequester,
             placeholder = { Text("Phone Number") }
         )
-        AppTextField(
+        AdaptiveTextField(
             keyboardType = KeyboardType.Email,
             title = { Text("Email") },
             text = newPatient.email,
             supportingText = emailError,
+            changeSupportingText = { emailError= it },
             onTextChange = { onNewPatientChange(newPatient.copy(email = it)) },
             focusRequester = focusRequester,
             placeholder = { Text("Email") },
@@ -282,7 +291,9 @@ fun GenderSelection(
         if (isCupertino) CupertinoTheme.typography.body else MaterialTheme.typography.bodyMedium
     val width = if(isCupertino) 300.dp else 270.dp
 
-    Column {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
         Text("Gender", style = titleStyle)
         Row(
             modifier = Modifier.width(width),

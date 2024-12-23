@@ -42,8 +42,8 @@ import com.slapps.cupertino.adaptive.icons.Face
 import com.slapps.cupertino.theme.CupertinoTheme
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
+import org.umcs.mobile.composables.shared.AdaptiveTextField
 import org.umcs.mobile.composables.shared.AdaptiveWheelDateTimePicker
-import org.umcs.mobile.composables.shared.AppTextField
 import org.umcs.mobile.composables.shared.PatientPicker
 import org.umcs.mobile.network.GlobalKtorClient
 import org.umcs.mobile.theme.determineTheme
@@ -68,6 +68,7 @@ fun NewCaseContent( //TODO: add navigating back after success
         Theme.Cupertino -> true
         Theme.Material3 -> false
     }
+    val verticalSpacing = if(isCupertino) 15.dp else 5.dp
     val buttonTextStyle =
         if (isCupertino) CupertinoTheme.typography.title3 else MaterialTheme.typography.titleMedium.copy(
             fontSize = 20.sp
@@ -84,7 +85,7 @@ fun NewCaseContent( //TODO: add navigating back after success
             newCase.description.isNotBlank()
 
     Column(
-        verticalArrangement = Arrangement.spacedBy(5.dp),
+        verticalArrangement = Arrangement.spacedBy(verticalSpacing),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize().padding(horizontal = 25.dp).padding(
             top = paddingValues.calculateTopPadding() + 20.dp
@@ -122,11 +123,12 @@ fun NewCaseContent( //TODO: add navigating back after success
                    }
                )*/
         }
-        AppTextField(
+        AdaptiveTextField(
             readOnly = true,
             title = { Text("Patient ") },
             text = newCase.getPatientFullName(),
             supportingText = patientError,
+            changeSupportingText = { patientError = it },
             onTextChange = { },
             focusRequester = focusRequester,
             placeholder = { Text("Patient") },
@@ -144,12 +146,13 @@ fun NewCaseContent( //TODO: add navigating back after success
                     }
                 }
         )
-        AppTextField(
+        AdaptiveTextField(
             readOnly = true,
             keyboardType = KeyboardType.Number,
             title = { Text("Admission date") },
             text = shownDate,
             supportingText = dateError,
+            changeSupportingText = { dateError = it },
             focusRequester = focusRequester,
             placeholder = { Text("Admission date") },
             trailingIcon = {
@@ -167,20 +170,22 @@ fun NewCaseContent( //TODO: add navigating back after success
                     }
                 }
         )
-        AppTextField(
+        AdaptiveTextField(
             title = { Text("Admission Reason") },
             text = newCase.admissionReason,
             supportingText = reasonError,
+            changeSupportingText = { reasonError = it },
             onTextChange = { onNewCaseChange(newCase.copy(admissionReason = it)) },
             focusRequester = focusRequester,
             placeholder = { Text("Admission Reason") },
         )
-        AppTextField(
+        AdaptiveTextField(
             maxLines = 5,
             isSingleLine = false,
             title = { Text("Description") },
             text = newCase.description,
             supportingText = descriptionError,
+            changeSupportingText = { descriptionError = it },
             onTextChange = { onNewCaseChange(newCase.copy(description = it)) },
             focusRequester = focusRequester,
             placeholder = { Text("Description") },
