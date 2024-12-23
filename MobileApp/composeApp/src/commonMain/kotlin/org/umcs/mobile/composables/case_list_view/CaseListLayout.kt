@@ -21,6 +21,7 @@ import com.slapps.cupertino.adaptive.Theme
 import org.koin.compose.viewmodel.koinViewModel
 import org.umcs.mobile.composables.case_list_view.doctor.PatientListContent
 import org.umcs.mobile.data.Case
+import org.umcs.mobile.data.CaseStatus
 import org.umcs.mobile.data.Patient
 import org.umcs.mobile.theme.determineTheme
 
@@ -130,74 +131,94 @@ val loremIpsum =
 fun fetchTestCases(): List<Case> {
     return listOf(
         Case(
-            caseDetails = "Broken arm",
-            stringDate = "2023-01-01",
             patientName = "John Doe",
-            doctorName = "Dr. Smith",
-            description = loremIpsum
+            status = CaseStatus.COMPLETED,
+            admissionReason = "Broken arm",
+            admissionDate = "2023-01-01",
+            description = loremIpsum,
+            createdBy = "Admin",
+            attendingDoctor = "Dr. Smith"
         ),
         Case(
-            caseDetails = "Sprained ankle",
-            stringDate = "2023-02-01",
             patientName = "Jane Smith",
-            doctorName = "Dr. Johnson",
-            description = loremIpsum
+            status = CaseStatus.ONGOING,
+            admissionReason = "Sprained ankle",
+            admissionDate = "2023-02-01",
+            description = loremIpsum,
+            createdBy = "Admin",
+            attendingDoctor = "Dr. Johnson"
         ),
         Case(
-            caseDetails = "Fractured wrist",
-            stringDate = "2023-03-01",
             patientName = "Alice Johnson",
-            doctorName = "Dr. Williams",
-            description = loremIpsum
+            status = CaseStatus.ONGOING,
+            admissionReason = "Fractured wrist",
+            admissionDate = "2023-03-01",
+            description = loremIpsum,
+            createdBy = "Admin",
+            attendingDoctor = "Dr. Williams"
         ),
         Case(
-            caseDetails = "Dislocated shoulder",
-            stringDate = "2023-04-01",
             patientName = "Bob Brown",
-            doctorName = "Dr. Brown",
-            description = loremIpsum
+            status = CaseStatus.ONGOING,
+            admissionReason = "Dislocated shoulder",
+            admissionDate = "2023-04-01",
+            description = loremIpsum,
+            createdBy = "Admin",
+            attendingDoctor = "Dr. Brown"
         ),
         Case(
-            caseDetails = "Broken leg",
-            stringDate = "2023-05-01",
             patientName = "Charlie Davis",
-            doctorName = "Dr. Davis",
-            description = loremIpsum
+            status = CaseStatus.ONGOING,
+            admissionReason = "Broken leg",
+            admissionDate = "2023-05-01",
+            description = loremIpsum,
+            createdBy = "Admin",
+            attendingDoctor = "Dr. Davis"
         ),
         Case(
-            caseDetails = "Concussion",
-            stringDate = "2023-06-01",
             patientName = "Diana Evans",
-            doctorName = "Dr. Wilson",
-            description = loremIpsum
+            status = CaseStatus.ONGOING,
+            admissionReason = "Concussion",
+            admissionDate = "2023-06-01",
+            description = loremIpsum,
+            createdBy = "Admin",
+            attendingDoctor = "Dr. Wilson"
         ),
         Case(
-            caseDetails = "Broken ribs",
-            stringDate = "2023-07-01",
             patientName = "Eve Foster",
-            doctorName = "Dr. Taylor",
-            description = loremIpsum
+            status = CaseStatus.ONGOING,
+            admissionReason = "Broken ribs",
+            admissionDate = "2023-07-01",
+            description = loremIpsum,
+            createdBy = "Admin",
+            attendingDoctor = "Dr. Taylor"
         ),
         Case(
-            caseDetails = "Knee injury",
-            stringDate = "2023-08-01",
             patientName = "Frank Green",
-            doctorName = "Dr. Anderson",
-            description = loremIpsum
+            status = CaseStatus.ONGOING,
+            admissionReason = "Knee injury",
+            admissionDate = "2023-08-01",
+            description = loremIpsum,
+            createdBy = "Admin",
+            attendingDoctor = "Dr. Anderson"
         ),
         Case(
-            caseDetails = "Back pain",
-            stringDate = "2023-09-01",
             patientName = "Grace Harris",
-            doctorName = "Dr. Martinez",
-            description = loremIpsum
+            status = CaseStatus.ONGOING,
+            admissionReason = "Back pain",
+            admissionDate = "2023-09-01",
+            description = loremIpsum,
+            createdBy = "Admin",
+            attendingDoctor = "Dr. Martinez"
         ),
         Case(
-            caseDetails = "Twisted ankle",
-            stringDate = "2023-10-01",
             patientName = "Henry Irving",
-            doctorName = "Dr. Thomas",
-            description = loremIpsum
+            status = CaseStatus.ONGOING,
+            admissionReason = "Twisted ankle",
+            admissionDate = "2023-10-01",
+            description = loremIpsum,
+            createdBy = "Admin",
+            attendingDoctor = "Dr. Thomas"
         )
     )
 }

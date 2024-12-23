@@ -2,6 +2,7 @@ package org.umcs.mobile.composables.case_view
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -12,9 +13,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.slapps.cupertino.adaptive.icons.AdaptiveIcons
 import com.slapps.cupertino.adaptive.icons.AddCircle
+import com.slapps.cupertino.icons.CupertinoIcons
+import com.slapps.cupertino.icons.outlined.Checkmark
+import com.slapps.cupertino.icons.outlined.Cross
 import org.umcs.mobile.composables.shared.AdaptiveFAB
 import org.umcs.mobile.composables.shared.AppTopBar
 import org.umcs.mobile.data.Case
+import org.umcs.mobile.data.CaseStatus
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,7 +49,8 @@ fun CaseLayout(
             AppTopBar(
                 scrollBehavior = scrollBehavior,
                 navigateBack = navigateBack,
-                title = case.caseDetails
+                title = case.admissionReason,
+                actions = { CaseStatusIcon(case.status) }
             )
         },
         bottomBar = {
@@ -74,6 +80,20 @@ fun CaseLayout(
         }
     }
 }
+
+@Composable
+fun CaseStatusIcon(status : CaseStatus) {
+    val statusVector = when(status){
+        CaseStatus.ONGOING -> CupertinoIcons.Outlined.Cross
+        CaseStatus.COMPLETED -> CupertinoIcons.Outlined.Checkmark
+    }
+
+    Icon(
+        imageVector = statusVector,
+        contentDescription = null
+    )
+}
+
 
 @Composable
 fun CaseLayoutFAB(

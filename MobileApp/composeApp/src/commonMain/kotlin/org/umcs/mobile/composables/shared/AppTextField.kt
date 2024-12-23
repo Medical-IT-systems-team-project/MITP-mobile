@@ -155,7 +155,6 @@ fun CupertinoAppTextField(
     val value = if (isError) supportingText else text
     var isFocused by remember { mutableStateOf(false) }
 
-
     CupertinoBorderedTextField(
         isError = isError,
         value = value,

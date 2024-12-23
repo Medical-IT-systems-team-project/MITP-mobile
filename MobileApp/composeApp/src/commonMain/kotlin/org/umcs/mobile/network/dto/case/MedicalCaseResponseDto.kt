@@ -1,7 +1,8 @@
 package org.umcs.mobile.network.dto.case
 
 import kotlinx.datetime.LocalDate
-import kotlinx.serialization.*
+import kotlinx.serialization.Serializable
+import org.umcs.mobile.data.CaseStatus
 
 @Serializable
 data class MedicalCaseResponseDto  (
@@ -16,7 +17,3 @@ data class MedicalCaseResponseDto  (
     val allowedDoctors : List<String>
 )
 
-enum class CaseStatus{
-    ONGOING,
-    COMPLETED
-}

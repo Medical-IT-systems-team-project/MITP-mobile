@@ -25,16 +25,19 @@ fun InfoContent(modifier: Modifier = Modifier, paddingValues : PaddingValues, ca
         )
         CaseItem(
             title = "Admission date",
-            content = case.stringDate
+            content = case.admissionDate
         )
         CaseItem(
-            title = "Doctor",
-            content = case.doctorName
+            title = "Attending Doctor",
+            content = case.attendingDoctor
+        )
+        CaseItem(
+            title = "Case Created By",
+            content = case.createdBy
         )
         CaseItem(
             title = "Diagnosis",
             content = case.description
         )
-
     }
 }

@@ -18,10 +18,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.slapps.cupertino.adaptive.AdaptiveWidget
 import com.slapps.cupertino.theme.CupertinoTheme
-import com.theapache64.rebugger.Rebugger
 import org.umcs.mobile.data.Case
 
 @Composable
@@ -61,7 +59,7 @@ fun CaseListItem(
             Text(
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
-                text = if (showPatientName) currentCase.patientName else currentCase.doctorName,
+                text = if (showPatientName) currentCase.patientName else currentCase.attendingDoctor,
                 style = nameAndDateStyle,
                 color = textColor,
                 modifier = Modifier.weight(1.9f)
@@ -69,7 +67,7 @@ fun CaseListItem(
             Text(
                 maxLines = 1,
                 textAlign = TextAlign.End,
-                text = currentCase.stringDate,
+                text = currentCase.admissionDate,
                 style = nameAndDateStyle,
                 color = textColor,
                 modifier = Modifier.weight(1.1f)
@@ -78,7 +76,7 @@ fun CaseListItem(
         Text(
             style = detailsStyle,
             maxLines = 1,
-            text = currentCase.caseDetails,
+            text = currentCase.admissionReason,
             color = textColor,
             modifier = Modifier.padding(start = 12.dp)
         )

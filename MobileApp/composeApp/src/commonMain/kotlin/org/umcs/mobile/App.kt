@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
@@ -182,7 +183,8 @@ internal fun App(
             var text by remember { mutableStateOf("") }
 
             AdaptiveTonalButton(
-                onClick = {}
+              onClick ={},
+                modifier = Modifier.fillMaxWidth()
             ){
                 Text("Some long ass text")
             }

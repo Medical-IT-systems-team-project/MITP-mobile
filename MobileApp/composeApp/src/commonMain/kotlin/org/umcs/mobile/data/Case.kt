@@ -4,9 +4,16 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Case(
-    val stringDate : String,
     val patientName : String,
-    val doctorName : String,
-    val caseDetails : String,
-    val description : String
+    val status: CaseStatus,
+    val admissionReason : String,
+    val admissionDate : String,
+    val description : String,
+    val createdBy : String,
+    val attendingDoctor : String,
 )
+
+enum class CaseStatus{
+    ONGOING,
+    COMPLETED
+}

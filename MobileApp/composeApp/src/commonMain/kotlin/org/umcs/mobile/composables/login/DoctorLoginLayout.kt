@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -99,7 +100,7 @@ fun DoctorLoginLayout(
         }
 
         AdaptiveTextField(
-            modifier = Modifier.padding(horizontal = 30.dp),
+            modifier = Modifier.padding(horizontal = 30.dp).heightIn(min = 40.dp),
             keyboardType = KeyboardType.Email,
             title = { Text("Login") },
             text = login,
@@ -114,7 +115,7 @@ fun DoctorLoginLayout(
         Spacer(Modifier.height(30.dp))
 
         AdaptiveTextField(
-            modifier = Modifier.padding(horizontal = 30.dp),
+            modifier = Modifier.padding(horizontal = 30.dp).heightIn(min = 40.dp),
             keyboardType = KeyboardType.Password,
             title = { Text("Password") },
             text = password,

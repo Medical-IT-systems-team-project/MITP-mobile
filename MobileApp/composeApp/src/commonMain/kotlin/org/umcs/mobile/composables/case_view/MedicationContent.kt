@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.slapps.cupertino.adaptive.Theme
 import com.slapps.cupertino.theme.CupertinoTheme
 import org.umcs.mobile.data.Case
+import org.umcs.mobile.network.dto.case.MedicalStatus
 import org.umcs.mobile.theme.determineTheme
 
 @Composable
@@ -43,7 +44,7 @@ fun MedicationContent(paddingValues: PaddingValues, case: Case) {
         horizontalAlignment = Alignment.Start
     ) {
         items(medicineList) { medicine ->
-            MedicineItem(medicine = medicine)
+            MedicationItem(medication = medicine)
         }
     }
 }
@@ -54,16 +55,22 @@ fun AdaptiveMedicineDropdown() {
 }
 
 @Composable
-fun MedicineItem(modifier: Modifier = Modifier, medicine: Medicine) {
+fun MedicationItem(modifier: Modifier = Modifier, medication: Medication) {
     var showMore by remember { mutableStateOf(false) }
     val style = when (determineTheme()) {
         Theme.Cupertino -> CupertinoTheme.typography.subhead
         Theme.Material3 -> MaterialTheme.typography.bodyMedium
     }
 
-
     Column {
-        SectionTitleText("${medicine.startDate} - ${medicine.endDate}")
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            SectionTitleText(medication.name)
+            StatusIcon(medication.status)
+        }
+
         Column(
             verticalArrangement = Arrangement.spacedBy(6.dp),
             modifier = modifier
@@ -81,72 +88,78 @@ fun MedicineItem(modifier: Modifier = Modifier, medicine: Medicine) {
                     onLongClick = {}
                 )
         ) {
-            Text(text = "${medicine.name} - ${medicine.type}", style = style)
+            Text(text = medication.dosageForm, style = style)
             if (showMore) {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text(text = medicine.dosage, style = style)
-                    Text(text = medicine.frequency, style = style)
-                }
-                Text(text = medicine.prescribedBy, style = style)
+                Text(text = "Start: ${medication.startDate}", style = style)
+                Text(text = "End: ${medication.endDate}", style = style)
+                Text(text = "Prescribed By: ${medication.prescribedBy}", style = style)
+                Text(text = "Strength: ${medication.strength}", style = style)
+                Text(text = "Unit: ${medication.unit}", style = style)
             }
         }
     }
 }
 
-fun fetchMedicine() = listOf(
-    Medicine(
-        startDate = "2024-01-01",
-        endDate = "2024-02-01",
-        prescribedBy = "Dr. Smith",
-        name = "Amoxicillin",
-        dosage = "500mg",
-        frequency = "3 times daily",
-        type = "Antibiotic"
-    ),
-    Medicine(
-        startDate = "2024-01-15",
-        endDate = "2024-03-15",
-        prescribedBy = "Dr. Johnson",
-        name = "Lisinopril",
-        dosage = "10mg",
-        frequency = "Once daily",
-        type = "Blood Pressure Medication"
-    ),
-    Medicine(
-        startDate = "2024-02-01",
-        endDate = "2024-02-14",
-        prescribedBy = "Dr. Williams",
-        name = "Ibuprofen",
-        dosage = "400mg",
-        frequency = "Every 6 hours",
-        type = "Pain Reliever"
-    ),
-    Medicine(
-        startDate = "2024-02-10",
-        endDate = "2024-03-10",
-        prescribedBy = "Dr. Brown",
-        name = "Metformin",
-        dosage = "850mg",
-        frequency = "Twice daily",
-        type = "Diabetes Medication"
-    ),
-    Medicine(
-        startDate = "2024-02-15",
-        endDate = "2024-04-15",
-        prescribedBy = "Dr. Davis",
-        name = "Atorvastatin",
-        dosage = "20mg",
-        frequency = "Once daily",
-        type = "Cholesterol Medication"
-    )
-)
-
-data class Medicine(
+data class Medication(
+    val name: String,
     val startDate: String,
     val endDate: String,
+    val dosageForm : String,
     val prescribedBy: String,
-    val name: String,
-    val dosage: String,
-    val frequency: String,
-    val type: String,
+    val strength : String,
+    val unit : String,
+    val status : MedicalStatus
+)
+
+fun fetchMedicine() = listOf(
+    Medication(
+        name = "Amoxicillin",
+        startDate = "2024-01-01",
+        endDate = "2024-02-01",
+        dosageForm = "Capsule",
+        strength = "500mg",
+        unit = "mg",
+        prescribedBy = "Dr. Smith",
+        status = MedicalStatus.PLANNED
+    ),
+    Medication(
+        name = "Lisinopril",
+        startDate = "2024-01-15",
+        endDate = "2024-03-15",
+        dosageForm = "Tablet",
+        strength = "10mg",
+        unit = "mg",
+        prescribedBy = "Dr. Johnson",
+        status = MedicalStatus.ONGOING
+    ),
+    Medication(
+        name = "Ibuprofen",
+        startDate = "2024-02-01",
+        endDate = "2024-02-14",
+        dosageForm = "Tablet",
+        strength = "400mg",
+        unit = "mg",
+        prescribedBy = "Dr. Williams",
+        status = MedicalStatus.PLANNED
+    ),
+    Medication(
+        name = "Metformin",
+        startDate = "2024-02-10",
+        endDate = "2024-03-10",
+        dosageForm = "Tablet",
+        strength = "850mg",
+        unit = "mg",
+        prescribedBy = "Dr. Brown",
+        status = MedicalStatus.CANCELLED
+    ),
+    Medication(
+        name = "Atorvastatin",
+        startDate = "2024-02-15",
+        endDate = "2024-04-15",
+        dosageForm = "Tablet",
+        strength = "20mg",
+        unit = "mg",
+        prescribedBy = "Dr. Davis",
+        status = MedicalStatus.COMPLETED
+    )
 )
