@@ -3,8 +3,10 @@ package org.umcs.mobile.composables.shared.new_uuid
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,6 +27,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Logger
+import com.slapps.cupertino.adaptive.Theme
 import kotlinx.coroutines.launch
 import mobileapp.composeapp.generated.resources.Res
 import mobileapp.composeapp.generated.resources.qr_scanner
@@ -32,6 +35,7 @@ import mobileapp.composeapp.generated.resources.wrong_uuid
 import org.jetbrains.compose.resources.painterResource
 import org.umcs.mobile.composables.shared.AdaptiveFAB
 import org.umcs.mobile.composables.shared.AppTopBar
+import org.umcs.mobile.theme.determineTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -82,8 +86,10 @@ fun NewUUIDScreen(
                 text = UUID
                 Logger.i(UUID, tag = "UUID")
             })
-
-            AccessIDInput(
+            if(determineTheme() == Theme.Cupertino){
+                Spacer(Modifier.height(80.dp))
+            }
+            AdaptiveAccessIdInput(
                 label = label,
                 text = text,
                 supportingText = supportingText,

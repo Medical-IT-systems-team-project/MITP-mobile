@@ -20,6 +20,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.slapps.cupertino.CupertinoSearchTextField
+import com.slapps.cupertino.adaptive.AdaptiveWidget
 import org.umcs.mobile.composables.new_case_view.patientList
 import org.umcs.mobile.data.Patient
 
@@ -42,7 +44,7 @@ fun PatientPicker(
             modifier = Modifier.fillMaxWidth().heightIn(min = 200.dp, max = 400.dp)
         ) {
             stickyHeader {
-                TextField(
+                AdaptiveSearchField(
                     value = searchPatient,
                     onValueChange = {
                         searchPatient = it
@@ -65,4 +67,32 @@ fun PatientPicker(
             }
         }
     }
+}
+
+
+@Composable
+fun AdaptiveSearchField(
+    modifier: Modifier = Modifier,
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholder: @Composable () -> Unit
+) {
+    AdaptiveWidget(
+        material ={
+            TextField(
+                value = value,
+                onValueChange = onValueChange,
+                modifier = modifier,
+                placeholder = placeholder
+            )
+        },
+        cupertino = {
+            CupertinoSearchTextField(
+                onValueChange = onValueChange,
+                value = value,
+                placeholder = placeholder,
+                modifier  = modifier.fillMaxWidth(0.7f),
+            )
+        }
+    )
 }

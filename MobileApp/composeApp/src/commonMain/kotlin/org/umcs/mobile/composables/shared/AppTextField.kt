@@ -20,6 +20,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import co.touchlab.kermit.Logger
 import com.slapps.cupertino.CupertinoBorderedTextField
 import com.slapps.cupertino.adaptive.AdaptiveWidget
 import com.slapps.cupertino.adaptive.Theme
@@ -42,10 +43,12 @@ fun AdaptiveTextField(
     readOnly: Boolean = false,
     placeholder: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
+    leadingIcon: @Composable (() -> Unit)? = null,
 ) {
     AdaptiveWidget(
         cupertino = {
             CupertinoAppTextField(
+                leadingIcon = leadingIcon,
                 modifier = modifier,
                 isSingleLine = isSingleLine,
                 maxLines = maxLines,
@@ -62,6 +65,7 @@ fun AdaptiveTextField(
         },
         material = {
             MaterialTextField(
+                leadingIcon = leadingIcon,
                 modifier = modifier,
                 isSingleLine = isSingleLine,
                 maxLines = maxLines,
@@ -93,6 +97,7 @@ fun MaterialTextField(
     readOnly: Boolean = false,
     placeholder: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
+    leadingIcon: @Composable (() -> Unit)? = null,
 ) {
     val theme = remember { determineTheme() }
     val isCupertino = when (theme) {
@@ -106,6 +111,7 @@ fun MaterialTextField(
     val width = if (isCupertino) 300.dp else 270.dp
 
     TextField(
+        leadingIcon = leadingIcon,
         textStyle = textStyle,
         maxLines = maxLines,
         trailingIcon = trailingIcon,
@@ -150,12 +156,16 @@ fun CupertinoAppTextField(
     readOnly: Boolean = false,
     placeholder: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
+    leadingIcon: @Composable (() -> Unit)? = null,
 ) {
     val isError = supportingText.isNotBlank()
     val value = if (isError) supportingText else text
     var isFocused by remember { mutableStateOf(false) }
 
+    Logger.i(text, tag ="textfield")
+
     CupertinoBorderedTextField(
+        leadingIcon = leadingIcon,
         isError = isError,
         value = value,
         onValueChange = onTextChange,

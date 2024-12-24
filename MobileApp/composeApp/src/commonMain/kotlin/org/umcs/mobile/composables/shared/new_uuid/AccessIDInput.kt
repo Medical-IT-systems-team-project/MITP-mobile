@@ -18,12 +18,62 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Logger
+import com.slapps.cupertino.CupertinoIconButton
 import com.slapps.cupertino.adaptive.AdaptiveFilledIconButton
+import com.slapps.cupertino.adaptive.AdaptiveWidget
 import com.slapps.cupertino.adaptive.icons.AdaptiveIcons
 import com.slapps.cupertino.adaptive.icons.KeyboardArrowRight
+import com.slapps.cupertino.icons.CupertinoIcons
+import com.slapps.cupertino.icons.outlined.Key
+import org.umcs.mobile.composables.shared.AdaptiveTextField
 
 @Composable
-fun AccessIDInput(
+fun AdaptiveAccessIdInput(
+    modifier: Modifier = Modifier,
+    text: String,
+    supportingText: String,
+    isFocused: Boolean,
+    focusRequester: FocusRequester,
+    onButtonPress: () -> Unit,
+    onTextChange: (String) -> Unit,
+    onFocusChange: (Boolean) -> Unit,
+    onSupportingTextChange: (String) -> Unit,
+    label: String,
+) {
+    AdaptiveWidget(
+        material = {
+            MaterialAccessIdInput(
+                modifier = modifier,
+                text = text,
+                supportingText = supportingText,
+                isFocused = isFocused,
+                focusRequester = focusRequester,
+                onButtonPress = onButtonPress,
+                onTextChange = onTextChange,
+                onFocusChange = onFocusChange,
+                onSupportingTextChange = onSupportingTextChange,
+                label = label
+            )
+        },
+        cupertino = {
+            CupertinoAccessIDInput(
+                modifier = modifier,
+                text = text,
+                supportingText = supportingText,
+                isFocused = isFocused,
+                focusRequester = focusRequester,
+                onButtonPress = onButtonPress,
+                onTextChange = onTextChange,
+                onFocusChange = onFocusChange,
+                onSupportingTextChange = onSupportingTextChange,
+                label = label
+            )
+        }
+    )
+}
+
+@Composable
+fun MaterialAccessIdInput(
     modifier: Modifier = Modifier,
     text: String,
     supportingText: String,
@@ -65,11 +115,6 @@ fun AccessIDInput(
                         onSupportingTextChange("")
                     }
                 },
-            trailingIcon = {
-                if (!matchAccessID(text) && text.isNotEmpty() && !isFocused) {
-                    ErrorIcon()
-                }
-            },
             colors = TextFieldDefaults.colors(
                 disabledIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
@@ -77,6 +122,61 @@ fun AccessIDInput(
             ),
         )
         AdaptiveFilledIconButton(
+            modifier = Modifier.size(56.dp),
+            onClick = {
+                onButtonPress()
+            },
+        ) {
+            Icon(
+                imageVector = AdaptiveIcons.Outlined.KeyboardArrowRight,
+                contentDescription = "Add Case by UUID"
+            )
+        }
+    }
+}
+
+@Composable
+fun CupertinoAccessIDInput(
+    modifier: Modifier = Modifier,
+    text: String,
+    supportingText: String,
+    isFocused: Boolean,
+    focusRequester: FocusRequester,
+    onButtonPress: () -> Unit,
+    onTextChange: (String) -> Unit,
+    onFocusChange: (Boolean) -> Unit,
+    onSupportingTextChange: (String) -> Unit,
+    label: String,
+) {
+    val isError = supportingText.isNotBlank()
+    val value = if (isError) supportingText else text
+
+    Row(
+        modifier = Modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        AdaptiveTextField(
+            text= text,
+            onTextChange = onTextChange,
+            placeholder = {Text(label)},
+            modifier = modifier
+                .weight(1f)
+                .onFocusChanged {
+                    Logger.i(it.isFocused.toString(), tag = "onFocusChanged")
+                    onFocusChange(it.isFocused)
+
+                    if (isFocused && isError) {
+                        onSupportingTextChange("")
+                    }
+                }
+                .focusRequester(focusRequester),
+            leadingIcon = {Icon(CupertinoIcons.Outlined.Key,null)},
+            isSingleLine = true,
+            supportingText = supportingText,
+            changeSupportingText = onSupportingTextChange,
+            focusRequester =  focusRequester
+        )
+        CupertinoIconButton(
             modifier = Modifier.size(56.dp),
             onClick = {
                 onButtonPress()

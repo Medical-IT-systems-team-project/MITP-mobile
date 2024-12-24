@@ -36,6 +36,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import com.slapps.cupertino.adaptive.icons.AdaptiveIcons
+import com.slapps.cupertino.adaptive.icons.Email
+import com.slapps.cupertino.adaptive.icons.Lock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import mobileapp.composeapp.generated.resources.Res
@@ -100,7 +103,8 @@ fun DoctorLoginLayout(
         }
 
         AdaptiveTextField(
-            modifier = Modifier.padding(horizontal = 30.dp).heightIn(min = 40.dp),
+            leadingIcon = { Icon(AdaptiveIcons.Outlined.Email, null) },
+            modifier = Modifier.padding(horizontal = 35.dp).heightIn(min = 45.dp),
             keyboardType = KeyboardType.Email,
             title = { Text("Login") },
             text = login,
@@ -115,7 +119,8 @@ fun DoctorLoginLayout(
         Spacer(Modifier.height(30.dp))
 
         AdaptiveTextField(
-            modifier = Modifier.padding(horizontal = 30.dp).heightIn(min = 40.dp),
+            leadingIcon = { Icon(AdaptiveIcons.Outlined.Lock, null) },
+            modifier = Modifier.padding(horizontal = 35.dp).heightIn(min = 45.dp),
             keyboardType = KeyboardType.Password,
             title = { Text("Password") },
             text = password,
