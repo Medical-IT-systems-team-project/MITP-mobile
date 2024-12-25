@@ -8,11 +8,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -35,11 +34,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.touchlab.kermit.Logger
+import com.slapps.cupertino.CupertinoButtonDefaults
+import com.slapps.cupertino.adaptive.AdaptiveTonalButton
 import com.slapps.cupertino.adaptive.Theme
 import com.slapps.cupertino.adaptive.icons.AdaptiveIcons
 import com.slapps.cupertino.adaptive.icons.DateRange
 import com.slapps.cupertino.adaptive.icons.Face
 import com.slapps.cupertino.theme.CupertinoTheme
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 import org.umcs.mobile.composables.shared.AdaptiveTextField
@@ -50,7 +52,8 @@ import org.umcs.mobile.theme.determineTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewCaseContent( //TODO: add navigating back after success
+fun NewCaseContent(
+    //TODO: add navigating back after success
     paddingValues: PaddingValues,
     showPatientPicker: Boolean,
     showDatePicker: Boolean,
@@ -68,7 +71,7 @@ fun NewCaseContent( //TODO: add navigating back after success
         Theme.Cupertino -> true
         Theme.Material3 -> false
     }
-    val verticalSpacing = if(isCupertino) 15.dp else 5.dp
+    val verticalSpacing = if (isCupertino) 15.dp else 5.dp
     val buttonTextStyle =
         if (isCupertino) CupertinoTheme.typography.title3 else MaterialTheme.typography.titleMedium.copy(
             fontSize = 20.sp
@@ -191,39 +194,73 @@ fun NewCaseContent( //TODO: add navigating back after success
             placeholder = { Text("Description") },
         )
 
-        Spacer(modifier = Modifier.height(30.dp)) //fixme 
-        Button(
+        Spacer(modifier = Modifier.height(30.dp)) //fixme
+
+        AdaptiveTonalButton(
             onClick = {
-                patientError = ""
-                dateError = ""
-                reasonError = ""
-                descriptionError = ""
-
-                if (isFormValid) {
-                    scope.launch {
-                        GlobalKtorClient.createNewCase(newCase,doctorID)
-                    }
-                } else {
-                    newCase.getPatientFullName().ifBlank {
-                        patientError = "This field can't be blank"
-                    }
-                    newCase.admissionDate.ifBlank {
-                        dateError = "This field can't be blank"
-                    }
-                    newCase.admissionReason.ifBlank {
-                        reasonError = "This field can't be blank"
-                    }
-                    newCase.description.ifBlank {
-                        descriptionError = "This field can't be blank"
-                    }
-                }
-
-                Logger.i(newCase.toString(), tag = "Case")
+                handleCreateCase(
+                    newCase = newCase,
+                    doctorID = doctorID,
+                    scope = scope,
+                    isFormValid = isFormValid,
+                    changePatientError = { patientError = it },
+                    changeDateError = { dateError = it },
+                    changeReasonError = { reasonError = it },
+                    changeDescriptionError = { descriptionError = it }
+                )
             },
-            shape = RoundedCornerShape(16.dp),
-            modifier = Modifier.size(width = 270.dp, height = 60.dp),
+            modifier = Modifier.then(
+                if (isCupertino) Modifier.fillMaxWidth() else Modifier.size(
+                    width = 270.dp,
+                    height = 60.dp
+                )
+            ),
+            adaptation = {
+                cupertino {
+                    colors = CupertinoButtonDefaults.filledButtonColors(
+                        contentColor = CupertinoTheme.colorScheme.label
+                    )
+                }
+            }
         ) {
-            Text(text = "Create Case", style = buttonTextStyle)
+            Text(text = "Create Case", fontSize = 16.sp)
         }
     }
+}
+
+private fun handleCreateCase(
+    newCase: MedicalCase,
+    doctorID: Int,
+    scope: CoroutineScope,
+    isFormValid: Boolean,
+    changePatientError: (String) -> Unit,
+    changeDateError: (String) -> Unit,
+    changeReasonError: (String) -> Unit,
+    changeDescriptionError: (String) -> Unit,
+) {
+    changePatientError("")
+    changeDateError("")
+    changeReasonError("")
+    changeDescriptionError("")
+
+    if (isFormValid) {
+        scope.launch {
+            GlobalKtorClient.createNewCase(newCase, doctorID)
+        }
+    } else {
+        newCase.getPatientFullName().ifBlank {
+            changePatientError("This field can't be blank")
+        }
+        newCase.admissionDate.ifBlank {
+            changeDateError("This field can't be blank")
+        }
+        newCase.admissionReason.ifBlank {
+            changeReasonError("This field can't be blank")
+        }
+        newCase.description.ifBlank {
+            changeDescriptionError("This field can't be blank")
+        }
+    }
+
+    Logger.i(newCase.toString(), tag = "Case")
 }

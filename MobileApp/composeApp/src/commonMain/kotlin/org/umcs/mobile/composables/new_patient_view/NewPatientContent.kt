@@ -9,12 +9,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -35,12 +34,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.touchlab.kermit.Logger
+import com.slapps.cupertino.CupertinoButtonDefaults
 import com.slapps.cupertino.adaptive.AdaptiveCheckbox
+import com.slapps.cupertino.adaptive.AdaptiveTonalButton
 import com.slapps.cupertino.adaptive.ExperimentalAdaptiveApi
 import com.slapps.cupertino.adaptive.Theme
 import com.slapps.cupertino.adaptive.icons.AdaptiveIcons
 import com.slapps.cupertino.adaptive.icons.DateRange
 import com.slapps.cupertino.theme.CupertinoTheme
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import org.umcs.mobile.composables.shared.AdaptiveTextField
@@ -216,58 +218,39 @@ fun NewPatientContent(
         )
 
         Spacer(modifier = Modifier.height(30.dp))
-        Button(
+
+        AdaptiveTonalButton(
             onClick = {
-                ssnError = ""
-                firstNameError = ""
-                lastNameError = ""
-                ageError = ""
-                genderError = ""
-                addressError = ""
-                phoneNumberError = ""
-                emailError = ""
-                dateOfBirthError = ""
-
-                if (isFormValid) {
-                    scope.launch {
-                        //   GlobalKtorClient.createNewPatient(newPatient)
-                    }
-                } else {
-                    newPatient.socialSecurityNumber.ifBlank {
-                        ssnError = "This field can't be blank"
-                    }
-                    newPatient.firstName.ifBlank {
-                        firstNameError = "This field can't be blank"
-                    }
-                    newPatient.lastName.ifBlank {
-                        lastNameError = "This field can't be blank"
-                    }
-                    newPatient.age.ifBlank {
-                        ageError = "This field can't be blank"
-                    }
-                    newPatient.gender.ifBlank {
-                        genderError = "This field can't be blank"
-                    }
-                    newPatient.address.ifBlank {
-                        addressError = "This field can't be blank"
-                    }
-                    newPatient.phoneNumber.ifBlank {
-                        phoneNumberError = "This field can't be blank"
-                    }
-                    newPatient.email.ifBlank {
-                        emailError = "This field can't be blank"
-                    }
-                    newPatient.birthDate.ifBlank {
-                        dateOfBirthError = "This field can't be blank"
-                    }
-                }
-
-                Logger.i(newPatient.toString(), tag = "Patient")
+                handleCreatePatient(
+                    newPatient = newPatient,
+                    scope = scope,
+                    isFormValid = isFormValid,
+                    changeSsnError = { ssnError = it },
+                    changeFirstNameError = { firstNameError = it },
+                    changeLastNameError = { lastNameError = it },
+                    changeAgeError = { ageError = it },
+                    changeGenderError = { genderError = it },
+                    changeAddressError = { addressError = it },
+                    changePhoneNumberError = { phoneNumberError = it },
+                    changeEmailError = { emailError = it },
+                    changeDateOfBirthError = { dateOfBirthError = it }
+                )
             },
-            shape = RoundedCornerShape(16.dp),
-            modifier = Modifier.size(width = 270.dp, height = 60.dp),
+            modifier = Modifier.then(
+                if (isCupertino) Modifier.fillMaxWidth() else Modifier.size(
+                    width = 270.dp,
+                    height = 60.dp
+                )
+            ),
+            adaptation = {
+                cupertino {
+                    colors = CupertinoButtonDefaults.filledButtonColors(
+                        contentColor = CupertinoTheme.colorScheme.label
+                    )
+                }
+            }
         ) {
-            Text(text = "Create Patient", style = buttonTextStyle)
+            Text(text = "Create Patient", fontSize = 16.sp)
         }
     }
 }
@@ -317,4 +300,65 @@ fun GenderSelection(
             }
         }
     }
+}
+
+private fun handleCreatePatient(
+    newPatient: Patient,
+    scope: CoroutineScope,
+    isFormValid: Boolean,
+    changeSsnError: (String) -> Unit,
+    changeFirstNameError: (String) -> Unit,
+    changeLastNameError: (String) -> Unit,
+    changeAgeError: (String) -> Unit,
+    changeGenderError: (String) -> Unit,
+    changeAddressError: (String) -> Unit,
+    changePhoneNumberError: (String) -> Unit,
+    changeEmailError: (String) -> Unit,
+    changeDateOfBirthError: (String) -> Unit,
+) {
+    changeSsnError("")
+    changeFirstNameError("")
+    changeLastNameError("")
+    changeAgeError("")
+    changeGenderError("")
+    changeAddressError("")
+    changePhoneNumberError("")
+    changeEmailError("")
+    changeDateOfBirthError("")
+
+    if (isFormValid) {
+        scope.launch {
+            // GlobalKtorClient.createNewPatient(newPatient)
+        }
+    } else {
+        newPatient.socialSecurityNumber.ifBlank {
+            changeSsnError("This field can't be blank")
+        }
+        newPatient.firstName.ifBlank {
+            changeFirstNameError("This field can't be blank")
+        }
+        newPatient.lastName.ifBlank {
+            changeLastNameError("This field can't be blank")
+        }
+        newPatient.age.ifBlank {
+            changeAgeError("This field can't be blank")
+        }
+        newPatient.gender.ifBlank {
+            changeGenderError("This field can't be blank")
+        }
+        newPatient.address.ifBlank {
+            changeAddressError("This field can't be blank")
+        }
+        newPatient.phoneNumber.ifBlank {
+            changePhoneNumberError("This field can't be blank")
+        }
+        newPatient.email.ifBlank {
+            changeEmailError("This field can't be blank")
+        }
+        newPatient.birthDate.ifBlank {
+            changeDateOfBirthError("This field can't be blank")
+        }
+    }
+
+    Logger.i(newPatient.toString(), tag = "Patient")
 }

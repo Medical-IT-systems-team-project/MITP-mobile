@@ -8,11 +8,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -33,10 +32,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.touchlab.kermit.Logger
+import com.slapps.cupertino.CupertinoButtonDefaults
+import com.slapps.cupertino.adaptive.AdaptiveTonalButton
 import com.slapps.cupertino.adaptive.Theme
 import com.slapps.cupertino.adaptive.icons.AdaptiveIcons
 import com.slapps.cupertino.adaptive.icons.DateRange
 import com.slapps.cupertino.theme.CupertinoTheme
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import org.umcs.mobile.composables.shared.AdaptiveTextField
@@ -214,50 +216,93 @@ fun NewMedicationContent(
         )
 
         Spacer(modifier = Modifier.height(30.dp))
-        Button(
+
+        AdaptiveTonalButton(
             onClick = {
-                strengthError = ""
-                startDateError = ""
-                endDateError = ""
-                detailsError = ""
-                nameError = ""
-                unitError =""
-                dosageError =""
-
-                if (isFormValid) {
-                    scope.launch {
-                        GlobalKtorClient.createNewMedication(newMedication, doctorID, medicalCaseID)
-                    }
-                } else {
-                    newMedication.name.ifBlank {
-                        nameError = "This field can't be blank"
-                    }
-                    newMedication.startDate.ifBlank {
-                        startDateError = "This field can't be blank"
-                    }
-                    newMedication.endDate.ifBlank {
-                        endDateError = "This field can't be blank"
-                    }
-                    newMedication.details.ifBlank {
-                        detailsError = "This field can't be blank"
-                    }
-                    newMedication.dosageForm.ifBlank {
-                        dosageError = "This field can't be blank"
-                    }
-                    newMedication.strength.ifBlank {
-                        strengthError = "This field can't be blank"
-                    }
-                    newMedication.unit.ifBlank {
-                        unitError = "This field can't be blank"
-                    }
-                }
-
-                Logger.i(newMedication.toString(), tag = "Medication")
+                handleCreateMedication(
+                    newMedication = newMedication,
+                    doctorID = doctorID,
+                    medicalCaseID = medicalCaseID,
+                    scope = scope,
+                    isFormValid = isFormValid,
+                    changeDosageError = { dosageError = it },
+                    changeUnitError = { unitError = it },
+                    changeStrengthError = { strengthError = it },
+                    changeStartDateError = { startDateError = it },
+                    changeEndDateError = { endDateError = it },
+                    changeDetailsError = { detailsError = it },
+                    changeNameError = { nameError = it }
+                )
             },
-            shape = RoundedCornerShape(16.dp),
-            modifier = Modifier.size(width = 270.dp, height = 60.dp),
+            modifier = Modifier.then(
+                if (isCupertino) Modifier.fillMaxWidth() else Modifier.size(
+                    width = 270.dp,
+                    height = 60.dp
+                )
+            ),
+            adaptation = {
+                cupertino {
+                    colors = CupertinoButtonDefaults.filledButtonColors(
+                        contentColor = CupertinoTheme.colorScheme.label
+                    )
+                }
+            }
         ) {
-            Text(text = "Create Medication", style = buttonTextStyle)
+            Text(text = "Create Medication", fontSize = 16.sp)
+        }
+
+    }
+}
+
+private fun handleCreateMedication(
+    newMedication: Medication,
+    doctorID: Int,
+    medicalCaseID: Int,
+    scope: CoroutineScope,
+    isFormValid: Boolean,
+    changeDosageError: (String) -> Unit,
+    changeUnitError: (String) -> Unit,
+    changeStrengthError: (String) -> Unit,
+    changeStartDateError: (String) -> Unit,
+    changeEndDateError: (String) -> Unit,
+    changeDetailsError: (String) -> Unit,
+    changeNameError: (String) -> Unit,
+) {
+    changeDosageError("")
+    changeUnitError("")
+    changeStrengthError("")
+    changeStartDateError("")
+    changeEndDateError("")
+    changeDetailsError("")
+    changeNameError("")
+
+    if (isFormValid) {
+        scope.launch {
+            GlobalKtorClient.createNewMedication(newMedication, doctorID, medicalCaseID)
+        }
+    } else {
+        newMedication.name.ifBlank {
+            changeNameError("This field can't be blank")
+        }
+        newMedication.startDate.ifBlank {
+            changeStartDateError("This field can't be blank")
+        }
+        newMedication.endDate.ifBlank {
+            changeEndDateError("This field can't be blank")
+        }
+        newMedication.details.ifBlank {
+            changeDetailsError("This field can't be blank")
+        }
+        newMedication.dosageForm.ifBlank {
+            changeDosageError("This field can't be blank")
+        }
+        newMedication.strength.ifBlank {
+            changeStrengthError("This field can't be blank")
+        }
+        newMedication.unit.ifBlank {
+            changeUnitError("This field can't be blank")
         }
     }
+
+    Logger.i(newMedication.toString(), tag = "Medication")
 }

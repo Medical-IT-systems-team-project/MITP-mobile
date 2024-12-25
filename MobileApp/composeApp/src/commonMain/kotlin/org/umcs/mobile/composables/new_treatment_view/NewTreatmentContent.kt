@@ -8,11 +8,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -34,10 +33,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.touchlab.kermit.Logger
+import com.slapps.cupertino.CupertinoButtonDefaults
+import com.slapps.cupertino.adaptive.AdaptiveTonalButton
 import com.slapps.cupertino.adaptive.Theme
 import com.slapps.cupertino.adaptive.icons.AdaptiveIcons
 import com.slapps.cupertino.adaptive.icons.DateRange
 import com.slapps.cupertino.theme.CupertinoTheme
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 import org.umcs.mobile.composables.shared.AdaptiveTextField
@@ -72,7 +74,7 @@ fun NewTreatmentContent(
         if (isCupertino) CupertinoTheme.typography.title3 else MaterialTheme.typography.titleMedium.copy(
             fontSize = 20.sp
         )
-    val verticalSpacing = if(isCupertino) 15.dp else 5.dp
+    val verticalSpacing = if (isCupertino) 15.dp else 5.dp
     var shownStartDate by remember { mutableStateOf("") }
     var shownEndDate by remember { mutableStateOf("") }
     var descriptionError by remember { mutableStateOf("") }
@@ -112,7 +114,9 @@ fun NewTreatmentContent(
                     onNewTreatmentChange(newTreatment.copy(endDate = newDateTime.toString()))
                     shownEndDate = newDateTime.toString().replace('-', '/').replace('T', ' ')
                 },
-                passedStartDateTime = if (newTreatment.startDate.isNotBlank()) LocalDateTime.parse(newTreatment.startDate) else null
+                passedStartDateTime = if (newTreatment.startDate.isNotBlank()) LocalDateTime.parse(
+                    newTreatment.startDate
+                ) else null
             )
         }
         AdaptiveTextField(
@@ -121,7 +125,7 @@ fun NewTreatmentContent(
             title = { Text("Start Date") },
             text = shownStartDate,
             supportingText = startDateError,
-            changeSupportingText = { startDateError= it },
+            changeSupportingText = { startDateError = it },
             focusRequester = focusRequester,
             placeholder = { Text("Start Date") },
             trailingIcon = {
@@ -145,7 +149,7 @@ fun NewTreatmentContent(
             title = { Text("End Date") },
             text = shownEndDate,
             supportingText = endDateError,
-            changeSupportingText = { endDateError= it },
+            changeSupportingText = { endDateError = it },
             focusRequester = focusRequester,
             placeholder = { Text("End Date") },
             trailingIcon = {
@@ -167,7 +171,7 @@ fun NewTreatmentContent(
             title = { Text("Name") },
             text = newTreatment.name,
             supportingText = nameError,
-            changeSupportingText = { nameError= it },
+            changeSupportingText = { nameError = it },
             onTextChange = { onNewTreatmentChange(newTreatment.copy(name = it)) },
             focusRequester = focusRequester,
             placeholder = { Text("Name") },
@@ -176,7 +180,7 @@ fun NewTreatmentContent(
             title = { Text("Description") },
             text = newTreatment.description,
             supportingText = descriptionError,
-            changeSupportingText = { descriptionError= it },
+            changeSupportingText = { descriptionError = it },
             onTextChange = { onNewTreatmentChange(newTreatment.copy(description = it)) },
             focusRequester = focusRequester,
             placeholder = { Text("Description") },
@@ -185,49 +189,87 @@ fun NewTreatmentContent(
             title = { Text("Details") },
             text = newTreatment.details,
             supportingText = detailsError,
-            changeSupportingText = { detailsError= it },
+            changeSupportingText = { detailsError = it },
             onTextChange = { onNewTreatmentChange(newTreatment.copy(details = it)) },
             focusRequester = focusRequester,
             placeholder = { Text("Details") },
         )
 
         Spacer(modifier = Modifier.height(30.dp))
-        Button(
+
+        AdaptiveTonalButton(
             onClick = {
-                descriptionError = ""
-                startDateError = ""
-                endDateError = ""
-                detailsError = ""
-                nameError = ""
-
-                if (isFormValid) {
-                    scope.launch {
-                        GlobalKtorClient.createNewTreatment(newTreatment, doctorID, medicalCaseID)
-                    }
-                } else {
-                    newTreatment.description.ifBlank {
-                        descriptionError = "This field can't be blank"
-                    }
-                    newTreatment.startDate.ifBlank {
-                        startDateError = "This field can't be blank"
-                    }
-                    newTreatment.endDate.ifBlank {
-                        endDateError = "This field can't be blank"
-                    }
-                    newTreatment.details.ifBlank {
-                        detailsError = "This field can't be blank"
-                    }
-                    newTreatment.name.ifBlank {
-                        nameError = "This field can't be blank"
-                    }
-                }
-
-                Logger.i(newTreatment.toString(), tag = "Treatment")
+                handleCreateTreatment(
+                    newTreatment = newTreatment,
+                    doctorID = doctorID,
+                    medicalCaseID = medicalCaseID,
+                    scope = scope,
+                    isFormValid = isFormValid,
+                    changeDescriptionError = { descriptionError = it },
+                    changeStartDateError = { startDateError = it },
+                    changeEndDateError = { endDateError = it },
+                    changeDetailsError = { detailsError = it },
+                    changeNameError = { nameError = it }
+                )
             },
-            shape = RoundedCornerShape(16.dp),
-            modifier = Modifier.size(width = 270.dp, height = 60.dp),
+            modifier = Modifier.then(
+                if (isCupertino) Modifier.fillMaxWidth() else Modifier.size(
+                    width = 270.dp,
+                    height = 60.dp
+                )
+            ),
+            adaptation = {
+                cupertino {
+                    colors = CupertinoButtonDefaults.filledButtonColors(
+                        contentColor = CupertinoTheme.colorScheme.label
+                    )
+                }
+            }
         ) {
-            Text(text = "Create Treatment", style = buttonTextStyle)
+            Text(text = "Create Treatment", fontSize = 16.sp)
         }
     }
+}
+
+private fun handleCreateTreatment(
+    newTreatment: MedicalTreatment,
+    doctorID: Int,
+    medicalCaseID: Int,
+    scope: CoroutineScope,
+    isFormValid: Boolean,
+    changeDescriptionError: (String) -> Unit,
+    changeStartDateError: (String) -> Unit,
+    changeEndDateError: (String) -> Unit,
+    changeDetailsError: (String) -> Unit,
+    changeNameError: (String) -> Unit,
+) {
+    changeDescriptionError("")
+    changeStartDateError("")
+    changeEndDateError("")
+    changeDetailsError("")
+    changeNameError("")
+
+    if (isFormValid) {
+        scope.launch {
+            GlobalKtorClient.createNewTreatment(newTreatment, doctorID, medicalCaseID)
+        }
+    } else {
+        newTreatment.description.ifBlank {
+            changeDescriptionError("This field can't be blank")
+        }
+        newTreatment.startDate.ifBlank {
+            changeStartDateError("This field can't be blank")
+        }
+        newTreatment.endDate.ifBlank {
+            changeEndDateError("This field can't be blank")
+        }
+        newTreatment.details.ifBlank {
+            changeDetailsError("This field can't be blank")
+        }
+        newTreatment.name.ifBlank {
+            changeNameError("This field can't be blank")
+        }
+    }
+
+    Logger.i(newTreatment.toString(), tag = "Treatment")
 }

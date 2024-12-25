@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -36,9 +35,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import com.slapps.cupertino.CupertinoButtonDefaults
+import com.slapps.cupertino.adaptive.AdaptiveTonalButton
+import com.slapps.cupertino.adaptive.ExperimentalAdaptiveApi
+import com.slapps.cupertino.adaptive.Theme
 import com.slapps.cupertino.adaptive.icons.AdaptiveIcons
 import com.slapps.cupertino.adaptive.icons.Email
 import com.slapps.cupertino.adaptive.icons.Lock
+import com.slapps.cupertino.theme.CupertinoTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import mobileapp.composeapp.generated.resources.Res
@@ -48,7 +52,9 @@ import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.umcs.mobile.composables.shared.AdaptiveTextField
 import org.umcs.mobile.network.GlobalKtorClient
+import org.umcs.mobile.theme.determineTheme
 
+@OptIn(ExperimentalAdaptiveApi::class)
 @Composable
 fun DoctorLoginLayout(
     navigateToCaseList: () -> Unit,
@@ -66,6 +72,11 @@ fun DoctorLoginLayout(
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
+
+    val isCupertino = when(determineTheme()){
+        Theme.Cupertino -> true
+        Theme.Material3 -> false
+    }
 
     Column(
         modifier = Modifier
@@ -103,7 +114,11 @@ fun DoctorLoginLayout(
         }
 
         AdaptiveTextField(
-            leadingIcon = { Icon(AdaptiveIcons.Outlined.Email, null) },
+            leadingIcon = { Icon(
+                modifier = Modifier.size(30.dp),
+                imageVector = AdaptiveIcons.Outlined.Email,
+                contentDescription = null
+            ) },
             modifier = Modifier.padding(horizontal = 35.dp).heightIn(min = 45.dp),
             keyboardType = KeyboardType.Email,
             title = { Text("Login") },
@@ -119,7 +134,11 @@ fun DoctorLoginLayout(
         Spacer(Modifier.height(30.dp))
 
         AdaptiveTextField(
-            leadingIcon = { Icon(AdaptiveIcons.Outlined.Lock, null) },
+            leadingIcon = { Icon(
+                modifier = Modifier.size(30.dp),
+                imageVector = AdaptiveIcons.Outlined.Lock,
+                contentDescription = null
+            ) },
             modifier = Modifier.padding(horizontal = 35.dp).heightIn(min = 45.dp),
             keyboardType = KeyboardType.Password,
             title = { Text("Password") },
@@ -134,7 +153,7 @@ fun DoctorLoginLayout(
         )
         Spacer(Modifier.height(30.dp))
 
-        Button(
+        AdaptiveTonalButton(
             onClick = {
                 handleLogin(
                     changeLoginError = { newLoginError -> loginError = newLoginError },
@@ -146,11 +165,21 @@ fun DoctorLoginLayout(
                     navigateToCaseList = navigateToCaseList
                 )
             },
-            shape = shape,
-            modifier = Modifier.width(270.dp)
-        ) {
+            modifier = Modifier.then(
+                if(isCupertino) Modifier.fillMaxWidth().padding(horizontal = 35.dp) else Modifier.width(270.dp).height(50.dp)
+            ),
+            adaptation = {
+                cupertino {
+                    colors =  CupertinoButtonDefaults.filledButtonColors(
+                        contentColor = CupertinoTheme.colorScheme.label
+                    )
+                }
+            }
+        ){
             Text(text = "Login", fontSize = 16.sp)
         }
+
+
         Spacer(Modifier.height(30.dp))
 
         if (errorMessage.isNotBlank()) {
