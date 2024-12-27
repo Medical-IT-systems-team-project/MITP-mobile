@@ -68,7 +68,7 @@ object GlobalKtorClient {
         }
     }
 
-    suspend fun createNewCase(newCase: MedicalCase, doctorId: Int) {
+    suspend fun createNewCase(newCase: MedicalCase, doctorId: String) {
         return try {
             val medicalCaseRequestDto = MedicalCaseRequestDto(
                 patientId = 1, //TODO : change patient data class to hold id
@@ -122,7 +122,7 @@ object GlobalKtorClient {
 
     suspend fun createNewTreatment(
         newTreatment: MedicalTreatment,
-        doctorID: Int,
+        doctorID: String,
         medicalCaseID: Int,
     ) {
         return try {
@@ -144,7 +144,7 @@ object GlobalKtorClient {
         }
     }
 
-    suspend fun createNewMedication(newMedication: Medication, doctorID: Int, medicalCaseID: Int) {
+    suspend fun createNewMedication(newMedication: Medication, doctorID: String, medicalCaseID: Int) {
         return try {
             val treatmentRequestDto = MedicationRequestDto(
                 startDate = LocalDate.parse(newMedication.startDate),

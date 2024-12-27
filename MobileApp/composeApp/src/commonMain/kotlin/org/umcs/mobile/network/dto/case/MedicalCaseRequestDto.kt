@@ -11,5 +11,5 @@ data class MedicalCaseRequestDto(
     val admissionDate: LocalDateTime,
     val admissionReason:String,
     val description : String,
-    val attendingDoctorId:Int
+    val attendingDoctorId:String
 )

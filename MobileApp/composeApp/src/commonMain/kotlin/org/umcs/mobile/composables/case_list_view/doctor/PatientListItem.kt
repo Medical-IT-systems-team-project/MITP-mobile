@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -40,13 +39,13 @@ fun PatientListItem(
         if (isCupertino) CupertinoTheme.typography.title3 else MaterialTheme.typography.titleMedium
     val onDismiss = { changeShowDropdown(null) }
 
-
     Row(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .fillMaxWidth(0.8f)
-            .height(50.dp)
+            .then(
+                if(isCupertino) Modifier.fillMaxWidth(0.95f).height(45.dp) else  Modifier.fillMaxWidth(0.8f).height(50.dp)
+            )
             .clip(shape)
             .background(MaterialTheme.colorScheme.primary)
             .padding(horizontal = 12.dp)

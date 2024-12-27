@@ -60,7 +60,7 @@ fun NewMedicationContent(
     newMedication: Medication,
     focusRequester: FocusRequester,
     medicalCaseID: Int,
-    doctorID: Int,
+    doctorID: String,
     modifier: Modifier,
 ) {
     val theme = remember { determineTheme() }
@@ -256,7 +256,7 @@ fun NewMedicationContent(
 
 private fun handleCreateMedication(
     newMedication: Medication,
-    doctorID: Int,
+    doctorID: String,
     medicalCaseID: Int,
     scope: CoroutineScope,
     isFormValid: Boolean,

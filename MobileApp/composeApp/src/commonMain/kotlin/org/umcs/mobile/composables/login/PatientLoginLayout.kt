@@ -24,7 +24,7 @@ fun PatientLoginLayout(
             when (networkCallResult) {
                 is LoginResult.Error -> networkCallResult.message
                 is LoginResult.Success -> {
-                    viewModel.setAccessId(networkCallResult.patient)
+                    viewModel.setPatient(networkCallResult.patient)
                     navigateToCaseList()
                     null
                 }

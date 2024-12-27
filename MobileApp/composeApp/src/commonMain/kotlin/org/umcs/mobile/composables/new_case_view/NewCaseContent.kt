@@ -64,7 +64,7 @@ fun NewCaseContent(
     onNewCaseChange: (MedicalCase) -> Unit,
     onShowPatientPickerChange: (Boolean) -> Unit,
     onShowDatePickerChange: (Boolean) -> Unit,
-    doctorID: Int,
+    doctorID: String,
 ) {
     val theme = remember { determineTheme() }
     val isCupertino = when (theme) {
@@ -230,7 +230,7 @@ fun NewCaseContent(
 
 private fun handleCreateCase(
     newCase: MedicalCase,
-    doctorID: Int,
+    doctorID: String,
     scope: CoroutineScope,
     isFormValid: Boolean,
     changePatientError: (String) -> Unit,

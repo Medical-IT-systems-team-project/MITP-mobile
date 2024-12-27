@@ -1,9 +1,14 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package org.umcs.mobile.composables.case_view
 
+import AppViewModel
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,13 +38,23 @@ import com.slapps.cupertino.icons.outlined.Cross
 import com.slapps.cupertino.icons.outlined.HeartTextSquare
 import com.slapps.cupertino.icons.outlined.Xmark
 import com.slapps.cupertino.theme.CupertinoTheme
+import org.koin.compose.viewmodel.koinViewModel
+import org.umcs.mobile.composables.case_list_view.doctor.AdaptiveDropdownItem
+import org.umcs.mobile.composables.case_list_view.doctor.AdaptiveDropdownMenu
 import org.umcs.mobile.data.Case
 import org.umcs.mobile.network.dto.case.MedicalStatus
 import org.umcs.mobile.theme.determineTheme
 
 @Composable
-fun TreatmentsContent(modifier: Modifier = Modifier, paddingValues: PaddingValues, case: Case) {
+fun TreatmentsContent(
+    modifier: Modifier = Modifier,
+    paddingValues: PaddingValues,
+    case: Case,
+    viewModel: AppViewModel = koinViewModel(),
+) {
     val treatments = remember { fetchTreatment() }
+    val isDoctor = viewModel.isDoctor
+    var showDropdownForTreatment by remember { mutableStateOf<Treatment?>(null) }
 
     LazyColumn(
         contentPadding = paddingValues,
@@ -48,26 +63,66 @@ fun TreatmentsContent(modifier: Modifier = Modifier, paddingValues: PaddingValue
         horizontalAlignment = Alignment.Start
     ) {
         items(treatments) { treatment ->
-            TreatmentItem(treatment = treatment)
+            TreatmentItem(
+                showDropdownForTreatment = showDropdownForTreatment,
+                dismissDropdown = { showDropdownForTreatment = null },
+                treatment = treatment,
+                dropdownExpanded = showDropdownForTreatment == treatment,
+                modifier = Modifier.then(
+                    if (isDoctor) {
+                        Modifier.combinedClickable(
+                            onClick = {
+                            },
+                            onLongClick = {
+                                showDropdownForTreatment = if (treatment.status in listOf(MedicalStatus.COMPLETED, MedicalStatus.CANCELLED)) null else treatment
+                            }
+                        )
+                    } else {
+                        Modifier
+                    }
+                )
+            )
         }
     }
 }
 
 @Composable
-fun TreatmentItem(modifier: Modifier = Modifier, treatment: Treatment) {
+fun TreatmentItem(
+    modifier: Modifier = Modifier,
+    dropdownExpanded: Boolean,
+    treatment: Treatment,
+    showDropdownForTreatment: Treatment?,
+    dismissDropdown: () -> Unit,
+) {
     var showMore by remember { mutableStateOf(false) }
     val style = when (determineTheme()) {
         Cupertino -> CupertinoTheme.typography.subhead
         Material3 -> MaterialTheme.typography.bodyMedium
     }
+    val dropdownItems = MedicalStatus.entries
+        .filter { status -> status > treatment.status }
+        .map { status ->
+            AdaptiveDropdownItem(
+                text = status.name,
+                onClick = {
+                    // TODO : change treatment status
+                }
+            )
+        }
 
-    Column(modifier = modifier) {
+    Column {
         Row(
+            modifier = modifier,
             horizontalArrangement = Arrangement.spacedBy(5.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             SectionTitleText(treatment.name)
             StatusIcon(treatment.status)
+            AdaptiveDropdownMenu(
+                expanded = dropdownExpanded,
+                onDismiss = dismissDropdown,
+                adaptiveDropdownItemList = dropdownItems
+            )
         }
         Column(
             verticalArrangement = Arrangement.spacedBy(6.dp),

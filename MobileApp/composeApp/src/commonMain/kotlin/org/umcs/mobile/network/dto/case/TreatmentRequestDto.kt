@@ -14,5 +14,5 @@ data class TreatmentRequestDto(
     val name: String,
     val details: String,
     val medicalCaseId: Int,
-    val medicalDoctorId: Int,
+    val medicalDoctorId: String,
 )
