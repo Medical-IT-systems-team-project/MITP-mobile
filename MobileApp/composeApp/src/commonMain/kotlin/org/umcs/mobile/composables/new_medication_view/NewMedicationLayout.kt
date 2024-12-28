@@ -78,6 +78,7 @@ data class Medication(
     val endDate : String = "",
     val details : String = "",
     val dosageForm : String = "",
+    val frequency : String = "",
     val strength : String = "",
     val unit : String = ""
 )

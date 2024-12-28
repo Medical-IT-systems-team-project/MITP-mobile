@@ -76,6 +76,7 @@ fun NewMedicationContent(
     var shownStartDate by remember { mutableStateOf("") }
     var shownEndDate by remember { mutableStateOf("") }
 
+    var frequencyError by remember { mutableStateOf("") }
     var dosageError by remember { mutableStateOf("") }
     var unitError by remember { mutableStateOf("") }
     var strengthError by remember { mutableStateOf("") }
@@ -197,6 +198,15 @@ fun NewMedicationContent(
             placeholder = { Text("Dosage Form") },
         )
         AdaptiveTextField(
+            title = { Text("Frequency")},
+            text = newMedication.frequency,
+            supportingText = frequencyError,
+            changeSupportingText = { frequencyError = it },
+            onTextChange = { onNewMedicationChange(newMedication.copy(frequency = it)) },
+            focusRequester = focusRequester,
+            placeholder = { Text("Frequency") },
+        )
+        AdaptiveTextField(
             title = { Text("Strength") },
             text = newMedication.strength,
             supportingText = strengthError,
@@ -225,6 +235,7 @@ fun NewMedicationContent(
                     medicalCaseID = medicalCaseID,
                     scope = scope,
                     isFormValid = isFormValid,
+                    changeFrequencyError = {frequencyError = it},
                     changeDosageError = { dosageError = it },
                     changeUnitError = { unitError = it },
                     changeStrengthError = { strengthError = it },
@@ -267,14 +278,18 @@ private fun handleCreateMedication(
     changeEndDateError: (String) -> Unit,
     changeDetailsError: (String) -> Unit,
     changeNameError: (String) -> Unit,
+    changeFrequencyError: (String) -> Unit,
 ) {
-    changeDosageError("")
-    changeUnitError("")
-    changeStrengthError("")
-    changeStartDateError("")
-    changeEndDateError("")
-    changeDetailsError("")
-    changeNameError("")
+    blankMedicationErrors(
+        changeDosageError,
+        changeUnitError,
+        changeStrengthError,
+        changeStartDateError,
+        changeEndDateError,
+        changeDetailsError,
+        changeNameError,
+        changeFrequencyError
+    )
 
     if (isFormValid) {
         scope.launch {
@@ -302,7 +317,30 @@ private fun handleCreateMedication(
         newMedication.unit.ifBlank {
             changeUnitError("This field can't be blank")
         }
+        newMedication.frequency.ifBlank {
+            changeFrequencyError("This field can't be blank")
+        }
     }
 
     Logger.i(newMedication.toString(), tag = "Medication")
+}
+
+private fun blankMedicationErrors(
+    changeDosageError: (String) -> Unit,
+    changeUnitError: (String) -> Unit,
+    changeStrengthError: (String) -> Unit,
+    changeStartDateError: (String) -> Unit,
+    changeEndDateError: (String) -> Unit,
+    changeDetailsError: (String) -> Unit,
+    changeNameError: (String) -> Unit,
+    changeFrequencyError: (String) -> Unit,
+) {
+    changeDosageError("")
+    changeUnitError("")
+    changeStrengthError("")
+    changeStartDateError("")
+    changeEndDateError("")
+    changeDetailsError("")
+    changeNameError("")
+    changeFrequencyError("")
 }

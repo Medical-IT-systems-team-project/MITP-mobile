@@ -2,6 +2,7 @@
 
 package org.umcs.mobile.composables.case_view
 
+import AppViewModel
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -29,13 +30,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.slapps.cupertino.adaptive.Theme
 import com.slapps.cupertino.theme.CupertinoTheme
+import org.koin.compose.viewmodel.koinViewModel
+import org.umcs.mobile.composables.case_list_view.doctor.AdaptiveDropdownItem
+import org.umcs.mobile.composables.case_list_view.doctor.AdaptiveDropdownMenu
 import org.umcs.mobile.data.Case
 import org.umcs.mobile.network.dto.case.MedicalStatus
 import org.umcs.mobile.theme.determineTheme
 
 @Composable
-fun MedicationContent(paddingValues: PaddingValues, case: Case) {
+fun MedicationContent(
+    paddingValues: PaddingValues,
+    case: Case,
+    viewModel: AppViewModel = koinViewModel(),
+) {
     val medicineList = remember { fetchMedicine() }
+    val isDoctor = viewModel.isDoctor
+    var showDropdownForMedication by remember { mutableStateOf<Medication?>(null) }
 
     LazyColumn(
         contentPadding = paddingValues,
@@ -43,32 +53,66 @@ fun MedicationContent(paddingValues: PaddingValues, case: Case) {
         verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.Top),
         horizontalAlignment = Alignment.Start
     ) {
-        items(medicineList) { medicine ->
-            MedicationItem(medication = medicine)
+        items(medicineList) { medication ->
+            MedicationItem(
+                dismissDropdown = { showDropdownForMedication = null },
+                dropdownExpanded = showDropdownForMedication == medication,
+                medication = medication,
+                modifier = if (isDoctor) {
+                    Modifier.combinedClickable(
+                        onClick = {},
+                        onLongClick = {
+                            showDropdownForMedication = if (medication.status in listOf(
+                                    MedicalStatus.COMPLETED,
+                                    MedicalStatus.CANCELLED
+                                )
+                            ) null else medication
+                        }
+                    )
+                } else {
+                    Modifier
+                }
+            )
         }
     }
 }
 
 @Composable
-fun AdaptiveMedicineDropdown() {
-
-}
-
-@Composable
-fun MedicationItem(modifier: Modifier = Modifier, medication: Medication) {
+fun MedicationItem(
+    modifier: Modifier = Modifier,
+    medication: Medication,
+    dismissDropdown: () -> Unit,
+    dropdownExpanded: Boolean
+) {
     var showMore by remember { mutableStateOf(false) }
     val style = when (determineTheme()) {
         Theme.Cupertino -> CupertinoTheme.typography.subhead
         Theme.Material3 -> MaterialTheme.typography.bodyMedium
     }
+    val dropdownItems = MedicalStatus.entries
+        .filter { status -> status > medication.status }
+        .map { status ->
+            AdaptiveDropdownItem(
+                text = status.name,
+                onClick = {
+                    // TODO : change medication status
+                }
+            )
+        }
 
     Column {
         Row(
+            modifier = modifier,
             horizontalArrangement = Arrangement.spacedBy(5.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             SectionTitleText(medication.name)
             StatusIcon(medication.status)
+            AdaptiveDropdownMenu(
+                expanded = dropdownExpanded,
+                onDismiss = dismissDropdown,
+                adaptiveDropdownItemList = dropdownItems
+            )
         }
 
         Column(
@@ -84,11 +128,11 @@ fun MedicationItem(modifier: Modifier = Modifier, medication: Medication) {
                 .combinedClickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
-                    onClick =  { showMore = !showMore },
+                    onClick = { showMore = !showMore },
                     onLongClick = {}
                 )
         ) {
-            Text(text = medication.dosageForm, style = style)
+            Text(text = "${medication.dosage} ${medication.frequency}", style = style)
             if (showMore) {
                 Text(text = "Start: ${medication.startDate}", style = style)
                 Text(text = "End: ${medication.endDate}", style = style)
@@ -104,11 +148,12 @@ data class Medication(
     val name: String,
     val startDate: String,
     val endDate: String,
-    val dosageForm : String,
+    val dosage: String,
+    val frequency : String,
     val prescribedBy: String,
-    val strength : String,
-    val unit : String,
-    val status : MedicalStatus
+    val strength: String,
+    val unit: String,
+    val status: MedicalStatus,
 )
 
 fun fetchMedicine() = listOf(
@@ -116,50 +161,55 @@ fun fetchMedicine() = listOf(
         name = "Amoxicillin",
         startDate = "2024-01-01",
         endDate = "2024-02-01",
-        dosageForm = "Capsule",
+        dosage = "Capsule",
         strength = "500mg",
         unit = "mg",
         prescribedBy = "Dr. Smith",
-        status = MedicalStatus.PLANNED
+        status = MedicalStatus.PLANNED,
+        frequency = "once a day "
     ),
     Medication(
         name = "Lisinopril",
         startDate = "2024-01-15",
         endDate = "2024-03-15",
-        dosageForm = "Tablet",
+        dosage = "Tablet",
         strength = "10mg",
         unit = "mg",
         prescribedBy = "Dr. Johnson",
-        status = MedicalStatus.ONGOING
+        status = MedicalStatus.ONGOING,
+        frequency = "once a day "
     ),
     Medication(
         name = "Ibuprofen",
         startDate = "2024-02-01",
         endDate = "2024-02-14",
-        dosageForm = "Tablet",
+        dosage = "Tablet",
         strength = "400mg",
         unit = "mg",
         prescribedBy = "Dr. Williams",
-        status = MedicalStatus.PLANNED
+        status = MedicalStatus.PLANNED,
+        frequency = "once a day "
     ),
     Medication(
         name = "Metformin",
         startDate = "2024-02-10",
         endDate = "2024-03-10",
-        dosageForm = "Tablet",
+        dosage = "Tablet",
         strength = "850mg",
         unit = "mg",
         prescribedBy = "Dr. Brown",
-        status = MedicalStatus.CANCELLED
+        status = MedicalStatus.CANCELLED,
+        frequency = "once a day "
     ),
     Medication(
         name = "Atorvastatin",
         startDate = "2024-02-15",
         endDate = "2024-04-15",
-        dosageForm = "Tablet",
+        dosage = "Tablet",
         strength = "20mg",
         unit = "mg",
         prescribedBy = "Dr. Davis",
-        status = MedicalStatus.COMPLETED
+        status = MedicalStatus.COMPLETED,
+        frequency = "once a day "
     )
 )

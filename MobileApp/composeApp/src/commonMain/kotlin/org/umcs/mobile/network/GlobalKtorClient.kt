@@ -86,37 +86,54 @@ object GlobalKtorClient {
         }
     }
 
-    suspend fun loginAsDoctor(login: String, password: String): Boolean {
+    suspend fun loginAsDoctor(login: String, password: String): DoctorLoginResult {
         return try {
-            val tokenResponse: JwtResponseDto = client.post(Endpoints.LOGIN) {
+            val doctorResponse = client.post(Endpoints.LOGIN) {
                 setBody(TokenRequestDto(login, password))
-            }.body()
-            Logger.i("TOKEN : $tokenResponse", tag = "Ktor")
+            }
+            Logger.i("TOKEN : ${doctorResponse.bodyAsText()}", tag = "Ktor")
 
-            tokens = BearerTokens(accessToken = tokenResponse.token, refreshToken = null)
-            true
+            when(doctorResponse.status){
+                HttpStatusCode.OK -> {
+                    val loginBody : JwtResponseDto = doctorResponse.body()
+                    tokens = BearerTokens(accessToken = loginBody.token, refreshToken = null)
+                    DoctorLoginResult.Success(loginBody)
+                }
+                HttpStatusCode.NotFound -> {
+                    throw NoSuchElementException("No doctor found with that data")
+                }
+                else -> {
+                    throw IllegalStateException("${doctorResponse.status} with message ${doctorResponse.bodyAsText()}  \uD83E\uDD21 ")
+                }
+            }
         } catch (e: Exception) {
             Logger.e("Login failed: ${e.message}", tag = "Ktor")
-            false
+            DoctorLoginResult.Error(e.message ?: "Unknown error")
         }
     }
 
-    suspend fun loginAsPatient(accessID: String): LoginResult {
+    suspend fun loginAsPatient(accessID: String): PatientLoginResult {
         return try {
             val patientResponse = client.get(Endpoints.PATIENT_ACCESS_ID.withArgs(accessID)) {
                 contentType(ContentType.Application.Json)
             }
-            if (patientResponse.status == HttpStatusCode.OK) {
-                val patientDto : PatientResponseDto = patientResponse.body()
-                LoginResult.Success(patientDto)
-            } else if (patientResponse.status == HttpStatusCode.NotFound) {
-                throw NoSuchElementException("No patient found with that access ID")
-            } else {
-                throw IllegalStateException("${patientResponse.status}  \uD83E\uDD21 ")
+            when (patientResponse.status) {
+                HttpStatusCode.OK -> {
+                    val patientDto: PatientResponseDto = patientResponse.body()
+                    PatientLoginResult.Success(patientDto)
+                }
+
+                HttpStatusCode.NotFound -> {
+                    throw NoSuchElementException("No patient found with that access ID")
+                }
+
+                else -> {
+                    throw IllegalStateException("${patientResponse.status}  \uD83E\uDD21 ")
+                }
             }
         } catch (e: Exception) {
             Logger.e("Login failed: ${e.message}", tag = "Ktor")
-            LoginResult.Error(e.message ?: "Unknown error")
+            PatientLoginResult.Error(e.message ?: "Unknown error")
         }
     }
 
@@ -144,7 +161,11 @@ object GlobalKtorClient {
         }
     }
 
-    suspend fun createNewMedication(newMedication: Medication, doctorID: String, medicalCaseID: Int) {
+    suspend fun createNewMedication(
+        newMedication: Medication,
+        doctorID: String,
+        medicalCaseID: Int,
+    ) {
         return try {
             val treatmentRequestDto = MedicationRequestDto(
                 startDate = LocalDate.parse(newMedication.startDate),

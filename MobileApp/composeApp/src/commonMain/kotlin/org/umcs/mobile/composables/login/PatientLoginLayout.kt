@@ -6,7 +6,7 @@ import androidx.compose.ui.Modifier
 import org.koin.compose.viewmodel.koinViewModel
 import org.umcs.mobile.composables.shared.new_uuid.NewUUIDScreen
 import org.umcs.mobile.network.GlobalKtorClient
-import org.umcs.mobile.network.LoginResult
+import org.umcs.mobile.network.PatientLoginResult
 
 @Composable
 fun PatientLoginLayout(
@@ -22,8 +22,8 @@ fun PatientLoginLayout(
             val networkCallResult = GlobalKtorClient.loginAsPatient(passedAccessId)
 
             when (networkCallResult) {
-                is LoginResult.Error -> networkCallResult.message
-                is LoginResult.Success -> {
+                is PatientLoginResult.Error -> networkCallResult.message
+                is PatientLoginResult.Success -> {
                     viewModel.setPatient(networkCallResult.patient)
                     navigateToCaseList()
                     null

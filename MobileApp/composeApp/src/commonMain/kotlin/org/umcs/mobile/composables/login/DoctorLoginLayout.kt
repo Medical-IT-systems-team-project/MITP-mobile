@@ -51,6 +51,7 @@ import mobileapp.composeapp.generated.resources.cross_logo
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.umcs.mobile.composables.shared.AdaptiveTextField
+import org.umcs.mobile.network.DoctorLoginResult
 import org.umcs.mobile.network.GlobalKtorClient
 import org.umcs.mobile.theme.determineTheme
 
@@ -73,7 +74,7 @@ fun DoctorLoginLayout(
     val focusManager = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
 
-    val isCupertino = when(determineTheme()){
+    val isCupertino = when (determineTheme()) {
         Theme.Cupertino -> true
         Theme.Material3 -> false
     }
@@ -114,11 +115,13 @@ fun DoctorLoginLayout(
         }
 
         AdaptiveTextField(
-            leadingIcon = { Icon(
-                modifier = Modifier.size(30.dp),
-                imageVector = AdaptiveIcons.Outlined.Email,
-                contentDescription = null
-            ) },
+            leadingIcon = {
+                Icon(
+                    modifier = Modifier.size(30.dp),
+                    imageVector = AdaptiveIcons.Outlined.Email,
+                    contentDescription = null
+                )
+            },
             modifier = Modifier.padding(horizontal = 35.dp).heightIn(min = 45.dp),
             keyboardType = KeyboardType.Email,
             title = { Text("Login") },
@@ -134,11 +137,13 @@ fun DoctorLoginLayout(
         Spacer(Modifier.height(30.dp))
 
         AdaptiveTextField(
-            leadingIcon = { Icon(
-                modifier = Modifier.size(30.dp),
-                imageVector = AdaptiveIcons.Outlined.Lock,
-                contentDescription = null
-            ) },
+            leadingIcon = {
+                Icon(
+                    modifier = Modifier.size(30.dp),
+                    imageVector = AdaptiveIcons.Outlined.Lock,
+                    contentDescription = null
+                )
+            },
             modifier = Modifier.padding(horizontal = 35.dp).heightIn(min = 45.dp),
             keyboardType = KeyboardType.Password,
             title = { Text("Password") },
@@ -162,24 +167,26 @@ fun DoctorLoginLayout(
                     login = login,
                     password = password,
                     loginScope = loginScope,
-                    navigateToCaseList = navigateToCaseList
+                    loginAsDoctor = { doctorId ->
+                        viewModel.setDoctorId(doctorId)
+                        navigateToCaseList()
+                    }
                 )
             },
             modifier = Modifier.then(
-                if(isCupertino) Modifier.fillMaxWidth().padding(horizontal = 35.dp) else Modifier.width(270.dp).height(50.dp)
+                if (isCupertino) Modifier.fillMaxWidth()
+                    .padding(horizontal = 35.dp) else Modifier.width(270.dp).height(50.dp)
             ),
             adaptation = {
                 cupertino {
-                    colors =  CupertinoButtonDefaults.filledButtonColors(
+                    colors = CupertinoButtonDefaults.filledButtonColors(
                         contentColor = CupertinoTheme.colorScheme.label
                     )
                 }
             }
-        ){
+        ) {
             Text(text = "Login", fontSize = 16.sp)
         }
-
-
         Spacer(Modifier.height(30.dp))
 
         if (errorMessage.isNotBlank()) {
@@ -196,7 +203,7 @@ private fun handleLogin(
     login: String,
     password: String,
     loginScope: CoroutineScope,
-    navigateToCaseList: () -> Unit,
+    loginAsDoctor: (String) -> Unit,
 ) {
     changeLoginError("")
     changePasswordError("")
@@ -204,11 +211,11 @@ private fun handleLogin(
 
     if (login.isNotBlank() && password.isNotBlank()) {
         loginScope.launch {
-            val successful = GlobalKtorClient.loginAsDoctor(login, password)
-            if (successful) {
-                navigateToCaseList()
-            } else {
-                changeErrorMessage("Something went wrong")
+            val networkCallResult = GlobalKtorClient.loginAsDoctor(login, password)
+
+            when (networkCallResult) {
+                is DoctorLoginResult.Error -> changeErrorMessage(networkCallResult.message)
+                is DoctorLoginResult.Success -> loginAsDoctor(networkCallResult.patient.id)
             }
         }
     } else if (login.isBlank() && password.isBlank()) {

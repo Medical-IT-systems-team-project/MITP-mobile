@@ -1,5 +1,6 @@
 package org.umcs.mobile.client
 
+import co.touchlab.kermit.Logger
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.auth.Auth
@@ -109,7 +110,7 @@ class DoctorEndpointTest {
 
     private fun getTokens() = runBlocking {
         val tokenResponse: JwtResponseDto = client.post("login") {
-            setBody(TokenRequestDto(login = "test", password = "test"))
+            setBody(TokenRequestDto(login = "asmith", password = "somePassword"))
         }.body()
         println("Logowanie $tokenResponse")
         tokens = BearerTokens(accessToken = tokenResponse.token, refreshToken = null)
@@ -124,6 +125,7 @@ class DoctorEndpointTest {
     @Test
     fun `get all cases as a doctor should return 200-OK`() = runTest {
         val allPatientsResponse = client.get(Endpoints.DOCTOR_MEDICAL_CASE_ALL)
+        Logger.i(allPatientsResponse.bodyAsText())
         assertEquals(HttpStatusCode.OK, allPatientsResponse.status)
     }
 

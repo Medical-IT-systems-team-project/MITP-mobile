@@ -64,23 +64,23 @@ fun TreatmentsContent(
     ) {
         items(treatments) { treatment ->
             TreatmentItem(
-                showDropdownForTreatment = showDropdownForTreatment,
                 dismissDropdown = { showDropdownForTreatment = null },
-                treatment = treatment,
                 dropdownExpanded = showDropdownForTreatment == treatment,
-                modifier = Modifier.then(
-                    if (isDoctor) {
-                        Modifier.combinedClickable(
-                            onClick = {
-                            },
-                            onLongClick = {
-                                showDropdownForTreatment = if (treatment.status in listOf(MedicalStatus.COMPLETED, MedicalStatus.CANCELLED)) null else treatment
-                            }
-                        )
-                    } else {
-                        Modifier
-                    }
-                )
+                treatment = treatment,
+                modifier = if (isDoctor) {
+                    Modifier.combinedClickable(
+                        onClick = {},
+                        onLongClick = {
+                            showDropdownForTreatment = if (treatment.status in listOf(
+                                    MedicalStatus.COMPLETED,
+                                    MedicalStatus.CANCELLED
+                                )
+                            ) null else treatment
+                        }
+                    )
+                } else {
+                    Modifier
+                }
             )
         }
     }
@@ -89,9 +89,8 @@ fun TreatmentsContent(
 @Composable
 fun TreatmentItem(
     modifier: Modifier = Modifier,
-    dropdownExpanded: Boolean,
     treatment: Treatment,
-    showDropdownForTreatment: Treatment?,
+    dropdownExpanded: Boolean,
     dismissDropdown: () -> Unit,
 ) {
     var showMore by remember { mutableStateOf(false) }
