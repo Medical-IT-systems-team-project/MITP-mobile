@@ -6,7 +6,7 @@ import org.umcs.mobile.network.dto.serializer.LocalDateTimeSerializer
 
 @Serializable
 data class TreatmentResponseDto(
-   // val treatmentId : Int,
+   val id : Int,
     val name: String,
     @Serializable(with = LocalDateTimeSerializer::class)
     val startDate: LocalDateTime,

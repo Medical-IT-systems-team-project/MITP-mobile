@@ -45,6 +45,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.umcs.mobile.composables.case_list_view.doctor.AdaptiveDropdownItem
 import org.umcs.mobile.composables.case_list_view.doctor.AdaptiveDropdownMenu
 import org.umcs.mobile.data.Case
+import org.umcs.mobile.network.GlobalKtorClient
 import org.umcs.mobile.network.dto.case.MedicalStatus
 import org.umcs.mobile.theme.determineTheme
 
@@ -68,10 +69,12 @@ fun TreatmentsContent(
     ) {
         items(treatments) { treatment ->
             TreatmentItem(
-                dropdownOnClick = { chosenStatus : MedicalStatus ->
+                dropdownOnClick = { chosenStatus: MedicalStatus ->
                     treatmentScope.launch {
-                        viewModel.changeTreatmentStatus(chosenStatus,treatment)
-                        // GlobalKtorClient.changeTreatmentStatus(chosenStatus,treatment)
+                        val successful = GlobalKtorClient.changeTreatmentStatus(chosenStatus,treatment.id)
+                        if(successful){
+                            viewModel.changeTreatmentStatus(chosenStatus, treatment)
+                        }
                     }
                 },
                 dismissDropdown = { showDropdownForTreatment = null },
@@ -98,7 +101,7 @@ fun TreatmentsContent(
 
 @Composable
 fun TreatmentItem(
-    dropdownOnClick : (MedicalStatus)->Unit,
+    dropdownOnClick: (MedicalStatus) -> Unit,
     modifier: Modifier = Modifier,
     treatment: Treatment,
     dropdownExpanded: Boolean,
@@ -174,7 +177,7 @@ fun StatusIcon(status: MedicalStatus) {
 
 @Serializable
 data class Treatment(
-   // val treatmentId : Int,
+    val id: Int,
     val name: String,
     val startDate: String,
     val endDate: String,
@@ -191,7 +194,7 @@ fun fetchTreatment() = listOf(
         details = "Prescribed amoxicillin 500mg twice daily",
         createdBy = "Dr. Smith",
         status = MedicalStatus.PLANNED,
-  //      treatmentId = 1
+        id = 1
     ),
     Treatment(
         name = "Physical Therapy",
@@ -200,7 +203,7 @@ fun fetchTreatment() = listOf(
         details = "Strengthening exercises and mobility training",
         createdBy = "Dr. Johnson",
         status = MedicalStatus.ONGOING,
-    //    treatmentId = 2
+        id = 2
     ),
     Treatment(
         name = "Blood Pressure Management",
@@ -209,7 +212,7 @@ fun fetchTreatment() = listOf(
         details = "Increased dosage of blood pressure medication",
         createdBy = "Dr. Williams",
         status = MedicalStatus.PLANNED,
-   //     treatmentId = 3
+        id = 3
     ),
     Treatment(
         name = "Therapy Sessions",
@@ -218,7 +221,7 @@ fun fetchTreatment() = listOf(
         details = "Weekly therapy sessions focusing on anxiety management",
         createdBy = "Dr. Brown",
         status = MedicalStatus.CANCELLED,
-     //   treatmentId = 4
+        id = 4
     ),
     Treatment(
         name = "Post-Surgery Care",
@@ -227,6 +230,6 @@ fun fetchTreatment() = listOf(
         details = "Daily physical exercises and wound care",
         createdBy = "Dr. Davis",
         status = MedicalStatus.COMPLETED,
-      //  treatmentId = 5
+        id = 5
     )
 )

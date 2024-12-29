@@ -9,7 +9,7 @@ import kotlinx.serialization.encoding.Encoder
 
 class SSNPatternSerializer : KSerializer<String> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Pattern", PrimitiveKind.STRING)
-    private val elevenNumbersPattern = "^\\d{3}-\\d{2}-\\d{4}\$".toRegex()
+    private val elevenNumbersPattern = "^\\d{11}\$".toRegex()
 
     override fun deserialize(decoder: Decoder): String {
         val value = decoder.decodeString()

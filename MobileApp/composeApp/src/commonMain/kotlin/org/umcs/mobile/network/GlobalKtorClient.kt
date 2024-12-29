@@ -11,6 +11,7 @@ import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.get
+import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
@@ -28,8 +29,10 @@ import org.umcs.mobile.composables.new_treatment_view.MedicalTreatment
 import org.umcs.mobile.network.Endpoints.withArgs
 import org.umcs.mobile.network.dto.case.MedicalCaseRequestDto
 import org.umcs.mobile.network.dto.case.MedicalCaseResponseDto
+import org.umcs.mobile.network.dto.case.MedicalStatus
 import org.umcs.mobile.network.dto.case.MedicationRequestDto
 import org.umcs.mobile.network.dto.case.TreatmentRequestDto
+import org.umcs.mobile.network.dto.dozapytania.StatusRequestDto
 import org.umcs.mobile.network.dto.login.JwtResponseDto
 import org.umcs.mobile.network.dto.login.TokenRequestDto
 import org.umcs.mobile.network.dto.patient.PatientResponseDto
@@ -63,9 +66,12 @@ object GlobalKtorClient {
                     tokens
                 }
                 sendWithoutRequest { request ->
-                    !request.url.encodedPath.contains("login") &&
-                            !request.url.encodedPath.contains("register") &&
-                            !(request.url.encodedPath.contains("${baseUrl}/patient/") && request.url.encodedPath != "patient/new")
+                    val path = request.url.encodedPath
+                    !path.contains("login") &&
+                            !path.contains("register") &&
+                            !(path.contains("patient/accessID") && path != "patient/new") &&
+                            !path.contains("history") &&
+                            !(path.startsWith("patient/") && path != "patient/new")
                 }
             }
         }
@@ -119,9 +125,7 @@ object GlobalKtorClient {
 
     suspend fun loginAsPatient(accessID: String): PatientLoginResult {
         return try {
-            val patientResponse = client.get(Endpoints.PATIENT_ACCESS_ID.withArgs(accessID)) {
-                contentType(ContentType.Application.Json)
-            }
+            val patientResponse = client.get(Endpoints.PATIENT_ACCESS_ID.withArgs(accessID))
             when (patientResponse.status) {
                 HttpStatusCode.OK -> {
                     val patientDto: PatientResponseDto = patientResponse.body()
@@ -139,6 +143,17 @@ object GlobalKtorClient {
         } catch (e: Exception) {
             Logger.e("Login failed: ${e.message}", tag = "Ktor")
             PatientLoginResult.Error(e.message ?: "Unknown error")
+        }
+    }
+
+    suspend fun getAllMedicalCasesAsPatient(accessID: String): AllMedicalCasesResult {
+        return try {
+            val medicalCasesResponse =
+                client.get(Endpoints.MEDICAL_CASE_ACCESS_ID_HISTORY.withArgs(accessID))
+            val allMedicalCases: List<MedicalCaseResponseDto> = medicalCasesResponse.body()
+            AllMedicalCasesResult.Success(allMedicalCases)
+        } catch (e: Exception) {
+            AllMedicalCasesResult.Error(e.message.toString())
         }
     }
 
@@ -204,22 +219,43 @@ object GlobalKtorClient {
         }
     }
 
-    suspend fun getAllMedicalCases() : AllMedicalCasesResult{
+    suspend fun getAllMedicalCasesAsDoctor(): AllMedicalCasesResult {
         return try {
             val allPatientsResponse = client.get(Endpoints.DOCTOR_MEDICAL_CASE_ALL)
-            val allMedicalCases : List<MedicalCaseResponseDto> = allPatientsResponse.body()
-            Logger.v("Klient ${allMedicalCases.toString()}", tag = "caseList")
+            val allMedicalCases: List<MedicalCaseResponseDto> = allPatientsResponse.body()
             AllMedicalCasesResult.Success(allMedicalCases)
-        }catch(e : Exception){
+        } catch (e: Exception) {
             AllMedicalCasesResult.Error(e.message.toString())
         }
     }
 
-    suspend fun changeTreatmentStatus() {
-
+    suspend fun changeTreatmentStatus(chosenStatus : MedicalStatus,treatmentId : Int) : Boolean {
+        return try {
+            val treatmentStatusResponse= client.patch(Endpoints.DOCTOR_TREATMENT_ID_STATUS.withArgs(treatmentId.toString())){
+                setBody(StatusRequestDto(chosenStatus))
+            }
+            when(treatmentStatusResponse.status){
+                HttpStatusCode.OK -> true
+                else -> throw IllegalStateException(treatmentStatusResponse.bodyAsText())
+            }
+        }catch(e : Exception){
+            Logger.i("failed to change treatment status with error : ${e.message}" , tag ="Treatment Status")
+            false
+        }
     }
 
-    suspend fun changeMedicationStatus() {
-
+    suspend fun changeMedicationStatus(chosenStatus: MedicalStatus,medicationId:Int) : Boolean {
+        return try {
+            val medicationStatusResponse= client.patch(Endpoints.DOCTOR_MEDICATION_ID_STATUS.withArgs(medicationId.toString())){
+                setBody(StatusRequestDto(chosenStatus))
+            }
+            when(medicationStatusResponse.status){
+                HttpStatusCode.OK -> true
+                else -> throw IllegalStateException(medicationStatusResponse.bodyAsText())
+            }
+        }catch(e : Exception){
+            Logger.i("failed to change medication status with error : ${e.message}" , tag ="Medication Status")
+            false
+        }
     }
 }

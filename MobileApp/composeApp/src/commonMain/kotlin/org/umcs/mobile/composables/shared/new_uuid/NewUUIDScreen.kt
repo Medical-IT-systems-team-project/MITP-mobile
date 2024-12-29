@@ -86,7 +86,7 @@ fun NewUUIDScreen(
                 text = UUID
                 Logger.i(UUID, tag = "UUID")
             })
-            if(determineTheme() == Theme.Cupertino){
+            if (determineTheme() == Theme.Cupertino) {
                 Spacer(Modifier.height(80.dp))
             }
             AdaptiveAccessIdInput(
@@ -99,20 +99,20 @@ fun NewUUIDScreen(
                 onFocusChange = { changedFocus -> isFocused = changedFocus },
                 onSupportingTextChange = { supportingText = it },
                 onButtonPress = {
-                    when {
-                        text.isEmpty() -> supportingText = "Please enter the access ID"
-                        !matchAccessID(text) -> supportingText = "Please a valid  access ID"
-                        matchAccessID(text) -> {
-                            scope.launch {
-                                val errorMessage = onSuccessButtonClick(text)
+                    /*   when {
+                           text.isEmpty() -> supportingText = "Please enter the access ID"
+                           !matchAccessID(text) -> supportingText = "Please a valid  access ID"
+                           matchAccessID(text) -> {*/
+                    scope.launch {
+                        val errorMessage = onSuccessButtonClick(text)
 
-                                if(errorMessage != null){
-                                    supportingText = errorMessage
-                                    text = ""
-                                }
-                            }
+                        if (errorMessage != null) {
+                            supportingText = errorMessage
+                            text = ""
                         }
                     }
+                    /*      }
+                      }*/
                 },
                 modifier = Modifier
                     .fillMaxWidth()

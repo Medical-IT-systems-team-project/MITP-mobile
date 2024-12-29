@@ -175,7 +175,7 @@ fun DoctorLoginLayout(
                         loginScope.launch {
                             viewModel.setDoctorId(doctorId)
                             val getPatientsNetworkCall = GlobalKtorClient.getAllDoctorPatients()
-                            val getMedicalCasesNetworkCall = GlobalKtorClient.getAllMedicalCases()
+                            val getMedicalCasesNetworkCall = GlobalKtorClient.getAllMedicalCasesAsDoctor()
 
                             when(getMedicalCasesNetworkCall){
                                 is AllMedicalCasesResult.Error -> Logger.i("${getMedicalCasesNetworkCall.message}", tag ="Finito")

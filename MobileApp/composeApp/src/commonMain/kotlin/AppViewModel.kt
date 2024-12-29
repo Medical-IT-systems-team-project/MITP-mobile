@@ -1,6 +1,8 @@
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -16,6 +18,8 @@ import org.umcs.mobile.network.dto.patient.PatientResponseDto
 import org.umcs.mobile.network.dto.patient.toPatientList
 
 class AppViewModel : ViewModel() {
+    private val updateScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+
     var doctorID = ""
         private set
 
@@ -42,11 +46,9 @@ class AppViewModel : ViewModel() {
         Logger.v(_patientList.value.toString(), tag = "Finito")
     }
 
-/*    fun getCaseById(caseId: Int): StateFlow<Case> {
-        return _medicalCaseList.map { cases ->
-            cases.first { it.caseId == caseId }
-        }.stateIn(viewModelScope, SharingStarted.Lazily, Case.emptyCase())
-    }*/
+    fun getCaseById(caseId: Int): Case {
+        return _medicalCaseList.value.find { it.id == caseId }!!
+    }
 
     fun setPatient(fetchedPatient: PatientResponseDto) {
         patient = Patient(
@@ -68,10 +70,12 @@ class AppViewModel : ViewModel() {
     }
 
     fun changeMedicationStatus(chosenStatus : MedicalStatus, medication : Medication){
-        viewModelScope.launch {
+        Logger.i("CHANGING MEDICATION STATUS ", tag = "FINITO")
+
+        updateScope.launch { // FOR SOME REASON VIEWMODEL SCOPE DIDNT WORK HERE ???????
             _medicalCaseList.update { cases ->
                 cases.map { case ->
-                    val medicationIndex = case.medications.indexOfFirst { it == medication }
+                    val medicationIndex = case.medications.indexOfFirst { it.id == medication.id }
                     if (medicationIndex != -1) {
                         val updatedMedications = case.medications.toMutableList()
                         updatedMedications[medicationIndex] = medication.copy(status = chosenStatus)
@@ -85,10 +89,12 @@ class AppViewModel : ViewModel() {
     }
 
     fun changeTreatmentStatus(chosenStatus : MedicalStatus, treatment : Treatment){
-        viewModelScope.launch {
+        Logger.i("CHANGING TREATMENT STATUS ", tag = "FINITO")
+
+        updateScope.launch {
             _medicalCaseList.update { cases ->
                 cases.map { case ->
-                    val treatmentIndex = case.treatments.indexOfFirst { it == treatment }
+                    val treatmentIndex = case.treatments.indexOfFirst { it.id == treatment.id }
                     if (treatmentIndex != -1) {
                         val updatedTreatments = case.treatments.toMutableList()
                         updatedTreatments[treatmentIndex] = treatment.copy(status = chosenStatus)

@@ -34,7 +34,7 @@ fun CaseLayout(
     viewModel: AppViewModel = koinViewModel()
 ) {
     val caseList by viewModel.medicalCaseList.collectAsStateWithLifecycle()
-    val case = caseList.first()
+    val case = caseList.find { it.id == caseId }!!
     var currentTab by remember { mutableStateOf(CaseScreens.INFO) }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 

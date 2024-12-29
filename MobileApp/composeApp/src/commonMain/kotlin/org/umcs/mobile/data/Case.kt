@@ -6,7 +6,7 @@ import org.umcs.mobile.composables.case_view.Treatment
 
 @Serializable
 data class Case(
-  //  val caseId : Int,
+   val id : Int,
     val patientName: String,
     val status: CaseStatus,
     val admissionReason: String,
@@ -21,7 +21,7 @@ data class Case(
     companion object {
         fun emptyCase() : Case {
             return Case(
-        //        caseId = 1,
+                id = 1,
                 patientName = "",
                 status = CaseStatus.ONGOING,
                 admissionReason = "",

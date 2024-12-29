@@ -19,7 +19,7 @@ fun ImportPatientCaseLayout(
     patient: Patient,
     onCaseClicked: (Case) -> Unit,
     cases: List<Case> = fetchTestCases(),
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val listState = rememberLazyListState()
 
@@ -43,7 +43,7 @@ fun ImportPatientCaseLayout(
     }
 }
 
-fun fetchTestCases() : List<Case> {
+fun fetchTestCases(): List<Case> {
     return listOf(
         Case(
             patientName = "Sergio Jackson",
@@ -56,7 +56,7 @@ fun fetchTestCases() : List<Case> {
             medications = listOf(),
             treatments = listOf(),
             allowedDoctors = listOf(),
-           // caseId = 1
+            id = 1
         )
     )
 }
