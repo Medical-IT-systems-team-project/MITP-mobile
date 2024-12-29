@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +39,7 @@ import com.slapps.cupertino.icons.outlined.Cross
 import com.slapps.cupertino.icons.outlined.HeartTextSquare
 import com.slapps.cupertino.icons.outlined.Xmark
 import com.slapps.cupertino.theme.CupertinoTheme
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 import org.umcs.mobile.composables.case_list_view.doctor.AdaptiveDropdownItem
@@ -53,6 +55,7 @@ fun TreatmentsContent(
     case: Case,
     viewModel: AppViewModel = koinViewModel(),
 ) {
+    val treatmentScope = rememberCoroutineScope()
     val treatments = case.treatments
     val isDoctor = viewModel.isDoctor
     var showDropdownForTreatment by remember { mutableStateOf<Treatment?>(null) }
@@ -65,6 +68,12 @@ fun TreatmentsContent(
     ) {
         items(treatments) { treatment ->
             TreatmentItem(
+                dropdownOnClick = { chosenStatus : MedicalStatus ->
+                    treatmentScope.launch {
+                        viewModel.changeTreatmentStatus(chosenStatus,treatment)
+                        // GlobalKtorClient.changeTreatmentStatus(chosenStatus,treatment)
+                    }
+                },
                 dismissDropdown = { showDropdownForTreatment = null },
                 dropdownExpanded = showDropdownForTreatment == treatment,
                 treatment = treatment,
@@ -89,6 +98,7 @@ fun TreatmentsContent(
 
 @Composable
 fun TreatmentItem(
+    dropdownOnClick : (MedicalStatus)->Unit,
     modifier: Modifier = Modifier,
     treatment: Treatment,
     dropdownExpanded: Boolean,
@@ -104,9 +114,7 @@ fun TreatmentItem(
         .map { status ->
             AdaptiveDropdownItem(
                 text = status.name,
-                onClick = {
-                    // TODO : change treatment status
-                }
+                onClick = { dropdownOnClick(status) }
             )
         }
 

@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.umcs.mobile.composables.case_view.Medication
+import org.umcs.mobile.composables.case_view.Treatment
 import org.umcs.mobile.data.Case
 import org.umcs.mobile.data.Patient
 import org.umcs.mobile.network.dto.case.MedicalCaseResponseDto
@@ -82,5 +83,23 @@ class AppViewModel : ViewModel() {
             }
         }
     }
+
+    fun changeTreatmentStatus(chosenStatus : MedicalStatus, treatment : Treatment){
+        viewModelScope.launch {
+            _medicalCaseList.update { cases ->
+                cases.map { case ->
+                    val treatmentIndex = case.treatments.indexOfFirst { it == treatment }
+                    if (treatmentIndex != -1) {
+                        val updatedTreatments = case.treatments.toMutableList()
+                        updatedTreatments[treatmentIndex] = treatment.copy(status = chosenStatus)
+                        case.copy(treatments = updatedTreatments)
+                    } else {
+                        case
+                    }
+                }
+            }
+        }
+    }
+
 }
 
