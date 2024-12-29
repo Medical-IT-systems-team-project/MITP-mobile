@@ -43,11 +43,10 @@ fun CaseListLayout(
     }
     val fabOffset = Modifier.offset(y = (-40).dp)
     var currentTab by remember { mutableStateOf(CaseListScreens.CASES) }
-    val testValues = viewModel.medicalCaseList
     val caseListState = rememberLazyListState()
     val patientListState = rememberLazyListState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-    val currentPatient = Patient("SSN","Michas")
+    val currentPatient = viewModel.patient
 
     Scaffold(
         modifier = Modifier
@@ -100,7 +99,6 @@ fun CaseListLayout(
                     showPatientName = isDoctor,
                     onCaseClicked = navigateToCase,
                     contentPadding = paddingValues,
-                    cases = testValues,
                     modifier = Modifier.fillMaxSize().then(
                         if (isMaterial) Modifier.nestedScroll(scrollBehavior.nestedScrollConnection) else Modifier
                     ),

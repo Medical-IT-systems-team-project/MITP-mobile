@@ -208,9 +208,18 @@ object GlobalKtorClient {
         return try {
             val allPatientsResponse = client.get(Endpoints.DOCTOR_MEDICAL_CASE_ALL)
             val allMedicalCases : List<MedicalCaseResponseDto> = allPatientsResponse.body()
+            Logger.v("Klient ${allMedicalCases.toString()}", tag = "caseList")
             AllMedicalCasesResult.Success(allMedicalCases)
         }catch(e : Exception){
             AllMedicalCasesResult.Error(e.message.toString())
         }
+    }
+
+    suspend fun changeTreatmentStatus() {
+
+    }
+
+    suspend fun changeMedicationStatus() {
+
     }
 }

@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -43,7 +44,6 @@ import com.slapps.cupertino.adaptive.Theme
 import com.slapps.cupertino.adaptive.icons.AdaptiveIcons
 import com.slapps.cupertino.adaptive.icons.Email
 import com.slapps.cupertino.adaptive.icons.Lock
-import com.slapps.cupertino.theme.CupertinoTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import mobileapp.composeapp.generated.resources.Res
@@ -57,6 +57,7 @@ import org.umcs.mobile.network.AllPatientsResult
 import org.umcs.mobile.network.DoctorLoginResult
 import org.umcs.mobile.network.GlobalKtorClient
 import org.umcs.mobile.theme.determineTheme
+import org.umcs.mobile.theme.onSurfaceDark
 
 @OptIn(ExperimentalAdaptiveApi::class)
 @Composable
@@ -194,9 +195,14 @@ fun DoctorLoginLayout(
                     .padding(horizontal = 35.dp) else Modifier.width(270.dp).height(50.dp)
             ),
             adaptation = {
+                material {
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        contentColor = onSurfaceDark
+                    )
+                }
                 cupertino {
                     colors = CupertinoButtonDefaults.filledButtonColors(
-                        contentColor = CupertinoTheme.colorScheme.label
+                        contentColor = onSurfaceDark
                     )
                 }
             }

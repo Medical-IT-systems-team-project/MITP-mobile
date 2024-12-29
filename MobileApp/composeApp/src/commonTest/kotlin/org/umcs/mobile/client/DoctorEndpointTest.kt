@@ -131,7 +131,9 @@ class DoctorEndpointTest {
     @Test
     fun `get all cases as a doctor should return 200-OK`() = runTest {
         val allCasesResponse = client.get(Endpoints.DOCTOR_MEDICAL_CASE_ALL)
-        Logger.i(allCasesResponse.bodyAsText())
+        val responseBody = allCasesResponse.bodyAsText()
+        val prettyJson = Json{prettyPrint = true}.encodeToString(Json.parseToJsonElement(responseBody))
+        Logger.i(prettyJson)
         assertEquals(HttpStatusCode.OK, allCasesResponse.status)
     }
 

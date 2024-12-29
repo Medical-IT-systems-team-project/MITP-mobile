@@ -174,7 +174,7 @@ fun NavigationHost(
 
             CaseLayout(
                 isDoctor = true,
-                case = route.case,
+                caseId = 1,
                 navigateBack = navController::navigateUp,
                 navigateToNewTreatment = { medicalCaseID : Int -> navController.navigate(Routes.NewTreatment(medicalCaseID)) },
                 navigateToNewMedication = { medicalCaseID : Int -> navController.navigate(Routes.NewMedication(medicalCaseID)) }
@@ -190,7 +190,7 @@ fun NavigationHost(
 
             CaseLayout(
                 isDoctor = false,
-                case = route.case,
+                caseId = 1, //route.case.id
                 navigateBack = navController::navigateUp,
                 navigateToNewTreatment = { medicalCaseID : Int -> navController.navigate(Routes.NewTreatment(medicalCaseID)) },
                 navigateToNewMedication = { medicalCaseID : Int -> navController.navigate(Routes.NewMedication(medicalCaseID)) }

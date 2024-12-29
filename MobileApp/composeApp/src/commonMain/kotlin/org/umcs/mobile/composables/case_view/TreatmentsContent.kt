@@ -166,6 +166,7 @@ fun StatusIcon(status: MedicalStatus) {
 
 @Serializable
 data class Treatment(
+   // val treatmentId : Int,
     val name: String,
     val startDate: String,
     val endDate: String,
@@ -181,7 +182,8 @@ fun fetchTreatment() = listOf(
         endDate = "2024-01-15",
         details = "Prescribed amoxicillin 500mg twice daily",
         createdBy = "Dr. Smith",
-        status = MedicalStatus.PLANNED
+        status = MedicalStatus.PLANNED,
+  //      treatmentId = 1
     ),
     Treatment(
         name = "Physical Therapy",
@@ -189,7 +191,8 @@ fun fetchTreatment() = listOf(
         endDate = "2024-02-28",
         details = "Strengthening exercises and mobility training",
         createdBy = "Dr. Johnson",
-        status = MedicalStatus.ONGOING
+        status = MedicalStatus.ONGOING,
+    //    treatmentId = 2
     ),
     Treatment(
         name = "Blood Pressure Management",
@@ -197,7 +200,8 @@ fun fetchTreatment() = listOf(
         endDate = "2024-03-25",
         details = "Increased dosage of blood pressure medication",
         createdBy = "Dr. Williams",
-        status = MedicalStatus.PLANNED
+        status = MedicalStatus.PLANNED,
+   //     treatmentId = 3
     ),
     Treatment(
         name = "Therapy Sessions",
@@ -205,7 +209,8 @@ fun fetchTreatment() = listOf(
         endDate = "2024-04-20",
         details = "Weekly therapy sessions focusing on anxiety management",
         createdBy = "Dr. Brown",
-        status = MedicalStatus.CANCELLED
+        status = MedicalStatus.CANCELLED,
+     //   treatmentId = 4
     ),
     Treatment(
         name = "Post-Surgery Care",
@@ -213,6 +218,7 @@ fun fetchTreatment() = listOf(
         endDate = "2024-05-15",
         details = "Daily physical exercises and wound care",
         createdBy = "Dr. Davis",
-        status = MedicalStatus.COMPLETED
+        status = MedicalStatus.COMPLETED,
+      //  treatmentId = 5
     )
 )

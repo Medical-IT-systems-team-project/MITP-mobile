@@ -1,5 +1,6 @@
 package org.umcs.mobile.composables.case_view
 
+import AppViewModel
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -11,25 +12,29 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.slapps.cupertino.adaptive.icons.AdaptiveIcons
 import com.slapps.cupertino.adaptive.icons.AddCircle
 import com.slapps.cupertino.icons.CupertinoIcons
 import com.slapps.cupertino.icons.outlined.Checkmark
 import com.slapps.cupertino.icons.outlined.Cross
+import org.koin.compose.viewmodel.koinViewModel
 import org.umcs.mobile.composables.shared.AdaptiveFAB
 import org.umcs.mobile.composables.shared.AppTopBar
-import org.umcs.mobile.data.Case
 import org.umcs.mobile.data.CaseStatus
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CaseLayout(
-    case: Case,
+    caseId: Int,
     navigateBack: () -> Unit,
     isDoctor: Boolean,
     navigateToNewTreatment: (Int) -> Unit,
-    navigateToNewMedication: (Int) -> Unit
+    navigateToNewMedication: (Int) -> Unit,
+    viewModel: AppViewModel = koinViewModel()
 ) {
+    val caseList by viewModel.medicalCaseList.collectAsStateWithLifecycle()
+    val case = caseList.first()
     var currentTab by remember { mutableStateOf(CaseScreens.INFO) }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 

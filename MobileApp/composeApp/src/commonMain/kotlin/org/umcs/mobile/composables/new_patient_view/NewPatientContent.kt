@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.touchlab.kermit.Logger
 import com.slapps.cupertino.CupertinoButtonDefaults
+import com.slapps.cupertino.CupertinoCheckboxDefaults
 import com.slapps.cupertino.adaptive.AdaptiveCheckbox
 import com.slapps.cupertino.adaptive.AdaptiveTonalButton
 import com.slapps.cupertino.adaptive.ExperimentalAdaptiveApi
@@ -49,7 +51,10 @@ import org.umcs.mobile.composables.shared.AdaptiveTextField
 import org.umcs.mobile.composables.shared.AdaptiveWheelDatePicker
 import org.umcs.mobile.data.Gender
 import org.umcs.mobile.data.Patient
+import org.umcs.mobile.theme.cupertinoGray
+import org.umcs.mobile.theme.cupertinoGrayInactive
 import org.umcs.mobile.theme.determineTheme
+import org.umcs.mobile.theme.onSurfaceDark
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -243,9 +248,14 @@ fun NewPatientContent(
                 )
             ),
             adaptation = {
+                material {
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        contentColor = onSurfaceDark
+                    )
+                }
                 cupertino {
                     colors = CupertinoButtonDefaults.filledButtonColors(
-                        contentColor = CupertinoTheme.colorScheme.label
+                        contentColor = onSurfaceDark
                     )
                 }
             }
@@ -290,6 +300,14 @@ fun GenderSelection(
                     AdaptiveCheckbox(
                         checked = selectedGender == gender,
                         onCheckedChange = { onGenderSelected(gender) },
+                        adaptation = {
+                            cupertino {
+                                colors =  CupertinoCheckboxDefaults.colors(
+                                    uncheckedBorderColor = cupertinoGray,
+                                    checkedBorderColor = cupertinoGrayInactive
+                                )
+                            }
+                        },
                     )
                     Text(
                         text = gender,

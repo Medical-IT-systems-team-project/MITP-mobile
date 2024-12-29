@@ -10,6 +10,7 @@ import org.umcs.mobile.network.dto.serializer.LocalDateTimeSerializer
 
 @Serializable
 data class MedicalCaseResponseDto  (
+ //   val caseId: Int,
     val patientName : String,
     val status: CaseStatus,
     val admissionReason : String,
@@ -28,20 +29,21 @@ fun List<MedicalCaseResponseDto>.toCaseList() : List<Case>{
 }
 
 fun MedicalCaseResponseDto.toCase(): Case{
-    val mappedMedication = medications.map {it.toMedication()}
-    val mappedTreatment = treatments.map{it.toTreatment()}
+    val mappedMedication = medications.map {it.toMedication()}.toMutableList()
+    val mappedTreatment = treatments.map{it.toTreatment()}.toMutableList()
     
     return Case(
         patientName = patientName,
         status = status,
         admissionReason = admissionReason,
-        admissionDate = admissionDate.toString(),
+        admissionDate = admissionDate.toString().replace(oldChar = 'T' , newChar = ' '),
         description = description,
         createdBy = createdBy,
         attendingDoctor = attendingDoctor,
         medications = mappedMedication,
         treatments = mappedTreatment,
-        allowedDoctors = allowedDoctors
+        allowedDoctors = allowedDoctors,
+   //     caseId = caseId
     )
 }
 
@@ -52,7 +54,8 @@ fun TreatmentResponseDto.toTreatment() : Treatment{
         endDate = endDate.toString(),
         details = details,
         createdBy = medicalDoctorName,
-        status = status
+        status = status,
+        //treatmentId = treatmentId
     )
 }
 
@@ -66,6 +69,7 @@ fun MedicationResponseDto.toMedication(): Medication {
         prescribedBy = medicalDoctorName,
         strength = strength,
         unit = unit,
-        status = status
+        status = status,
+      //  medicationId = medicationId
     )
 }

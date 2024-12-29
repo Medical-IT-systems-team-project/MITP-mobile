@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -49,6 +50,7 @@ import org.umcs.mobile.composables.shared.AdaptiveWheelDateTimePicker
 import org.umcs.mobile.composables.shared.PatientPicker
 import org.umcs.mobile.network.GlobalKtorClient
 import org.umcs.mobile.theme.determineTheme
+import org.umcs.mobile.theme.onSurfaceDark
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -216,9 +218,14 @@ fun NewCaseContent(
                 )
             ),
             adaptation = {
+                material {
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        contentColor = onSurfaceDark
+                    )
+                }
                 cupertino {
                     colors = CupertinoButtonDefaults.filledButtonColors(
-                        contentColor = CupertinoTheme.colorScheme.label
+                        contentColor = onSurfaceDark
                     )
                 }
             }

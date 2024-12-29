@@ -13,9 +13,26 @@ data class Patient(
     val phoneNumber: String = "",
     val email: String = "",
     val birthDate: String = "",
-    val accessID : String = ""
-){
+    val accessID: String = "",
+) {
     fun getFullName(): String {
         return "$firstName $lastName"
+    }
+
+    companion object {
+        fun emptyPatient(): Patient {
+            return Patient(
+                socialSecurityNumber = "",
+                firstName = "",
+                lastName = "",
+                age = "",
+                gender = "",
+                address = "",
+                phoneNumber = "",
+                email = "",
+                birthDate = "",
+                accessID = ""
+            )
+        }
     }
 }

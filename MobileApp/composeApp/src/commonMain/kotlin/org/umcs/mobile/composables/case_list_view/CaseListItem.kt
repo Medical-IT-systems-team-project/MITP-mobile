@@ -67,7 +67,7 @@ fun CaseListItem(
             Text(
                 maxLines = 1,
                 textAlign = TextAlign.End,
-                text = currentCase.admissionDate,
+                text = currentCase.admissionDate.takeWhile{it != ' '},
                 style = nameAndDateStyle,
                 color = textColor,
                 modifier = Modifier.weight(1.1f)

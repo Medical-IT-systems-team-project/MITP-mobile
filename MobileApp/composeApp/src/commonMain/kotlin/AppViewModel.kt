@@ -1,8 +1,15 @@
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import org.umcs.mobile.composables.case_view.Medication
 import org.umcs.mobile.data.Case
 import org.umcs.mobile.data.Patient
 import org.umcs.mobile.network.dto.case.MedicalCaseResponseDto
+import org.umcs.mobile.network.dto.case.MedicalStatus
 import org.umcs.mobile.network.dto.case.toCaseList
 import org.umcs.mobile.network.dto.patient.PatientResponseDto
 import org.umcs.mobile.network.dto.patient.toPatientList
@@ -14,24 +21,31 @@ class AppViewModel : ViewModel() {
     val isDoctor: Boolean
         get() = doctorID.isNotBlank()
 
-    lateinit var patient: Patient
+    var patient: Patient = Patient.emptyPatient()
         private set
 
-    lateinit var medicalCaseList : List<Case>
-        private set
+    private val _medicalCaseList = MutableStateFlow<List<Case>>(emptyList())
+    val medicalCaseList: StateFlow<List<Case>> = _medicalCaseList
 
-    lateinit var patientList : List<Patient>
-        private set
+    private val _patientList = MutableStateFlow<List<Patient>>(emptyList())
+    val patientList: StateFlow<List<Patient>> = _patientList
 
-    fun setMedicalCases(cases : List<MedicalCaseResponseDto>){
-        medicalCaseList = cases.toCaseList()
-        Logger.v(medicalCaseList.toString(), tag = "Finito")
+    fun setMedicalCases(cases: List<MedicalCaseResponseDto>) {
+        _medicalCaseList.value = cases.toCaseList()
+        Logger.v(cases.toString(), tag = "CaseList")
+        Logger.v(_medicalCaseList.value.toString(), tag = "CaseList")
     }
 
-    fun setPatients(patients : List<PatientResponseDto>) {
-        patientList = patients.toPatientList()
-        Logger.v(patientList.toString(), tag = "Finito")
+    fun setPatients(patients: List<PatientResponseDto>) {
+        _patientList.value = patients.toPatientList()
+        Logger.v(_patientList.value.toString(), tag = "Finito")
     }
+
+/*    fun getCaseById(caseId: Int): StateFlow<Case> {
+        return _medicalCaseList.map { cases ->
+            cases.first { it.caseId == caseId }
+        }.stateIn(viewModelScope, SharingStarted.Lazily, Case.emptyCase())
+    }*/
 
     fun setPatient(fetchedPatient: PatientResponseDto) {
         patient = Patient(
@@ -52,5 +66,21 @@ class AppViewModel : ViewModel() {
         doctorID = id
     }
 
+    fun changeMedicationStatus(chosenStatus : MedicalStatus, medication : Medication){
+        viewModelScope.launch {
+            _medicalCaseList.update { cases ->
+                cases.map { case ->
+                    val medicationIndex = case.medications.indexOfFirst { it == medication }
+                    if (medicationIndex != -1) {
+                        val updatedMedications = case.medications.toMutableList()
+                        updatedMedications[medicationIndex] = medication.copy(status = chosenStatus)
+                        case.copy(medications = updatedMedications)
+                    } else {
+                        case
+                    }
+                }
+            }
+        }
+    }
 }
 

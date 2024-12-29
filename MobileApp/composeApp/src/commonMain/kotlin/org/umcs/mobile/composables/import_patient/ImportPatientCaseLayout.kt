@@ -36,7 +36,6 @@ fun ImportPatientCaseLayout(
         CaseViewContent(
             contentPadding = contentPadding,
             modifier = modifier,
-            cases = cases,
             listState = listState,
             onCaseClicked = onCaseClicked,
             showPatientName = false,
@@ -56,7 +55,8 @@ fun fetchTestCases() : List<Case> {
             attendingDoctor = "nascetur",
             medications = listOf(),
             treatments = listOf(),
-            allowedDoctors = listOf()
+            allowedDoctors = listOf(),
+           // caseId = 1
         )
     )
 }

@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.compose.viewmodel.koinViewModel
 import org.umcs.mobile.AdaptivePatientListItem
 import org.umcs.mobile.data.Patient
@@ -30,7 +31,7 @@ fun PatientListContent(
     modifier: Modifier = Modifier,
     viewModel: AppViewModel = koinViewModel()
 ) {
-    val patients = viewModel.patientList
+    val patients by viewModel.patientList.collectAsStateWithLifecycle()
     var showDropdownForPatient by remember { mutableStateOf<Patient?>(null) }
 
     LazyColumn(

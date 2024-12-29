@@ -24,12 +24,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.slapps.cupertino.adaptive.Theme
 import com.slapps.cupertino.theme.CupertinoTheme
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 import org.umcs.mobile.composables.case_list_view.doctor.AdaptiveDropdownItem
@@ -44,6 +46,7 @@ fun MedicationContent(
     case: Case,
     viewModel: AppViewModel = koinViewModel()
 ) {
+    val medicationScope = rememberCoroutineScope()
     val medicineList = case.medications
     val isDoctor = viewModel.isDoctor
     var showDropdownForMedication by remember { mutableStateOf<Medication?>(null) }
@@ -56,6 +59,12 @@ fun MedicationContent(
     ) {
         items(medicineList) { medication ->
             MedicationItem(
+                dropdownOnClick = { chosenStatus : MedicalStatus ->
+                    medicationScope.launch {
+                        viewModel.changeMedicationStatus(chosenStatus,medication)
+                      //  GlobalKtorClient.changeMedicationStatus(chosenStatus,medication)
+                    }
+                },
                 dismissDropdown = { showDropdownForMedication = null },
                 dropdownExpanded = showDropdownForMedication == medication,
                 medication = medication,
@@ -80,6 +89,7 @@ fun MedicationContent(
 
 @Composable
 fun MedicationItem(
+    dropdownOnClick : (MedicalStatus)->Unit,
     modifier: Modifier = Modifier,
     medication: Medication,
     dismissDropdown: () -> Unit,
@@ -95,9 +105,7 @@ fun MedicationItem(
         .map { status ->
             AdaptiveDropdownItem(
                 text = status.name,
-                onClick = {
-                    // TODO : change medication status
-                }
+                onClick = { dropdownOnClick(status) }
             )
         }
 
@@ -147,6 +155,7 @@ fun MedicationItem(
 
 @Serializable
 data class Medication(
+   // val medicationId : Int,
     val name: String,
     val startDate: String,
     val endDate: String,
@@ -168,7 +177,8 @@ fun fetchMedicine() = listOf(
         unit = "mg",
         prescribedBy = "Dr. Smith",
         status = MedicalStatus.PLANNED,
-        frequency = "once a day "
+        frequency = "once a day ",
+      //  medicationId = 1
     ),
     Medication(
         name = "Lisinopril",
@@ -179,7 +189,8 @@ fun fetchMedicine() = listOf(
         unit = "mg",
         prescribedBy = "Dr. Johnson",
         status = MedicalStatus.ONGOING,
-        frequency = "once a day "
+        frequency = "once a day ",
+      //  medicationId = 2
     ),
     Medication(
         name = "Ibuprofen",
@@ -190,7 +201,8 @@ fun fetchMedicine() = listOf(
         unit = "mg",
         prescribedBy = "Dr. Williams",
         status = MedicalStatus.PLANNED,
-        frequency = "once a day "
+        frequency = "once a day ",
+      //  medicationId = 3
     ),
     Medication(
         name = "Metformin",
@@ -201,7 +213,8 @@ fun fetchMedicine() = listOf(
         unit = "mg",
         prescribedBy = "Dr. Brown",
         status = MedicalStatus.CANCELLED,
-        frequency = "once a day "
+        frequency = "once a day ",
+      //  medicationId = 4
     ),
     Medication(
         name = "Atorvastatin",
@@ -212,6 +225,7 @@ fun fetchMedicine() = listOf(
         unit = "mg",
         prescribedBy = "Dr. Davis",
         status = MedicalStatus.COMPLETED,
-        frequency = "once a day "
+        frequency = "once a day ",
+     //   medicationId = 5
     )
 )
