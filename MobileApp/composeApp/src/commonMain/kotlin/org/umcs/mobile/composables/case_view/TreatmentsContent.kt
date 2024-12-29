@@ -38,6 +38,7 @@ import com.slapps.cupertino.icons.outlined.Cross
 import com.slapps.cupertino.icons.outlined.HeartTextSquare
 import com.slapps.cupertino.icons.outlined.Xmark
 import com.slapps.cupertino.theme.CupertinoTheme
+import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 import org.umcs.mobile.composables.case_list_view.doctor.AdaptiveDropdownItem
 import org.umcs.mobile.composables.case_list_view.doctor.AdaptiveDropdownMenu
@@ -52,7 +53,7 @@ fun TreatmentsContent(
     case: Case,
     viewModel: AppViewModel = koinViewModel(),
 ) {
-    val treatments = remember { fetchTreatment() }
+    val treatments = case.treatments
     val isDoctor = viewModel.isDoctor
     var showDropdownForTreatment by remember { mutableStateOf<Treatment?>(null) }
 
@@ -163,7 +164,7 @@ fun StatusIcon(status: MedicalStatus) {
     )
 }
 
-
+@Serializable
 data class Treatment(
     val name: String,
     val startDate: String,

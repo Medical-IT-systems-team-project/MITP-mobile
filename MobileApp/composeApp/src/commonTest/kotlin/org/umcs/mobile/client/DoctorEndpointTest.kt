@@ -22,6 +22,7 @@ import io.ktor.http.encodedPath
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.umcs.mobile.network.Endpoints
 import org.umcs.mobile.network.Endpoints.withArgs
@@ -35,6 +36,8 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+const val baseUrl = "https://caretrack.skni.umcs.pl/"
+
 class DoctorEndpointTest {
     private lateinit var tokens: BearerTokens
     private lateinit var client: HttpClient
@@ -44,7 +47,7 @@ class DoctorEndpointTest {
         client = HttpClient {
             defaultRequest {
                 contentType(ContentType.Application.Json)
-                url("https://caretrack.skni.umcs.pl/")
+                url(baseUrl)
             }
             install(ContentNegotiation) {
                 json(Json {
@@ -61,9 +64,9 @@ class DoctorEndpointTest {
                         tokens
                     }
                     sendWithoutRequest { request ->
-                        // Only send the Authorization header if the request is not for the login endpoint
                         !request.url.encodedPath.contains("login") &&
-                                !request.url.encodedPath.contains("register")
+                                !request.url.encodedPath.contains("register") &&
+                                !(request.url.encodedPath.contains("${baseUrl}/patient/") && request.url.encodedPath != "patient/new")
                     }
                 }
             }
@@ -119,14 +122,17 @@ class DoctorEndpointTest {
     @Test
     fun `get all patients as a doctor should return 200-OK`() = runTest {
         val allPatientsResponse = client.get(Endpoints.DOCTOR_PATIENT_ALL)
+        val responseBody = allPatientsResponse.bodyAsText()
+        val prettyJson = Json{prettyPrint = true}.encodeToString(Json.parseToJsonElement(responseBody))
+        Logger.i(prettyJson)
         assertEquals(HttpStatusCode.OK, allPatientsResponse.status)
     }
 
     @Test
     fun `get all cases as a doctor should return 200-OK`() = runTest {
-        val allPatientsResponse = client.get(Endpoints.DOCTOR_MEDICAL_CASE_ALL)
-        Logger.i(allPatientsResponse.bodyAsText())
-        assertEquals(HttpStatusCode.OK, allPatientsResponse.status)
+        val allCasesResponse = client.get(Endpoints.DOCTOR_MEDICAL_CASE_ALL)
+        Logger.i(allCasesResponse.bodyAsText())
+        assertEquals(HttpStatusCode.OK, allCasesResponse.status)
     }
 
     @Test

@@ -31,6 +31,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+
 class PatientEndpointTest {
     private lateinit var tokens: BearerTokens
     private lateinit var client: HttpClient

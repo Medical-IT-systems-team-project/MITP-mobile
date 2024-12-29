@@ -21,7 +21,6 @@ import com.slapps.cupertino.adaptive.Theme
 import org.koin.compose.viewmodel.koinViewModel
 import org.umcs.mobile.composables.case_list_view.doctor.PatientListContent
 import org.umcs.mobile.data.Case
-import org.umcs.mobile.data.CaseStatus
 import org.umcs.mobile.data.Patient
 import org.umcs.mobile.theme.determineTheme
 
@@ -44,7 +43,7 @@ fun CaseListLayout(
     }
     val fabOffset = Modifier.offset(y = (-40).dp)
     var currentTab by remember { mutableStateOf(CaseListScreens.CASES) }
-    val testValues = remember { fetchTestCases() }
+    val testValues = viewModel.medicalCaseList
     val caseListState = rememberLazyListState()
     val patientListState = rememberLazyListState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -118,107 +117,10 @@ fun CaseListLayout(
                     ),
                     onImportPatientCase = navigateToImportPatientCase!!,
                     onShareUUID = navigateToSharePatientUUID!!,
-                    //TODO : FETCH DOCTOR'S PATIENTS
                 )
             }
         }
     }
 }
 
-val loremIpsum =
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 
-fun fetchTestCases(): List<Case> {
-    return listOf(
-        Case(
-            patientName = "John Doe",
-            status = CaseStatus.COMPLETED,
-            admissionReason = "Broken arm",
-            admissionDate = "2023-01-01",
-            description = loremIpsum,
-            createdBy = "Admin",
-            attendingDoctor = "Dr. Smith"
-        ),
-        Case(
-            patientName = "Jane Smith",
-            status = CaseStatus.ONGOING,
-            admissionReason = "Sprained ankle",
-            admissionDate = "2023-02-01",
-            description = loremIpsum,
-            createdBy = "Admin",
-            attendingDoctor = "Dr. Johnson"
-        ),
-        Case(
-            patientName = "Alice Johnson",
-            status = CaseStatus.ONGOING,
-            admissionReason = "Fractured wrist",
-            admissionDate = "2023-03-01",
-            description = loremIpsum,
-            createdBy = "Admin",
-            attendingDoctor = "Dr. Williams"
-        ),
-        Case(
-            patientName = "Bob Brown",
-            status = CaseStatus.ONGOING,
-            admissionReason = "Dislocated shoulder",
-            admissionDate = "2023-04-01",
-            description = loremIpsum,
-            createdBy = "Admin",
-            attendingDoctor = "Dr. Brown"
-        ),
-        Case(
-            patientName = "Charlie Davis",
-            status = CaseStatus.ONGOING,
-            admissionReason = "Broken leg",
-            admissionDate = "2023-05-01",
-            description = loremIpsum,
-            createdBy = "Admin",
-            attendingDoctor = "Dr. Davis"
-        ),
-        Case(
-            patientName = "Diana Evans",
-            status = CaseStatus.ONGOING,
-            admissionReason = "Concussion",
-            admissionDate = "2023-06-01",
-            description = loremIpsum,
-            createdBy = "Admin",
-            attendingDoctor = "Dr. Wilson"
-        ),
-        Case(
-            patientName = "Eve Foster",
-            status = CaseStatus.ONGOING,
-            admissionReason = "Broken ribs",
-            admissionDate = "2023-07-01",
-            description = loremIpsum,
-            createdBy = "Admin",
-            attendingDoctor = "Dr. Taylor"
-        ),
-        Case(
-            patientName = "Frank Green",
-            status = CaseStatus.ONGOING,
-            admissionReason = "Knee injury",
-            admissionDate = "2023-08-01",
-            description = loremIpsum,
-            createdBy = "Admin",
-            attendingDoctor = "Dr. Anderson"
-        ),
-        Case(
-            patientName = "Grace Harris",
-            status = CaseStatus.ONGOING,
-            admissionReason = "Back pain",
-            admissionDate = "2023-09-01",
-            description = loremIpsum,
-            createdBy = "Admin",
-            attendingDoctor = "Dr. Martinez"
-        ),
-        Case(
-            patientName = "Henry Irving",
-            status = CaseStatus.ONGOING,
-            admissionReason = "Twisted ankle",
-            admissionDate = "2023-10-01",
-            description = loremIpsum,
-            createdBy = "Admin",
-            attendingDoctor = "Dr. Thomas"
-        )
-    )
-}

@@ -27,18 +27,21 @@ import org.umcs.mobile.composables.new_medication_view.Medication
 import org.umcs.mobile.composables.new_treatment_view.MedicalTreatment
 import org.umcs.mobile.network.Endpoints.withArgs
 import org.umcs.mobile.network.dto.case.MedicalCaseRequestDto
+import org.umcs.mobile.network.dto.case.MedicalCaseResponseDto
 import org.umcs.mobile.network.dto.case.MedicationRequestDto
 import org.umcs.mobile.network.dto.case.TreatmentRequestDto
 import org.umcs.mobile.network.dto.login.JwtResponseDto
 import org.umcs.mobile.network.dto.login.TokenRequestDto
 import org.umcs.mobile.network.dto.patient.PatientResponseDto
 
+const val baseUrl = "https://caretrack.skni.umcs.pl/"
+
 object GlobalKtorClient {
     private lateinit var tokens: BearerTokens
     private val client = HttpClient {
         defaultRequest {
             contentType(ContentType.Application.Json)
-            url("https://caretrack.skni.umcs.pl/")
+            url(baseUrl)
         }
         install(ContentNegotiation) {
             json(Json {
@@ -61,10 +64,38 @@ object GlobalKtorClient {
                 }
                 sendWithoutRequest { request ->
                     !request.url.encodedPath.contains("login") &&
-                            !(request.url.encodedPath.contains("patient/") && request.url.encodedPath != "patient/new")
-
+                            !request.url.encodedPath.contains("register") &&
+                            !(request.url.encodedPath.contains("${baseUrl}/patient/") && request.url.encodedPath != "patient/new")
                 }
             }
+        }
+    }
+
+    suspend fun loginAsDoctor(login: String, password: String): DoctorLoginResult {
+        return try {
+            val doctorResponse = client.post(Endpoints.LOGIN) {
+                setBody(TokenRequestDto(login, password))
+            }
+            Logger.i("TOKEN : ${doctorResponse.bodyAsText()}", tag = "Ktor")
+
+            when (doctorResponse.status) {
+                HttpStatusCode.OK -> {
+                    val loginBody: JwtResponseDto = doctorResponse.body()
+                    tokens = BearerTokens(accessToken = loginBody.token, refreshToken = null)
+                    DoctorLoginResult.Success(loginBody)
+                }
+
+                HttpStatusCode.NotFound -> {
+                    throw NoSuchElementException("No doctor found with that data")
+                }
+
+                else -> {
+                    throw IllegalStateException("${doctorResponse.status} with message ${doctorResponse.bodyAsText()}  \uD83E\uDD21 ")
+                }
+            }
+        } catch (e: Exception) {
+            Logger.e("Login failed: ${e.message}", tag = "Ktor")
+            DoctorLoginResult.Error(e.message ?: "Unknown error")
         }
     }
 
@@ -83,32 +114,6 @@ object GlobalKtorClient {
             Logger.v(medicalCaseResponse.status.toString(), tag = "new case")
         } catch (e: Exception) {
             Logger.v(e.message.toString(), tag = "new case")
-        }
-    }
-
-    suspend fun loginAsDoctor(login: String, password: String): DoctorLoginResult {
-        return try {
-            val doctorResponse = client.post(Endpoints.LOGIN) {
-                setBody(TokenRequestDto(login, password))
-            }
-            Logger.i("TOKEN : ${doctorResponse.bodyAsText()}", tag = "Ktor")
-
-            when(doctorResponse.status){
-                HttpStatusCode.OK -> {
-                    val loginBody : JwtResponseDto = doctorResponse.body()
-                    tokens = BearerTokens(accessToken = loginBody.token, refreshToken = null)
-                    DoctorLoginResult.Success(loginBody)
-                }
-                HttpStatusCode.NotFound -> {
-                    throw NoSuchElementException("No doctor found with that data")
-                }
-                else -> {
-                    throw IllegalStateException("${doctorResponse.status} with message ${doctorResponse.bodyAsText()}  \uD83E\uDD21 ")
-                }
-            }
-        } catch (e: Exception) {
-            Logger.e("Login failed: ${e.message}", tag = "Ktor")
-            DoctorLoginResult.Error(e.message ?: "Unknown error")
         }
     }
 
@@ -185,6 +190,27 @@ object GlobalKtorClient {
             Logger.v(treatmentResponse.bodyAsText(), tag = "new case")
         } catch (e: Exception) {
             Logger.v(e.message.toString(), tag = "new case")
+        }
+    }
+
+    suspend fun getAllDoctorPatients(): AllPatientsResult {
+        return try {
+            val allPatientsResponse = client.get(Endpoints.DOCTOR_PATIENT_ALL)
+            Logger.v("KOD PACJENTOW : ${allPatientsResponse}", tag = "Finito")
+            val allPatients: List<PatientResponseDto> = allPatientsResponse.body()
+            AllPatientsResult.Success(allPatients)
+        } catch (e: Exception) {
+            AllPatientsResult.Error(e.message.toString())
+        }
+    }
+
+    suspend fun getAllMedicalCases() : AllMedicalCasesResult{
+        return try {
+            val allPatientsResponse = client.get(Endpoints.DOCTOR_MEDICAL_CASE_ALL)
+            val allMedicalCases : List<MedicalCaseResponseDto> = allPatientsResponse.body()
+            AllMedicalCasesResult.Success(allMedicalCases)
+        }catch(e : Exception){
+            AllMedicalCasesResult.Error(e.message.toString())
         }
     }
 }

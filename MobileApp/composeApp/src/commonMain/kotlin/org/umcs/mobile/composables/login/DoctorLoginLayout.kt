@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import co.touchlab.kermit.Logger
 import com.slapps.cupertino.CupertinoButtonDefaults
 import com.slapps.cupertino.adaptive.AdaptiveTonalButton
 import com.slapps.cupertino.adaptive.ExperimentalAdaptiveApi
@@ -51,6 +52,8 @@ import mobileapp.composeapp.generated.resources.cross_logo
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.umcs.mobile.composables.shared.AdaptiveTextField
+import org.umcs.mobile.network.AllMedicalCasesResult
+import org.umcs.mobile.network.AllPatientsResult
 import org.umcs.mobile.network.DoctorLoginResult
 import org.umcs.mobile.network.GlobalKtorClient
 import org.umcs.mobile.theme.determineTheme
@@ -168,8 +171,21 @@ fun DoctorLoginLayout(
                     password = password,
                     loginScope = loginScope,
                     loginAsDoctor = { doctorId ->
-                        viewModel.setDoctorId(doctorId)
-                        navigateToCaseList()
+                        loginScope.launch {
+                            viewModel.setDoctorId(doctorId)
+                            val getPatientsNetworkCall = GlobalKtorClient.getAllDoctorPatients()
+                            val getMedicalCasesNetworkCall = GlobalKtorClient.getAllMedicalCases()
+
+                            when(getMedicalCasesNetworkCall){
+                                is AllMedicalCasesResult.Error -> Logger.i("${getMedicalCasesNetworkCall.message}", tag ="Finito")
+                                is AllMedicalCasesResult.Success -> viewModel.setMedicalCases(getMedicalCasesNetworkCall.cases)
+                            }
+                            when(getPatientsNetworkCall){
+                                is AllPatientsResult.Error -> Logger.i("${getPatientsNetworkCall.message}", tag = "Finito")
+                                is AllPatientsResult.Success -> viewModel.setPatients(getPatientsNetworkCall.patients)
+                            }
+                            navigateToCaseList()
+                        }
                     }
                 )
             },

@@ -7,9 +7,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import org.umcs.mobile.composables.case_list_view.CaseViewContent
-import org.umcs.mobile.composables.case_list_view.fetchTestCases
 import org.umcs.mobile.composables.shared.AppTopBar
 import org.umcs.mobile.data.Case
+import org.umcs.mobile.data.CaseStatus
 import org.umcs.mobile.data.Patient
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,4 +42,21 @@ fun ImportPatientCaseLayout(
             showPatientName = false,
         )
     }
+}
+
+fun fetchTestCases() : List<Case> {
+    return listOf(
+        Case(
+            patientName = "Sergio Jackson",
+            status = CaseStatus.COMPLETED,
+            admissionReason = "maiorum",
+            admissionDate = "ultrices",
+            description = "solet",
+            createdBy = "fugit",
+            attendingDoctor = "nascetur",
+            medications = listOf(),
+            treatments = listOf(),
+            allowedDoctors = listOf()
+        )
+    )
 }

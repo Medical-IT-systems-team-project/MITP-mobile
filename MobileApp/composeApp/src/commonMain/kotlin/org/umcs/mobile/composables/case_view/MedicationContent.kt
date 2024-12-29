@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.slapps.cupertino.adaptive.Theme
 import com.slapps.cupertino.theme.CupertinoTheme
+import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 import org.umcs.mobile.composables.case_list_view.doctor.AdaptiveDropdownItem
 import org.umcs.mobile.composables.case_list_view.doctor.AdaptiveDropdownMenu
@@ -41,9 +42,9 @@ import org.umcs.mobile.theme.determineTheme
 fun MedicationContent(
     paddingValues: PaddingValues,
     case: Case,
-    viewModel: AppViewModel = koinViewModel(),
+    viewModel: AppViewModel = koinViewModel()
 ) {
-    val medicineList = remember { fetchMedicine() }
+    val medicineList = case.medications
     val isDoctor = viewModel.isDoctor
     var showDropdownForMedication by remember { mutableStateOf<Medication?>(null) }
 
@@ -144,6 +145,7 @@ fun MedicationItem(
     }
 }
 
+@Serializable
 data class Medication(
     val name: String,
     val startDate: String,
