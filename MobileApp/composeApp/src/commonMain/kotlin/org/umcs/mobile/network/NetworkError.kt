@@ -23,3 +23,8 @@ sealed class AllMedicalCasesResult {
     data class Success(val cases: List<MedicalCaseResponseDto>) : AllMedicalCasesResult()
     data class Error(val message: String) : AllMedicalCasesResult()
 }
+
+sealed class CreatePatientResult {
+    data object Success : CreatePatientResult()
+    data class Error(val message: String) : CreatePatientResult()
+}

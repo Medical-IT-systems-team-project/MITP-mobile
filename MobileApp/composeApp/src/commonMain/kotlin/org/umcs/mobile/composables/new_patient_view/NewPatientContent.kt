@@ -51,6 +51,8 @@ import org.umcs.mobile.composables.shared.AdaptiveTextField
 import org.umcs.mobile.composables.shared.AdaptiveWheelDatePicker
 import org.umcs.mobile.data.Gender
 import org.umcs.mobile.data.Patient
+import org.umcs.mobile.network.CreatePatientResult
+import org.umcs.mobile.network.GlobalKtorClient
 import org.umcs.mobile.theme.cupertinoGray
 import org.umcs.mobile.theme.cupertinoGrayInactive
 import org.umcs.mobile.theme.determineTheme
@@ -59,6 +61,7 @@ import org.umcs.mobile.theme.onSurfaceDark
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewPatientContent(
+    navigateBack : ()->Unit,
     modifier : Modifier = Modifier,
     paddingValues: PaddingValues,
     showDatePicker: Boolean,
@@ -78,6 +81,7 @@ fun NewPatientContent(
     var phoneNumberError by remember { mutableStateOf("") }
     var emailError by remember { mutableStateOf("") }
     var dateOfBirthError by remember { mutableStateOf("") }
+    var formError by remember { mutableStateOf("") }
     val ssnMaxChars = 11
     val maxPhoneNumberChars = 9
     val theme = remember { determineTheme() }
@@ -111,6 +115,11 @@ fun NewPatientContent(
     ) {
         if (showDatePicker) {
             AdaptiveWheelDatePicker(
+                minimumDate =  LocalDate(
+                    year = 1900,
+                    monthNumber = 1,
+                    dayOfMonth = 1,
+                ),
                 sheetState = datePickerState,
                 dismiss = { newDate: LocalDate ->
                     onShowDatePickerChange(false)
@@ -227,6 +236,7 @@ fun NewPatientContent(
         AdaptiveTonalButton(
             onClick = {
                 handleCreatePatient(
+                    navigateBack = navigateBack,
                     newPatient = newPatient,
                     scope = scope,
                     isFormValid = isFormValid,
@@ -238,7 +248,8 @@ fun NewPatientContent(
                     changeAddressError = { addressError = it },
                     changePhoneNumberError = { phoneNumberError = it },
                     changeEmailError = { emailError = it },
-                    changeDateOfBirthError = { dateOfBirthError = it }
+                    changeDateOfBirthError = { dateOfBirthError = it },
+                    changeFormError = {formError = it}
                 )
             },
             modifier = Modifier.then(
@@ -261,6 +272,9 @@ fun NewPatientContent(
             }
         ) {
             Text(text = "Create Patient", fontSize = 16.sp)
+        }
+        if(formError.isNotBlank()){
+            Text(formError)
         }
     }
 }
@@ -322,6 +336,7 @@ fun GenderSelection(
 
 private fun handleCreatePatient(
     newPatient: Patient,
+    navigateBack: () -> Unit,
     scope: CoroutineScope,
     isFormValid: Boolean,
     changeSsnError: (String) -> Unit,
@@ -333,6 +348,7 @@ private fun handleCreatePatient(
     changePhoneNumberError: (String) -> Unit,
     changeEmailError: (String) -> Unit,
     changeDateOfBirthError: (String) -> Unit,
+    changeFormError : (String) ->Unit
 ) {
     changeSsnError("")
     changeFirstNameError("")
@@ -343,10 +359,15 @@ private fun handleCreatePatient(
     changePhoneNumberError("")
     changeEmailError("")
     changeDateOfBirthError("")
+    changeFormError("")
 
     if (isFormValid) {
         scope.launch {
-            // GlobalKtorClient.createNewPatient(newPatient)
+             val createNewPatientResult = GlobalKtorClient.createNewPatient(newPatient)
+            when(createNewPatientResult){
+                is CreatePatientResult.Error -> changeFormError(createNewPatientResult.message)
+                CreatePatientResult.Success -> navigateBack()
+            }
         }
     } else {
         newPatient.socialSecurityNumber.ifBlank {

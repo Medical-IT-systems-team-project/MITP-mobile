@@ -26,6 +26,7 @@ import kotlinx.serialization.json.Json
 import org.umcs.mobile.composables.new_case_view.MedicalCase
 import org.umcs.mobile.composables.new_medication_view.Medication
 import org.umcs.mobile.composables.new_treatment_view.MedicalTreatment
+import org.umcs.mobile.data.Patient
 import org.umcs.mobile.network.Endpoints.withArgs
 import org.umcs.mobile.network.dto.case.MedicalCaseRequestDto
 import org.umcs.mobile.network.dto.case.MedicalCaseResponseDto
@@ -35,6 +36,7 @@ import org.umcs.mobile.network.dto.case.TreatmentRequestDto
 import org.umcs.mobile.network.dto.dozapytania.StatusRequestDto
 import org.umcs.mobile.network.dto.login.JwtResponseDto
 import org.umcs.mobile.network.dto.login.TokenRequestDto
+import org.umcs.mobile.network.dto.patient.PatientRequestDto
 import org.umcs.mobile.network.dto.patient.PatientResponseDto
 
 const val baseUrl = "https://caretrack.skni.umcs.pl/"
@@ -229,33 +231,66 @@ object GlobalKtorClient {
         }
     }
 
-    suspend fun changeTreatmentStatus(chosenStatus : MedicalStatus,treatmentId : Int) : Boolean {
+    suspend fun changeTreatmentStatus(chosenStatus: MedicalStatus, treatmentId: Int): Boolean {
         return try {
-            val treatmentStatusResponse= client.patch(Endpoints.DOCTOR_TREATMENT_ID_STATUS.withArgs(treatmentId.toString())){
-                setBody(StatusRequestDto(chosenStatus))
-            }
-            when(treatmentStatusResponse.status){
+            val treatmentStatusResponse =
+                client.patch(Endpoints.DOCTOR_TREATMENT_ID_STATUS.withArgs(treatmentId.toString())) {
+                    setBody(StatusRequestDto(chosenStatus))
+                }
+            when (treatmentStatusResponse.status) {
                 HttpStatusCode.OK -> true
                 else -> throw IllegalStateException(treatmentStatusResponse.bodyAsText())
             }
-        }catch(e : Exception){
-            Logger.i("failed to change treatment status with error : ${e.message}" , tag ="Treatment Status")
+        } catch (e: Exception) {
+            Logger.i(
+                "failed to change treatment status with error : ${e.message}",
+                tag = "Treatment Status"
+            )
             false
         }
     }
 
-    suspend fun changeMedicationStatus(chosenStatus: MedicalStatus,medicationId:Int) : Boolean {
+    suspend fun changeMedicationStatus(chosenStatus: MedicalStatus, medicationId: Int): Boolean {
         return try {
-            val medicationStatusResponse= client.patch(Endpoints.DOCTOR_MEDICATION_ID_STATUS.withArgs(medicationId.toString())){
-                setBody(StatusRequestDto(chosenStatus))
-            }
-            when(medicationStatusResponse.status){
+            val medicationStatusResponse =
+                client.patch(Endpoints.DOCTOR_MEDICATION_ID_STATUS.withArgs(medicationId.toString())) {
+                    setBody(StatusRequestDto(chosenStatus))
+                }
+            when (medicationStatusResponse.status) {
                 HttpStatusCode.OK -> true
                 else -> throw IllegalStateException(medicationStatusResponse.bodyAsText())
             }
-        }catch(e : Exception){
-            Logger.i("failed to change medication status with error : ${e.message}" , tag ="Medication Status")
+        } catch (e: Exception) {
+            Logger.i(
+                "failed to change medication status with error : ${e.message}",
+                tag = "Medication Status"
+            )
             false
+        }
+    }
+
+    suspend fun createNewPatient(newPatient: Patient): CreatePatientResult {
+        return try {
+            val patientRequest = PatientRequestDto(
+                socialSecurityNumber = newPatient.socialSecurityNumber,
+                firstName = newPatient.socialSecurityNumber,
+                lastName = newPatient.lastName,
+                age = newPatient.age,
+                gender = newPatient.gender,
+                address = newPatient.address,
+                phoneNumber = newPatient.phoneNumber,
+                email = newPatient.email,
+                birthDate = LocalDate.parse(newPatient.birthDate)
+            )
+            val createPatientResponse = client.post(Endpoints.PATIENT_NEW) {
+                setBody(patientRequest)
+            }
+            when (createPatientResponse.status) {
+                HttpStatusCode.OK -> CreatePatientResult.Success
+                else -> throw IllegalArgumentException(createPatientResponse.bodyAsText())
+            }
+        } catch (e: Exception) {
+            CreatePatientResult.Error(e.message.toString())
         }
     }
 }

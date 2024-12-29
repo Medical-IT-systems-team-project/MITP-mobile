@@ -12,8 +12,8 @@ data class PatientRequestDto (
     @Serializable(with = SSNPatternSerializer::class)
     val socialSecurityNumber: String,
     val firstName : String,
-    val lastname:String,
-    val age : Int,
+    val lastName:String,
+    val age : String,
     val gender:String,
     val address : String,
     @Serializable(with = PhoneNumberPatternSerializer::class)

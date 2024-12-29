@@ -46,6 +46,7 @@ fun NewPatientLayout(navigateBack: () -> Unit) {
         }
     ) { paddingValues ->
         NewPatientContent(
+            navigateBack = navigateBack,
             paddingValues = paddingValues,
             newPatient = newPatient,
             focusRequester = focusRequester,

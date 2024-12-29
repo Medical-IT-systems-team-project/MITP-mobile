@@ -36,6 +36,7 @@ fun AdaptiveWheelDatePicker(
     sheetState: SheetState,
     dismiss: (LocalDate) -> Unit,
     passedStartDate: LocalDate? = null,
+    minimumDate : LocalDate? = null
 ) {
     val currentDate = passedStartDate ?: Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
     var currentlyPickedDate by remember { mutableStateOf(currentDate) }
@@ -43,6 +44,7 @@ fun AdaptiveWheelDatePicker(
     AdaptiveWidget(
         material = {
             MaterialWheelDatePicker(
+                minimumDate = minimumDate,
                 sheetState = sheetState,
                 dismiss = dismiss,
                 currentlyPickedDateTime = currentlyPickedDate,
@@ -54,6 +56,7 @@ fun AdaptiveWheelDatePicker(
         },
         cupertino = {
             CupertinoWheelDatePicker(
+                minimumDate = minimumDate,
                 sheetState = sheetState,
                 dismiss = dismiss,
                 currentlyPickedDate = currentlyPickedDate,
@@ -74,6 +77,7 @@ private fun CupertinoWheelDatePicker(
     currentlyPickedDate: LocalDate,
     startDate: LocalDate,
     changeCurrentlyPickedDate: (LocalDate) -> Unit,
+    minimumDate: LocalDate?,
 ) {
     ModalBottomSheet(
         dragHandle = { BottomSheetDefaults.HiddenShape },
@@ -86,7 +90,7 @@ private fun CupertinoWheelDatePicker(
         ) {
             WheelDatePicker(
                 startDate = startDate,
-                minDate = LocalDate(
+                minDate = minimumDate ?: LocalDate(
                     year = 2020,
                     monthNumber = 1,
                     dayOfMonth = 1,
@@ -118,6 +122,7 @@ private fun MaterialWheelDatePicker(
     currentlyPickedDateTime: LocalDate,
     startDateTime: LocalDate,
     changeCurrentlyPickedDateTime: (LocalDate) -> Unit,
+    minimumDate: LocalDate?,
 ) {
     ModalBottomSheet(
         dragHandle = { BottomSheetDefaults.HiddenShape },
@@ -130,7 +135,7 @@ private fun MaterialWheelDatePicker(
         ) {
             WheelDatePicker(
                 startDate = startDateTime,
-                minDate = LocalDate(
+                minDate = minimumDate ?: LocalDate(
                     year = 2020,
                     monthNumber = 1,
                     dayOfMonth = 1,
