@@ -6,10 +6,8 @@ CareTrack is a cross-platform mobile application designed for medical case manag
 ## Tech Stack
 
 ### Core Technologies
-- Kotlin Multiplatform Mobile (KMM)
-- Jetpack Compose Multiplatform
-- Kotlin Coroutines
-- Kotlin Flow
+- Kotlin Multiplatform 
+- Compose Multiplatform
 
 ### Architecture & DI
 - MVVM Architecture
