@@ -8,6 +8,7 @@ CareTrack is a cross-platform mobile application designed for medical case manag
 ### Core Technologies
 - Kotlin Multiplatform 
 - Compose Multiplatform
+- Compose Cupertino 
 
 ### Architecture & DI
 - MVVM Architecture
@@ -22,6 +23,7 @@ CareTrack is a cross-platform mobile application designed for medical case manag
 
 ### UI Components
 - Material Design 3
+- Adaptive Composables from Compose Cupertino
 - Custom QR Code Generation
 - Custom Composables
 
@@ -37,6 +39,7 @@ CareTrack is a cross-platform mobile application designed for medical case manag
 - Medication monitoring
 - Dark/Light theme support
 - Cross-platform compatibility (iOS & Android)
+- UI adaptive to each platform
 
 ## Screenshots
 
