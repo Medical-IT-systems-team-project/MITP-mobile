@@ -51,6 +51,7 @@ fun NewCaseLayout(
         }
     ) { paddingValues ->
         NewCaseContent(
+            navigateBack = navigateBack,
             paddingValues = paddingValues,
             showPatientPicker = showPatientPicker,
             showDatePicker = showDatePicker,

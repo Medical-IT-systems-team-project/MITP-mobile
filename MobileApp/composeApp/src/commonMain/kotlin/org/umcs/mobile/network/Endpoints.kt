@@ -1,6 +1,6 @@
 package org.umcs.mobile.network
 
-object Endpoints { //TODO : figure out how to use this without String.format()
+object Endpoints {
     const val UPDATE_LOGIN = "update/%s"
     const val REGISTER = "register"
     const val FIND_LOGIN = "find/%s"
@@ -12,11 +12,12 @@ object Endpoints { //TODO : figure out how to use this without String.format()
 
     // medical-case-controller
     const val MEDICAL_CASE_NEW = "medical-case/new"
-    const val MEDICAL_CASE_ID = "medical-case/%s"
+    const val MEDICAL_CASE_CLOSE = "medical-case/%s"
     const val MEDICAL_CASE_ACCESS_ID_SUMMARY = "medical-case/%s/summary"
     const val MEDICAL_CASE_ACCESS_ID_HISTORY = "medical-case/%s/history"
     const val MEDICAL_CASE_ID_TREATMENT_ALL = "medical-case/%s/treatment/all"
     const val MEDICAL_CASE_ID_MEDICATION_ALL = "medical-case/%s/medication/all"
+    const val MEDICAL_CASE_ALLOWED_DOCTOR = "medical-case/allowed-doctor/%s"
 
     const val LOGIN = "login"
     // doctor-controller
@@ -25,6 +26,7 @@ object Endpoints { //TODO : figure out how to use this without String.format()
     const val DOCTOR_TREATMENT_ID_STATUS = "doctor/treatment/%s/status"
     const val DOCTOR_MEDICATION_ID_STATUS = "doctor/medication/%s/status"
     const val DOCTOR_PATIENT_ALL = "doctor/patient/all"
+    const val DOCTOR_PATIENT_ALL_UNASSIGNED = "doctor/patient/all/unassigned"
     const val DOCTOR_MEDICAL_CASE_ALL = "doctor/medical-case/all"
 
     fun String.withArgs(vararg args: String): String {

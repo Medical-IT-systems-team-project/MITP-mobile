@@ -12,16 +12,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import co.touchlab.kermit.Logger
 import com.slapps.cupertino.adaptive.Theme
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 import org.umcs.mobile.composables.case_list_view.doctor.PatientListContent
 import org.umcs.mobile.data.Case
 import org.umcs.mobile.data.Patient
+import org.umcs.mobile.network.AllUnassignedPatientsResult
+import org.umcs.mobile.network.GlobalKtorClient
 import org.umcs.mobile.theme.determineTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,6 +42,7 @@ fun CaseListLayout(
     viewModel: AppViewModel = koinViewModel(),
     isDoctor: Boolean = true,
 ) {
+    val caseListScope = rememberCoroutineScope()
     val isMaterial = when (determineTheme()) {
         Theme.Cupertino -> false
         Theme.Material3 -> true
@@ -85,11 +91,20 @@ fun CaseListLayout(
                 isDoctor = isDoctor,
                 fabOffset = fabOffset,
                 navigateToAddNewPatient = navigateToAddNewPatient,
-                navigateToAddNewCase = navigateToAddNewCase,
                 currentTab = currentTab,
                 navigateToShareUUID = navigateToSharePatientUUID,
                 currentPatient = currentPatient,
-                navigateToImportNewPatient = navigateToImportNewPatient
+                navigateToImportNewPatient = navigateToImportNewPatient,
+                navigateToAddNewCase = navigateToAddNewCase,
+                fetchUnassignedPatients = {
+                    caseListScope.launch {
+                        val getUnassignedPatient = GlobalKtorClient.getAllUnassignedPatients()
+                        when (getUnassignedPatient) {
+                            is AllUnassignedPatientsResult.Error -> Logger.e(getUnassignedPatient.message, tag = "Unassigned patients")
+                            is AllUnassignedPatientsResult.Success -> viewModel.setUnassignedPatients(getUnassignedPatient.patients)
+                        }
+                    }
+                }
             )
         },
     ) { paddingValues ->

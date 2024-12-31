@@ -54,6 +54,7 @@ fun NewTreatmentLayout(
         }
     ) { paddingValues ->
         NewTreatmentContent(
+            navigateBack = navigateBack,
             paddingValues = paddingValues,
             showStartDatePicker = showStartDatePicker,
             showEndDatePicker = showEndDatePicker,

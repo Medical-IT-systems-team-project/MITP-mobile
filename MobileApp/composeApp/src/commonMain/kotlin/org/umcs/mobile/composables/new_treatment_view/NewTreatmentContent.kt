@@ -1,5 +1,6 @@
 package org.umcs.mobile.composables.new_treatment_view
 
+import AppViewModel
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
@@ -43,11 +44,18 @@ import com.slapps.cupertino.theme.CupertinoTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
+import org.koin.compose.viewmodel.koinViewModel
 import org.umcs.mobile.composables.shared.AdaptiveTextField
 import org.umcs.mobile.composables.shared.AdaptiveWheelDateTimePicker
+import org.umcs.mobile.network.AllMedicalCasesResult
+import org.umcs.mobile.network.AllPatientsResult
+import org.umcs.mobile.network.CreateNewTreatmentResult
 import org.umcs.mobile.network.GlobalKtorClient
+import org.umcs.mobile.network.dto.case.MedicalCaseResponseDto
+import org.umcs.mobile.network.dto.patient.PatientResponseDto
 import org.umcs.mobile.theme.determineTheme
 import org.umcs.mobile.theme.onSurfaceDark
+import kotlin.reflect.KFunction1
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,6 +74,8 @@ fun NewTreatmentContent(
     medicalCaseID: Int,
     doctorID: String,
     modifier: Modifier,
+    navigateBack: () -> Unit,
+    viewmodel : AppViewModel = koinViewModel()
 ) {
     val theme = remember { determineTheme() }
     val isCupertino = when (theme) {
@@ -211,7 +221,10 @@ fun NewTreatmentContent(
                     changeStartDateError = { startDateError = it },
                     changeEndDateError = { endDateError = it },
                     changeDetailsError = { detailsError = it },
-                    changeNameError = { nameError = it }
+                    changeNameError = { nameError = it },
+                    navigateBack =  navigateBack,
+                    updateCases = viewmodel::setMedicalCases,
+                    updatePatients = viewmodel::setPatients
                 )
             },
             modifier = Modifier.then(
@@ -249,6 +262,9 @@ private fun handleCreateTreatment(
     changeEndDateError: (String) -> Unit,
     changeDetailsError: (String) -> Unit,
     changeNameError: (String) -> Unit,
+    updatePatients: KFunction1<List<PatientResponseDto>, Unit>,
+    updateCases: KFunction1<List<MedicalCaseResponseDto>, Unit>,
+    navigateBack: () -> Unit
 ) {
     changeDescriptionError("")
     changeStartDateError("")
@@ -258,7 +274,23 @@ private fun handleCreateTreatment(
 
     if (isFormValid) {
         scope.launch {
-            GlobalKtorClient.createNewTreatment(newTreatment, doctorID, medicalCaseID)
+            val createNewTreatmentResult =GlobalKtorClient.createNewTreatment(newTreatment, doctorID, medicalCaseID)
+
+            when (createNewTreatmentResult) {
+                is CreateNewTreatmentResult.Error -> Logger.i(createNewTreatmentResult.message)
+                CreateNewTreatmentResult.Success -> {
+                    val patientsResult = GlobalKtorClient.getAllDoctorPatients()
+                    val casesResult = GlobalKtorClient.getAllMedicalCasesAsDoctor()
+
+                    if (patientsResult is AllPatientsResult.Success) {
+                        updatePatients(patientsResult.patients)
+                    }
+                    if (casesResult is AllMedicalCasesResult.Success) {
+                        updateCases(casesResult.cases)
+                    }
+                    navigateBack()
+                }
+            }
         }
     } else {
         newTreatment.description.ifBlank {

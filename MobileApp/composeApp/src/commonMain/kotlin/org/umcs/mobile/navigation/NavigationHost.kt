@@ -123,7 +123,6 @@ fun NavigationHost(
         composable<Routes.ImportPatient>{
             ImportNewPatient(
                 navigateBack = navController::navigateUp,
-                onSuccess = {}
             )
         }
         composable<Routes.DoctorLogin> {

@@ -1,5 +1,6 @@
 package org.umcs.mobile.composables.new_medication_view
 
+import AppViewModel
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
@@ -42,9 +43,15 @@ import com.slapps.cupertino.theme.CupertinoTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
+import org.koin.compose.viewmodel.koinViewModel
 import org.umcs.mobile.composables.shared.AdaptiveTextField
 import org.umcs.mobile.composables.shared.AdaptiveWheelDatePicker
+import org.umcs.mobile.network.AllMedicalCasesResult
+import org.umcs.mobile.network.AllPatientsResult
+import org.umcs.mobile.network.CreateNewMedicationResult
 import org.umcs.mobile.network.GlobalKtorClient
+import org.umcs.mobile.network.dto.case.MedicalCaseResponseDto
+import org.umcs.mobile.network.dto.patient.PatientResponseDto
 import org.umcs.mobile.theme.determineTheme
 import org.umcs.mobile.theme.onSurfaceDark
 
@@ -64,6 +71,8 @@ fun NewMedicationContent(
     medicalCaseID: Int,
     doctorID: String,
     modifier: Modifier,
+    navigateBack: () -> Unit,
+    viewmodel : AppViewModel = koinViewModel()
 ) {
     val theme = remember { determineTheme() }
     val isCupertino = when (theme) {
@@ -74,7 +83,7 @@ fun NewMedicationContent(
         if (isCupertino) CupertinoTheme.typography.title3 else MaterialTheme.typography.titleMedium.copy(
             fontSize = 20.sp
         )
-    val verticalSpacing = if(isCupertino) 15.dp else 5.dp
+    val verticalSpacing = if (isCupertino) 15.dp else 5.dp
     var shownStartDate by remember { mutableStateOf("") }
     var shownEndDate by remember { mutableStateOf("") }
 
@@ -121,7 +130,9 @@ fun NewMedicationContent(
                     onNewMedicationChange(newMedication.copy(endDate = newDateTime.toString()))
                     shownEndDate = newDateTime.toString().replace('-', '/')
                 },
-                passedStartDate = if (newMedication.startDate.isNotBlank()) LocalDate.parse(newMedication.startDate) else null
+                passedStartDate = if (newMedication.startDate.isNotBlank()) LocalDate.parse(
+                    newMedication.startDate
+                ) else null
             )
         }
         AdaptiveTextField(
@@ -185,7 +196,7 @@ fun NewMedicationContent(
             title = { Text("Details") },
             text = newMedication.details,
             supportingText = detailsError,
-            changeSupportingText = { detailsError= it },
+            changeSupportingText = { detailsError = it },
             onTextChange = { onNewMedicationChange(newMedication.copy(details = it)) },
             focusRequester = focusRequester,
             placeholder = { Text("Details") },
@@ -200,7 +211,7 @@ fun NewMedicationContent(
             placeholder = { Text("Dosage Form") },
         )
         AdaptiveTextField(
-            title = { Text("Frequency")},
+            title = { Text("Frequency") },
             text = newMedication.frequency,
             supportingText = frequencyError,
             changeSupportingText = { frequencyError = it },
@@ -212,7 +223,7 @@ fun NewMedicationContent(
             title = { Text("Strength") },
             text = newMedication.strength,
             supportingText = strengthError,
-            changeSupportingText = { strengthError= it },
+            changeSupportingText = { strengthError = it },
             onTextChange = { onNewMedicationChange(newMedication.copy(strength = it)) },
             focusRequester = focusRequester,
             placeholder = { Text("Strength") },
@@ -237,14 +248,17 @@ fun NewMedicationContent(
                     medicalCaseID = medicalCaseID,
                     scope = scope,
                     isFormValid = isFormValid,
-                    changeFrequencyError = {frequencyError = it},
+                    changeFrequencyError = { frequencyError = it },
                     changeDosageError = { dosageError = it },
                     changeUnitError = { unitError = it },
                     changeStrengthError = { strengthError = it },
                     changeStartDateError = { startDateError = it },
                     changeEndDateError = { endDateError = it },
                     changeDetailsError = { detailsError = it },
-                    changeNameError = { nameError = it }
+                    changeNameError = { nameError = it },
+                    navigateBack = navigateBack,
+                    updatePatients = viewmodel::setPatients,
+                    updateCases = viewmodel::setMedicalCases
                 )
             },
             modifier = Modifier.then(
@@ -273,6 +287,9 @@ fun NewMedicationContent(
 }
 
 private fun handleCreateMedication(
+    navigateBack: () -> Unit,
+    updatePatients: (List<PatientResponseDto>) -> Unit,
+    updateCases: (List<MedicalCaseResponseDto>) -> Unit,
     newMedication: Medication,
     doctorID: String,
     medicalCaseID: Int,
@@ -300,7 +317,24 @@ private fun handleCreateMedication(
 
     if (isFormValid) {
         scope.launch {
-            GlobalKtorClient.createNewMedication(newMedication, doctorID, medicalCaseID)
+            val createNewMedicationResult =
+                GlobalKtorClient.createNewMedication(newMedication, doctorID, medicalCaseID)
+
+            when (createNewMedicationResult) {
+                is CreateNewMedicationResult.Error -> Logger.i(createNewMedicationResult.message)
+                CreateNewMedicationResult.Success -> {
+                    val patientsResult = GlobalKtorClient.getAllDoctorPatients()
+                    val casesResult = GlobalKtorClient.getAllMedicalCasesAsDoctor()
+
+                    if (patientsResult is AllPatientsResult.Success) {
+                        updatePatients(patientsResult.patients)
+                    }
+                    if (casesResult is AllMedicalCasesResult.Success) {
+                        updateCases(casesResult.cases)
+                    }
+                    navigateBack()
+                }
+            }
         }
     } else {
         newMedication.name.ifBlank {

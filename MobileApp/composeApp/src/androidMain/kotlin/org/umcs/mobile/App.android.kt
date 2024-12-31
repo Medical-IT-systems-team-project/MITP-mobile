@@ -52,7 +52,7 @@ internal fun initKoin() {
 private fun LoginScreenPreviewDark() {
     AppTheme(systemIsDark = true) {
         DoctorLoginLayout(
-            navigateToCaseList = TODO(),
+            navigateToCaseList = {}
         )
     }
 }

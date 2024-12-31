@@ -6,7 +6,7 @@ import org.umcs.mobile.network.dto.serializer.LocalDateTimeSerializer
 
 @Serializable
 data class MedicalCaseRequestDto(
-    val patientId : Int,
+    val patientId : String,
     @Serializable(with = LocalDateTimeSerializer::class)
     val admissionDate: LocalDateTime,
     val admissionReason:String,

@@ -29,8 +29,8 @@ fun List<MedicalCaseResponseDto>.toCaseList(): List<Case> {
 }
 
 fun MedicalCaseResponseDto.toCase(): Case {
-    val mappedMedication = medications.map { it.toMedication() }.toMutableList()
-    val mappedTreatment = treatments.map { it.toTreatment() }.toMutableList()
+    val mappedMedication = medications.map { it.toMedication() }
+    val mappedTreatment = treatments.map { it.toTreatment() }
 
     return Case(
         patientName = patientName,
@@ -50,8 +50,8 @@ fun MedicalCaseResponseDto.toCase(): Case {
 fun TreatmentResponseDto.toTreatment(): Treatment {
     return Treatment(
         name = name,
-        startDate = startDate.toString(),
-        endDate = endDate.toString(),
+        startDate = startDate.toString().replace(oldChar = 'T', newChar = ' '),
+        endDate = endDate.toString().replace(oldChar = 'T', newChar = ' '),
         details = details,
         createdBy = medicalDoctorName,
         status = status,

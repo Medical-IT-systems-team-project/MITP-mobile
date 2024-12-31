@@ -129,6 +129,15 @@ class DoctorEndpointTest {
     }
 
     @Test
+    fun `get all unassigned patients as a doctor should return 200-OK`() = runTest {
+        val allPatientsResponse = client.get(Endpoints.DOCTOR_PATIENT_ALL_UNASSIGNED)
+        val responseBody = allPatientsResponse.bodyAsText()
+        val prettyJson = Json{prettyPrint = true}.encodeToString(Json.parseToJsonElement(responseBody))
+        Logger.i(prettyJson)
+        assertEquals(HttpStatusCode.OK, allPatientsResponse.status)
+    }
+
+    @Test
     fun `get all cases as a doctor should return 200-OK`() = runTest {
         val allCasesResponse = client.get(Endpoints.DOCTOR_MEDICAL_CASE_ALL)
         val responseBody = allCasesResponse.bodyAsText()

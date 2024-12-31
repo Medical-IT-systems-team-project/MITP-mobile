@@ -2,13 +2,9 @@ package org.umcs.mobile.composables.case_list_view
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import co.touchlab.kermit.Logger
-import com.slapps.cupertino.CupertinoWheelPicker
 import com.slapps.cupertino.adaptive.icons.AdaptiveIcons
 import com.slapps.cupertino.adaptive.icons.Create
-import com.slapps.cupertino.adaptive.icons.DateRange
 import mobileapp.composeapp.generated.resources.Res
-import mobileapp.composeapp.generated.resources.add_case
 import mobileapp.composeapp.generated.resources.add_patient
 import mobileapp.composeapp.generated.resources.import_patient
 import org.umcs.mobile.composables.case_list_view.doctor.CaseListDoctorFAB
@@ -20,6 +16,7 @@ import org.umcs.mobile.data.Patient
 fun CaseListLayoutFAB(
     isDoctor: Boolean,
     fabOffset: Modifier,
+    fetchUnassignedPatients : ()->Unit,
     navigateToAddNewPatient: (() -> Unit)?,
     navigateToAddNewCase: (() -> Unit)?,
     navigateToImportNewPatient: (() -> Unit)?,
@@ -31,7 +28,10 @@ fun CaseListLayoutFAB(
         isDoctor && currentTab == CaseListScreens.CASES -> {
             AdaptiveFAB(
                 modifier = fabOffset,
-                onClick = navigateToAddNewCase!!,
+                onClick = {
+                    fetchUnassignedPatients()
+                    navigateToAddNewCase!!()
+                },
                 iconVector = AdaptiveIcons.Outlined.Create
             )
         }

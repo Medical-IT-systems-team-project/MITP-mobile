@@ -14,7 +14,8 @@ data class MedicationRequestDto (
     val details : String,
     val medicalCaseId : Int,
     val medicalDoctorId : String,
-    val dosageForm : String,
+    val dosage : String,
+    val frequency : String,
     val strength : String,
     val unit : String
 )

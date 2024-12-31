@@ -28,3 +28,34 @@ sealed class CreatePatientResult {
     data object Success : CreatePatientResult()
     data class Error(val message: String) : CreatePatientResult()
 }
+
+sealed class AllUnassignedPatientsResult{
+    data class Success(val patients: List<PatientResponseDto>) : AllUnassignedPatientsResult()
+    data class Error(val message: String) : AllUnassignedPatientsResult()
+}
+
+sealed class ImportPatientResult{
+    data object Success : ImportPatientResult()
+    data class Error(val message: String) : ImportPatientResult()
+}
+
+sealed class CreateNewMedicationResult {
+    data object Success : CreateNewMedicationResult()
+    data class Error(val message: String) : CreateNewMedicationResult()
+}
+
+sealed class CreateNewTreatmentResult {
+    data object Success : CreateNewTreatmentResult()
+    data class Error(val message: String) : CreateNewTreatmentResult()
+}
+
+sealed class CreateNewCaseResult {
+    data object Success : CreateNewCaseResult()
+    data class Error(val message: String) : CreateNewCaseResult()
+}
+
+
+sealed class CloseCaseResult {
+    data object Success : CloseCaseResult()
+    data class Error(val message: String) : CloseCaseResult()
+}

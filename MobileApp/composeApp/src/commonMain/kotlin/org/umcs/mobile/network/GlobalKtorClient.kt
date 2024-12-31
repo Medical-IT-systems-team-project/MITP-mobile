@@ -107,10 +107,10 @@ object GlobalKtorClient {
         }
     }
 
-    suspend fun createNewCase(newCase: MedicalCase, doctorId: String) {
+    suspend fun createNewCase(newCase: MedicalCase, doctorId: String) : CreateNewCaseResult {
         return try {
             val medicalCaseRequestDto = MedicalCaseRequestDto(
-                patientId = 1, //TODO : change patient data class to hold id
+                patientId = newCase.patient.id,
                 admissionDate = LocalDateTime.parse(newCase.admissionDate),
                 admissionReason = newCase.admissionReason,
                 description = newCase.description,
@@ -119,9 +119,12 @@ object GlobalKtorClient {
             val medicalCaseResponse = client.post(Endpoints.MEDICAL_CASE_NEW) {
                 setBody(medicalCaseRequestDto)
             }
-            Logger.v(medicalCaseResponse.status.toString(), tag = "new case")
+            when(medicalCaseResponse.status){
+                HttpStatusCode.Created ->CreateNewCaseResult.Success
+                else -> throw IllegalStateException(medicalCaseResponse.bodyAsText())
+            }
         } catch (e: Exception) {
-            Logger.v(e.message.toString(), tag = "new case")
+            CreateNewCaseResult.Error(e.message.toString())
         }
     }
 
@@ -163,7 +166,7 @@ object GlobalKtorClient {
         newTreatment: MedicalTreatment,
         doctorID: String,
         medicalCaseID: Int,
-    ) {
+    ) : CreateNewTreatmentResult{
         return try {
             val treatmentRequestDto = TreatmentRequestDto(
                 description = newTreatment.description,
@@ -177,9 +180,12 @@ object GlobalKtorClient {
             val treatmentResponse = client.post(Endpoints.DOCTOR_NEW_TREATMENT) {
                 setBody(treatmentRequestDto)
             }
-            Logger.v(treatmentResponse.status.toString(), tag = "new case")
+            when (treatmentResponse.status) {
+                HttpStatusCode.Created -> CreateNewTreatmentResult.Success
+                else -> throw IllegalStateException(treatmentResponse.bodyAsText())
+            }
         } catch (e: Exception) {
-            Logger.v(e.message.toString(), tag = "new case")
+            CreateNewTreatmentResult.Error(e.message.toString())
         }
     }
 
@@ -187,33 +193,35 @@ object GlobalKtorClient {
         newMedication: Medication,
         doctorID: String,
         medicalCaseID: Int,
-    ) {
+    ): CreateNewMedicationResult {
         return try {
-            val treatmentRequestDto = MedicationRequestDto(
+            val medicationRequestDto = MedicationRequestDto(
                 startDate = LocalDate.parse(newMedication.startDate),
                 endDate = LocalDate.parse(newMedication.endDate),
                 details = newMedication.details,
                 name = newMedication.name,
                 medicalDoctorId = doctorID,
                 medicalCaseId = medicalCaseID,
-                dosageForm = newMedication.dosageForm,
+                dosage = newMedication.dosageForm,
                 strength = newMedication.strength,
-                unit = newMedication.unit
+                unit = newMedication.unit,
+                frequency = newMedication.frequency
             )
-            val treatmentResponse = client.post(Endpoints.DOCTOR_NEW_MEDICATION) {
-                setBody(treatmentRequestDto)
+            val medicationResponse = client.post(Endpoints.DOCTOR_NEW_MEDICATION) {
+                setBody(medicationRequestDto)
             }
-            Logger.v(treatmentResponse.status.toString(), tag = "new case")
-            Logger.v(treatmentResponse.bodyAsText(), tag = "new case")
+            when (medicationResponse.status) {
+                HttpStatusCode.Created -> CreateNewMedicationResult.Success
+                else -> throw IllegalStateException(medicationResponse.bodyAsText())
+            }
         } catch (e: Exception) {
-            Logger.v(e.message.toString(), tag = "new case")
+            CreateNewMedicationResult.Error(e.message.toString())
         }
     }
 
     suspend fun getAllDoctorPatients(): AllPatientsResult {
         return try {
             val allPatientsResponse = client.get(Endpoints.DOCTOR_PATIENT_ALL)
-            Logger.v("KOD PACJENTOW : ${allPatientsResponse}", tag = "Finito")
             val allPatients: List<PatientResponseDto> = allPatientsResponse.body()
             AllPatientsResult.Success(allPatients)
         } catch (e: Exception) {
@@ -269,11 +277,22 @@ object GlobalKtorClient {
         }
     }
 
+    suspend fun getAllUnassignedPatients(): AllUnassignedPatientsResult {
+        return try {
+            val allUnassignedPatientsResponse = client.get(Endpoints.DOCTOR_PATIENT_ALL_UNASSIGNED)
+            val allUnassignedPatients: List<PatientResponseDto> =
+                allUnassignedPatientsResponse.body()
+            AllUnassignedPatientsResult.Success(allUnassignedPatients)
+        } catch (e: Exception) {
+            AllUnassignedPatientsResult.Error(e.message.toString())
+        }
+    }
+
     suspend fun createNewPatient(newPatient: Patient): CreatePatientResult {
         return try {
             val patientRequest = PatientRequestDto(
                 socialSecurityNumber = newPatient.socialSecurityNumber,
-                firstName = newPatient.socialSecurityNumber,
+                firstName = newPatient.firstName,
                 lastName = newPatient.lastName,
                 age = newPatient.age,
                 gender = newPatient.gender,
@@ -291,6 +310,35 @@ object GlobalKtorClient {
             }
         } catch (e: Exception) {
             CreatePatientResult.Error(e.message.toString())
+        }
+    }
+
+    suspend fun importPatient(importedPatientAccessID: String): ImportPatientResult {
+        return try {
+            val importPatientResponse =
+                client.patch(Endpoints.MEDICAL_CASE_ALLOWED_DOCTOR.withArgs(importedPatientAccessID))
+            when (importPatientResponse.status) {
+                HttpStatusCode.OK -> ImportPatientResult.Success
+                else -> throw IllegalStateException(importPatientResponse.bodyAsText())
+            }
+        } catch (e: Exception) {
+            ImportPatientResult.Error(e.message.toString())
+        }
+    }
+
+    suspend fun closeCase(caseId: Int, force: Boolean): CloseCaseResult {
+        return try {
+            val closeCaseResponse = client.patch(Endpoints.MEDICAL_CASE_CLOSE.withArgs(caseId.toString())) {
+                    url {
+                        parameters.append("force", force.toString())
+                    }
+                }
+            when (closeCaseResponse.status) {
+                HttpStatusCode.OK -> CloseCaseResult.Success
+                else -> throw IllegalStateException(closeCaseResponse.bodyAsText())
+            }
+        } catch (e: Exception) {
+            CloseCaseResult.Error(e.message.toString())
         }
     }
 }

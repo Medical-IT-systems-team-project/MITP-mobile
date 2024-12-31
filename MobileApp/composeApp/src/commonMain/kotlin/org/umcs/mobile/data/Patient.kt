@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Patient(
+    val id : String = "",
     val socialSecurityNumber: String = "",
     val firstName: String = "",
     val lastName: String = "",

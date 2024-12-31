@@ -10,6 +10,7 @@ import org.umcs.mobile.network.dto.serializer.SSNPatternSerializer
 
 @Serializable
 data class PatientResponseDto(
+    val id : String,
     val firstName: String,
     val lastName: String,
     @Serializable(with = LocalDateSerializer::class)
@@ -32,6 +33,7 @@ fun List<PatientResponseDto>.toPatientList(): List<Patient> {
 
 fun PatientResponseDto.toPatient(): Patient {
     return Patient(
+        id = id,
         socialSecurityNumber = socialSecurityNumber,
         firstName = firstName,
         lastName = lastName,

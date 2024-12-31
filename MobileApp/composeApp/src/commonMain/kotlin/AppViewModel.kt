@@ -35,10 +35,30 @@ class AppViewModel : ViewModel() {
     private val _patientList = MutableStateFlow<List<Patient>>(emptyList())
     val patientList: StateFlow<List<Patient>> = _patientList
 
+    private val _unassignedPatientList = MutableStateFlow<List<Patient>>(emptyList())
+    val unassignedPatientList : StateFlow<List<Patient>> = _unassignedPatientList
+
     fun setMedicalCases(cases: List<MedicalCaseResponseDto>) {
         _medicalCaseList.value = cases.toCaseList()
         Logger.v(cases.toString(), tag = "CaseList")
         Logger.v(_medicalCaseList.value.toString(), tag = "CaseList")
+    }
+
+    fun areAnyTreatmentsOrMedicationsCompletedOrCancelled(caseId: Int): Boolean {
+        val case = _medicalCaseList.value.find { it.id == caseId } ?: return false
+
+        val anyTreatmentCompletedOrCancelled = case.treatments.any {
+            it.status != MedicalStatus.COMPLETED || it.status != MedicalStatus.CANCELLED
+        }
+        val anyMedicationCompletedOrCancelled = case.medications.any {
+            it.status != MedicalStatus.COMPLETED || it.status != MedicalStatus.CANCELLED
+        }
+
+        return anyTreatmentCompletedOrCancelled || anyMedicationCompletedOrCancelled
+    }
+
+    fun setUnassignedPatients(patients : List<PatientResponseDto>){
+        _unassignedPatientList.value = patients.toPatientList()
     }
 
     fun setPatients(patients: List<PatientResponseDto>) {

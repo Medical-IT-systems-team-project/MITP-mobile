@@ -54,6 +54,7 @@ fun NewMedicationLayout(
         }
     ) { paddingValues ->
         NewMedicationContent(
+            navigateBack = navigateBack,
             paddingValues = paddingValues,
             showStartDatePicker = showStartDatePicker,
             showEndDatePicker = showEndDatePicker,

@@ -1,5 +1,6 @@
 package org.umcs.mobile.composables.new_case_view
 
+import AppViewModel
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
@@ -45,17 +46,25 @@ import com.slapps.cupertino.theme.CupertinoTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
+import org.koin.compose.viewmodel.koinViewModel
 import org.umcs.mobile.composables.shared.AdaptiveTextField
 import org.umcs.mobile.composables.shared.AdaptiveWheelDateTimePicker
 import org.umcs.mobile.composables.shared.PatientPicker
+import org.umcs.mobile.network.AllMedicalCasesResult
+import org.umcs.mobile.network.AllPatientsResult
+import org.umcs.mobile.network.CreateNewCaseResult
 import org.umcs.mobile.network.GlobalKtorClient
+import org.umcs.mobile.network.dto.case.MedicalCaseResponseDto
+import org.umcs.mobile.network.dto.patient.PatientResponseDto
 import org.umcs.mobile.theme.determineTheme
 import org.umcs.mobile.theme.onSurfaceDark
+import kotlin.reflect.KFunction1
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewCaseContent(
-    //TODO: add navigating back after success
+    viewmodel : AppViewModel = koinViewModel(),
+    navigateBack : ()->Unit,
     paddingValues: PaddingValues,
     showPatientPicker: Boolean,
     showDatePicker: Boolean,
@@ -115,18 +124,6 @@ fun NewCaseContent(
                     shownDate = newDateTime.toString().replace('-', '/').replace('T', ' ')
                 }
             )
-            /*   DatePickerModal(
-                   onDateSelected = { dateInMillis ->
-                       if (dateInMillis != null) {
-                           val newDate = convertMillisToDate(dateInMillis)
-                           onNewCaseChange(newCase.copy(admissionDate = newDate))
-                       }
-                   },
-                   onDismiss = {
-                       onShowDatePickerChange(false)
-                       focusManager.clearFocus()
-                   }
-               )*/
         }
         AdaptiveTextField(
             readOnly = true,
@@ -201,6 +198,9 @@ fun NewCaseContent(
         AdaptiveTonalButton(
             onClick = {
                 handleCreateCase(
+                    updatePatients = viewmodel::setPatients,
+                    updateCases = viewmodel::setMedicalCases,
+                    navigateBack = navigateBack,
                     newCase = newCase,
                     doctorID = doctorID,
                     scope = scope,
@@ -244,6 +244,9 @@ private fun handleCreateCase(
     changeDateError: (String) -> Unit,
     changeReasonError: (String) -> Unit,
     changeDescriptionError: (String) -> Unit,
+    updatePatients: KFunction1<List<PatientResponseDto>, Unit>,
+    updateCases: KFunction1<List<MedicalCaseResponseDto>, Unit>,
+    navigateBack: () -> Unit,
 ) {
     changePatientError("")
     changeDateError("")
@@ -252,7 +255,23 @@ private fun handleCreateCase(
 
     if (isFormValid) {
         scope.launch {
-            GlobalKtorClient.createNewCase(newCase, doctorID)
+            val createNewCaseResult =GlobalKtorClient.createNewCase(newCase, doctorID)
+
+            when (createNewCaseResult) {
+                is CreateNewCaseResult.Error -> Logger.i(createNewCaseResult.message)
+                CreateNewCaseResult.Success -> {
+                    val patientsResult = GlobalKtorClient.getAllDoctorPatients()
+                    val casesResult = GlobalKtorClient.getAllMedicalCasesAsDoctor()
+
+                    if (patientsResult is AllPatientsResult.Success) {
+                        updatePatients(patientsResult.patients)
+                    }
+                    if (casesResult is AllMedicalCasesResult.Success) {
+                        updateCases(casesResult.cases)
+                    }
+                    navigateBack()
+                }
+            }
         }
     } else {
         newCase.getPatientFullName().ifBlank {
