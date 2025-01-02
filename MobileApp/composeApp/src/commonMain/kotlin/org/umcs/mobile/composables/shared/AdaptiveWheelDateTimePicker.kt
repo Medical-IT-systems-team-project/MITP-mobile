@@ -85,13 +85,7 @@ private fun CupertinoWheelDateTimePicker(
         ) {
             WheelDateTimePicker(
                 startDateTime = startDateTime,
-                minDateTime = LocalDateTime(
-                    year = 2020,
-                    monthNumber = 1,
-                    dayOfMonth = 1,
-                    hour = 0,
-                    minute = 0
-                ),
+                minDateTime = startDateTime,
                 maxDateTime = LocalDateTime(
                     year = 2030,
                     monthNumber = 12,
@@ -107,7 +101,15 @@ private fun CupertinoWheelDateTimePicker(
                     enabled = false,
                 )
             ) { snappedDateTime ->
-                changeCurrentlyPickedDateTime(snappedDateTime)
+                val formattedDateTime = LocalDateTime(
+                    year = snappedDateTime.year,
+                    monthNumber = snappedDateTime.monthNumber,
+                    dayOfMonth = snappedDateTime.dayOfMonth,
+                    hour = snappedDateTime.hour,
+                    minute = snappedDateTime.minute,
+                    second = snappedDateTime.second
+                )
+                changeCurrentlyPickedDateTime(formattedDateTime)
             }
         }
     }
@@ -133,13 +135,7 @@ private fun MaterialWheelDateTimePicker(
         ) {
             WheelDateTimePicker(
                 startDateTime = startDateTime,
-                minDateTime = LocalDateTime(
-                    year = 2020,
-                    monthNumber = 1,
-                    dayOfMonth = 1,
-                    hour = 0,
-                    minute = 0
-                ),
+                minDateTime = startDateTime,
                 maxDateTime = LocalDateTime(
                     year = 2030,
                     monthNumber = 12,

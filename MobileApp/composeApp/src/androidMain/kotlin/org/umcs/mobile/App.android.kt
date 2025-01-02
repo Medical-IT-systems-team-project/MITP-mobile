@@ -31,7 +31,7 @@ class AppActivity : ComponentActivity() {
             AppTheme {
                 NavigationHost(
                     doctorLoginDataStore = remember { myApplication.loginDataStore },
-                    patientLoginDataStore = remember { myApplication.testDataStore }
+                    patientLoginDataStore = remember { myApplication.loginDataStore }
                 )
             }
         }

@@ -63,8 +63,8 @@ import kotlin.reflect.KFunction1
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewCaseContent(
-    viewmodel : AppViewModel = koinViewModel(),
-    navigateBack : ()->Unit,
+    viewmodel: AppViewModel = koinViewModel(),
+    navigateBack: () -> Unit,
     paddingValues: PaddingValues,
     showPatientPicker: Boolean,
     showDatePicker: Boolean,
@@ -220,12 +220,14 @@ fun NewCaseContent(
             adaptation = {
                 material {
                     colors = ButtonDefaults.filledTonalButtonColors(
-                        contentColor = onSurfaceDark
+                        contentColor = onSurfaceDark,
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
                     )
                 }
                 cupertino {
                     colors = CupertinoButtonDefaults.filledButtonColors(
-                        contentColor = onSurfaceDark
+                        contentColor = onSurfaceDark,
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
                     )
                 }
             }
@@ -255,7 +257,7 @@ private fun handleCreateCase(
 
     if (isFormValid) {
         scope.launch {
-            val createNewCaseResult =GlobalKtorClient.createNewCase(newCase, doctorID)
+            val createNewCaseResult = GlobalKtorClient.createNewCase(newCase, doctorID)
 
             when (createNewCaseResult) {
                 is CreateNewCaseResult.Error -> Logger.i(createNewCaseResult.message)

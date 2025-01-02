@@ -61,8 +61,8 @@ import org.umcs.mobile.theme.onSurfaceDark
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewPatientContent(
-    navigateBack : ()->Unit,
-    modifier : Modifier = Modifier,
+    navigateBack: () -> Unit,
+    modifier: Modifier = Modifier,
     paddingValues: PaddingValues,
     showDatePicker: Boolean,
     datePickerState: SheetState,
@@ -89,7 +89,7 @@ fun NewPatientContent(
         Theme.Cupertino -> true
         Theme.Material3 -> false
     }
-    val verticalSpacing = if(isCupertino) 15.dp else 5.dp
+    val verticalSpacing = if (isCupertino) 15.dp else 5.dp
     val buttonTextStyle =
         if (isCupertino) CupertinoTheme.typography.title3 else MaterialTheme.typography.titleMedium.copy(
             fontSize = 20.sp
@@ -115,7 +115,7 @@ fun NewPatientContent(
     ) {
         if (showDatePicker) {
             AdaptiveWheelDatePicker(
-                minimumDate =  LocalDate(
+                minimumDate = LocalDate(
                     year = 1900,
                     monthNumber = 1,
                     dayOfMonth = 1,
@@ -145,7 +145,7 @@ fun NewPatientContent(
             title = { Text("Last Name") },
             text = newPatient.lastName,
             supportingText = lastNameError,
-            changeSupportingText = { lastNameError= it },
+            changeSupportingText = { lastNameError = it },
             onTextChange = { onNewPatientChange(newPatient.copy(lastName = it)) },
             focusRequester = focusRequester,
             placeholder = { Text("Last Name") },
@@ -170,7 +170,7 @@ fun NewPatientContent(
             title = { Text("Date of Birth") },
             text = shownDateOfBirth,
             supportingText = dateOfBirthError,
-            changeSupportingText = { dateOfBirthError= it },
+            changeSupportingText = { dateOfBirthError = it },
             focusRequester = focusRequester,
             placeholder = { Text("Date of Birth") },
             trailingIcon = {
@@ -201,7 +201,7 @@ fun NewPatientContent(
             title = { Text("Address") },
             text = newPatient.address,
             supportingText = addressError,
-            changeSupportingText = { addressError= it },
+            changeSupportingText = { addressError = it },
             onTextChange = { onNewPatientChange(newPatient.copy(address = it)) },
             focusRequester = focusRequester,
             placeholder = { Text("Address") },
@@ -211,7 +211,7 @@ fun NewPatientContent(
             title = { Text("Phone Number") },
             text = newPatient.phoneNumber,
             supportingText = phoneNumberError,
-            changeSupportingText = { phoneNumberError= it },
+            changeSupportingText = { phoneNumberError = it },
             onTextChange = {
                 if (it.length <= maxPhoneNumberChars) {
                     onNewPatientChange(newPatient.copy(phoneNumber = it))
@@ -225,7 +225,7 @@ fun NewPatientContent(
             title = { Text("Email") },
             text = newPatient.email,
             supportingText = emailError,
-            changeSupportingText = { emailError= it },
+            changeSupportingText = { emailError = it },
             onTextChange = { onNewPatientChange(newPatient.copy(email = it)) },
             focusRequester = focusRequester,
             placeholder = { Text("Email") },
@@ -249,7 +249,7 @@ fun NewPatientContent(
                     changePhoneNumberError = { phoneNumberError = it },
                     changeEmailError = { emailError = it },
                     changeDateOfBirthError = { dateOfBirthError = it },
-                    changeFormError = {formError = it}
+                    changeFormError = { formError = it }
                 )
             },
             modifier = Modifier.then(
@@ -261,19 +261,21 @@ fun NewPatientContent(
             adaptation = {
                 material {
                     colors = ButtonDefaults.filledTonalButtonColors(
-                        contentColor = onSurfaceDark
+                        contentColor = onSurfaceDark,
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
                     )
                 }
                 cupertino {
                     colors = CupertinoButtonDefaults.filledButtonColors(
-                        contentColor = onSurfaceDark
+                        contentColor = onSurfaceDark,
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
                     )
                 }
             }
         ) {
             Text(text = "Create Patient", fontSize = 16.sp)
         }
-        if(formError.isNotBlank()){
+        if (formError.isNotBlank()) {
             Text(formError)
         }
     }
@@ -296,11 +298,11 @@ fun GenderSelection(
     ) else MaterialTheme.typography.bodyLarge
     val textStyle =
         if (isCupertino) CupertinoTheme.typography.body else MaterialTheme.typography.bodyMedium
-    val width = if(isCupertino) 300.dp else 270.dp
+    val width = if (isCupertino) 300.dp else 270.dp
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
+    ) {
         Text("Gender", style = titleStyle)
         Row(
             modifier = Modifier.width(width),
@@ -316,7 +318,7 @@ fun GenderSelection(
                         onCheckedChange = { onGenderSelected(gender) },
                         adaptation = {
                             cupertino {
-                                colors =  CupertinoCheckboxDefaults.colors(
+                                colors = CupertinoCheckboxDefaults.colors(
                                     uncheckedBorderColor = cupertinoGray,
                                     checkedBorderColor = cupertinoGrayInactive
                                 )
@@ -348,7 +350,7 @@ private fun handleCreatePatient(
     changePhoneNumberError: (String) -> Unit,
     changeEmailError: (String) -> Unit,
     changeDateOfBirthError: (String) -> Unit,
-    changeFormError : (String) ->Unit
+    changeFormError: (String) -> Unit,
 ) {
     changeSsnError("")
     changeFirstNameError("")
@@ -363,8 +365,8 @@ private fun handleCreatePatient(
 
     if (isFormValid) {
         scope.launch {
-             val createNewPatientResult = GlobalKtorClient.createNewPatient(newPatient)
-            when(createNewPatientResult){
+            val createNewPatientResult = GlobalKtorClient.createNewPatient(newPatient)
+            when (createNewPatientResult) {
                 is CreatePatientResult.Error -> changeFormError(createNewPatientResult.message)
                 CreatePatientResult.Success -> navigateBack()
             }

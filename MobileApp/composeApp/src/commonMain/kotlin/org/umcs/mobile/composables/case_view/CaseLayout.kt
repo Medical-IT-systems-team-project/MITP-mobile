@@ -59,6 +59,7 @@ fun CaseLayout(
     var showAlertDialog by remember { mutableStateOf(false) }
     var loading by remember { mutableStateOf(false) }
 
+
     CloseCaseDialog(
         showAlertDialog = showAlertDialog,
         changeLoadingState = {loading = it},
@@ -71,7 +72,7 @@ fun CaseLayout(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
-            if (isDoctor && case.status != CaseStatus.COMPLETED) {
+            if (isDoctor && case.status != CaseStatus.COMPLETED && !loading) {
                 CaseLayoutFAB(
                     currentTab = currentTab,
                     infoOnClick = { showAlertDialog = true },

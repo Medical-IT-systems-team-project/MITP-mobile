@@ -1,3 +1,4 @@
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -5,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -12,6 +14,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import co.touchlab.kermit.Logger
 import com.slapps.cupertino.adaptive.AdaptiveCircularProgressIndicator
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import org.koin.compose.viewmodel.koinViewModel
@@ -41,10 +44,13 @@ fun PatientLoginLayout(
                 val loggedInPatient = patientLoginResult.patient
                 viewModel.setPatient(loggedInPatient)
 
-                val getPatientMedicalCasesResult = GlobalKtorClient.getAllMedicalCasesAsPatient(loggedInPatient.accessId)
+                val getPatientMedicalCasesResult =
+                    GlobalKtorClient.getAllMedicalCasesAsPatient(loggedInPatient.accessId)
                 when (getPatientMedicalCasesResult) {
                     is AllMedicalCasesResult.Error -> Logger.i(getPatientMedicalCasesResult.message)
-                    is AllMedicalCasesResult.Success -> viewModel.setMedicalCases(getPatientMedicalCasesResult.cases)
+                    is AllMedicalCasesResult.Success -> viewModel.setMedicalCases(
+                        getPatientMedicalCasesResult.cases
+                    )
                 }
                 loginDataStore.edit { preferences ->
                     preferences[accessIdKey] = accessId
@@ -63,11 +69,16 @@ fun PatientLoginLayout(
         storedAccessId?.let { accessId ->
             handleLogin(accessId)
         }
+        delay(700)
         loading = false
     }
 
     if (loading) {
-        AdaptiveCircularProgressIndicator(modifier = Modifier.fillMaxSize())
+        Box(Modifier.fillMaxSize()) {
+            AdaptiveCircularProgressIndicator(
+                modifier = Modifier.fillMaxSize(0.5f).align(Alignment.Center)
+            )
+        }
     } else {
         NewUUIDScreen(
             onSuccessButtonClick = { passedAccessId ->

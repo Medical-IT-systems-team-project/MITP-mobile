@@ -44,7 +44,7 @@ fun AdaptiveWheelDatePicker(
     AdaptiveWidget(
         material = {
             MaterialWheelDatePicker(
-                minimumDate = minimumDate,
+                minimumDate = currentDate,
                 sheetState = sheetState,
                 dismiss = dismiss,
                 currentlyPickedDateTime = currentlyPickedDate,
@@ -56,7 +56,7 @@ fun AdaptiveWheelDatePicker(
         },
         cupertino = {
             CupertinoWheelDatePicker(
-                minimumDate = minimumDate,
+                minimumDate = currentDate,
                 sheetState = sheetState,
                 dismiss = dismiss,
                 currentlyPickedDate = currentlyPickedDate,

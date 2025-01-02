@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -78,7 +79,7 @@ data class LoginData(val login: String, val password: String)
 fun DoctorLoginLayout(
     navigateToCaseList: () -> Unit,
     viewModel: AppViewModel = koinViewModel(),
-    loginDataStore: DataStore<Preferences>
+    loginDataStore: DataStore<Preferences>,
 ) {
     var login by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -92,7 +93,7 @@ fun DoctorLoginLayout(
     val focusManager = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
     val loginDataKey = stringPreferencesKey("login_data")
-    var loading by remember{ mutableStateOf(true) }
+    var loading by remember { mutableStateOf(true) }
 
     val isCupertino = when (determineTheme()) {
         Theme.Cupertino -> true
@@ -117,27 +118,44 @@ fun DoctorLoginLayout(
                     loginScope.launch {
                         viewModel.setDoctorId(doctorId)
                         val getPatientsNetworkCall = GlobalKtorClient.getAllDoctorPatients()
-                        val getMedicalCasesNetworkCall = GlobalKtorClient.getAllMedicalCasesAsDoctor()
+                        val getMedicalCasesNetworkCall =
+                            GlobalKtorClient.getAllMedicalCasesAsDoctor()
 
                         when (getMedicalCasesNetworkCall) {
-                            is AllMedicalCasesResult.Error -> Logger.i("${getMedicalCasesNetworkCall.message}", tag = "Finito")
-                            is AllMedicalCasesResult.Success -> viewModel.setMedicalCases(getMedicalCasesNetworkCall.cases)
+                            is AllMedicalCasesResult.Error -> Logger.i(
+                                "${getMedicalCasesNetworkCall.message}",
+                                tag = "Finito"
+                            )
+
+                            is AllMedicalCasesResult.Success -> viewModel.setMedicalCases(
+                                getMedicalCasesNetworkCall.cases
+                            )
                         }
                         when (getPatientsNetworkCall) {
-                            is AllPatientsResult.Error -> Logger.i("${getPatientsNetworkCall.message}", tag = "Finito")
-                            is AllPatientsResult.Success -> viewModel.setPatients(getPatientsNetworkCall.patients)
+                            is AllPatientsResult.Error -> Logger.i(
+                                "${getPatientsNetworkCall.message}",
+                                tag = "Finito"
+                            )
+
+                            is AllPatientsResult.Success -> viewModel.setPatients(
+                                getPatientsNetworkCall.patients
+                            )
                         }
                         navigateToCaseList()
                     }
                 }
             )
         }
-        delay(1000)
+        delay(700)
         loading = false
     }
 
     if (loading) {
-        AdaptiveCircularProgressIndicator(modifier = Modifier.fillMaxSize())
+        Box(Modifier.fillMaxSize()) {
+            AdaptiveCircularProgressIndicator(
+                modifier = Modifier.fillMaxSize(0.5f).align(Alignment.Center)
+            )
+        }
     } else {
         Column(
             modifier = Modifier
@@ -222,7 +240,9 @@ fun DoctorLoginLayout(
                 onClick = {
                     handleLogin(
                         changeLoginError = { newLoginError -> loginError = newLoginError },
-                        changePasswordError = { newPasswordError -> passwordError = newPasswordError },
+                        changePasswordError = { newPasswordError ->
+                            passwordError = newPasswordError
+                        },
                         changeErrorMessage = { newErrorMessage -> errorMessage = newErrorMessage },
                         login = login,
                         password = password,
@@ -231,18 +251,32 @@ fun DoctorLoginLayout(
                             loginScope.launch {
                                 viewModel.setDoctorId(doctorId)
                                 val getPatientsNetworkCall = GlobalKtorClient.getAllDoctorPatients()
-                                val getMedicalCasesNetworkCall = GlobalKtorClient.getAllMedicalCasesAsDoctor()
+                                val getMedicalCasesNetworkCall =
+                                    GlobalKtorClient.getAllMedicalCasesAsDoctor()
 
-                                when(getMedicalCasesNetworkCall){
-                                    is AllMedicalCasesResult.Error -> Logger.i("${getMedicalCasesNetworkCall.message}", tag ="Finito")
-                                    is AllMedicalCasesResult.Success -> viewModel.setMedicalCases(getMedicalCasesNetworkCall.cases)
+                                when (getMedicalCasesNetworkCall) {
+                                    is AllMedicalCasesResult.Error -> Logger.i(
+                                        "${getMedicalCasesNetworkCall.message}",
+                                        tag = "Finito"
+                                    )
+
+                                    is AllMedicalCasesResult.Success -> viewModel.setMedicalCases(
+                                        getMedicalCasesNetworkCall.cases
+                                    )
                                 }
-                                when(getPatientsNetworkCall){
-                                    is AllPatientsResult.Error -> Logger.i("${getPatientsNetworkCall.message}", tag = "Finito")
-                                    is AllPatientsResult.Success -> viewModel.setPatients(getPatientsNetworkCall.patients)
+                                when (getPatientsNetworkCall) {
+                                    is AllPatientsResult.Error -> Logger.i(
+                                        "${getPatientsNetworkCall.message}",
+                                        tag = "Finito"
+                                    )
+
+                                    is AllPatientsResult.Success -> viewModel.setPatients(
+                                        getPatientsNetworkCall.patients
+                                    )
                                 }
                                 loginDataStore.edit { preferences ->
-                                    preferences[loginDataKey] = Json.encodeToString<LoginData>(LoginData(login,password))
+                                    preferences[loginDataKey] =
+                                        Json.encodeToString<LoginData>(LoginData(login, password))
                                 }
                                 navigateToCaseList()
                             }
@@ -256,12 +290,14 @@ fun DoctorLoginLayout(
                 adaptation = {
                     material {
                         colors = ButtonDefaults.filledTonalButtonColors(
-                            contentColor = onSurfaceDark
+                            contentColor = onSurfaceDark,
+                            containerColor = MaterialTheme.colorScheme.primaryContainer
                         )
                     }
                     cupertino {
                         colors = CupertinoButtonDefaults.filledButtonColors(
-                            contentColor = onSurfaceDark
+                            contentColor = onSurfaceDark,
+                            containerColor = MaterialTheme.colorScheme.primaryContainer
                         )
                     }
                 }

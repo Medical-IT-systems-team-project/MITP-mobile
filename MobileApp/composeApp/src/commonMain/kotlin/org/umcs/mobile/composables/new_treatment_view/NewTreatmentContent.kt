@@ -249,12 +249,14 @@ fun NewTreatmentContent(
             adaptation = {
                 material {
                     colors = ButtonDefaults.filledTonalButtonColors(
-                        contentColor = onSurfaceDark
+                        contentColor = onSurfaceDark,
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
                     )
                 }
                 cupertino {
                     colors = CupertinoButtonDefaults.filledButtonColors(
-                        contentColor = onSurfaceDark
+                        contentColor = onSurfaceDark,
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
                     )
                 }
             }
