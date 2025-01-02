@@ -107,31 +107,21 @@ fun TestAdaptive(showAlert: Boolean = false, showCalendar: Boolean = false) {
 
 @Composable
 fun AdaptivePatientListItem(
-    showDropdownForPatient: Patient?,
     patient: Patient,
-    onImportPatientCase: (Patient) -> Unit,
     onShareUUID: (Patient) -> Unit,
-    changeShowDropdown: (Patient?) -> Unit,
 ) {
-
     AdaptiveWidget(
         material = {
             PatientListItem(
-                showDropdownForPatient = showDropdownForPatient,
                 patient = patient,
-                onImportPatientCase = onImportPatientCase,
                 onShareUUID = onShareUUID,
-                changeShowDropdown = changeShowDropdown
             )
         },
         cupertino = {
             PatientListItem(
                 isCupertino = true,
-                showDropdownForPatient = showDropdownForPatient,
                 patient = patient,
-                onImportPatientCase = onImportPatientCase,
                 onShareUUID = onShareUUID,
-                changeShowDropdown = changeShowDropdown
             )
         }
     )

@@ -63,7 +63,7 @@ class LoginPatientTest {
 
     @Test
     fun `login as patient should return 200-OK with accessID =A12345`() = runTest {
-        val accessID = "A12345"
+        val accessID = "A123451234"
         val patientResponse = client.get(Endpoints.PATIENT_ACCESS_ID.withArgs(accessID))
 
         assertEquals(HttpStatusCode.OK, patientResponse.status)
@@ -71,7 +71,7 @@ class LoginPatientTest {
 
     @Test
     fun `get medical history for patient should return 200-OK with accessID =A12345`() = runTest {
-        val accessID = "A12345"
+        val accessID = "A123451234"
         val medicalCasesResponses = client.get(Endpoints.MEDICAL_CASE_ACCESS_ID_HISTORY.withArgs(accessID))
         Logger.i(medicalCasesResponses.bodyAsText())
         assertEquals(HttpStatusCode.OK, medicalCasesResponses.status)

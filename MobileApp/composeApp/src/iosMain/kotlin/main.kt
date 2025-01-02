@@ -14,8 +14,8 @@ fun MainViewController(): UIViewController {
         val s = rememberNavController()
         AppTheme {
             NavigationHost(
-                loginDataStore = remember { createDataStore() },
-                testDataStore = remember { createDataStore() }
+                doctorLoginDataStore = remember { createDataStore() },
+                patientLoginDataStore = remember { createDataStore() }
             )
         }
     }

@@ -42,7 +42,10 @@ import com.slapps.cupertino.adaptive.icons.DateRange
 import com.slapps.cupertino.theme.CupertinoTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.plus
+import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 import org.umcs.mobile.composables.shared.AdaptiveTextField
 import org.umcs.mobile.composables.shared.AdaptiveWheelDatePicker
@@ -130,9 +133,12 @@ fun NewMedicationContent(
                     onNewMedicationChange(newMedication.copy(endDate = newDateTime.toString()))
                     shownEndDate = newDateTime.toString().replace('-', '/')
                 },
-                passedStartDate = if (newMedication.startDate.isNotBlank()) LocalDate.parse(
-                    newMedication.startDate
-                ) else null
+                passedStartDate = if (newMedication.startDate.isNotBlank()) {
+                    val startDate = LocalDate.parse(newMedication.startDate)
+                    startDate.plus(1,DateTimeUnit.DAY)
+                }else {
+                    null
+                }
             )
         }
         AdaptiveTextField(
@@ -385,3 +391,17 @@ private fun blankMedicationErrors(
     changeNameError("")
     changeFrequencyError("")
 }
+
+@Serializable
+data class MedicationFormErrors  (
+    val idError : String?,
+    val nameError: String?,
+    val startDateError : String?,
+    val endDateError : String?,
+    val dosageError : String?,
+    val frequencyError : String?,
+    val strengthError : String?,
+    val unitError : String?,
+    val medicalDoctorNameError : String?,
+    val statusError : String?
+)

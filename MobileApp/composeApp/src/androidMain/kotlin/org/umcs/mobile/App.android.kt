@@ -6,12 +6,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.tooling.preview.Preview
 import org.appModule
 import org.koin.core.context.startKoin
-import org.umcs.mobile.composables.login.DoctorLoginLayout
 import org.umcs.mobile.navigation.NavigationHost
 import org.umcs.mobile.theme.AppTheme
 
@@ -33,8 +30,8 @@ class AppActivity : ComponentActivity() {
         setContent {
             AppTheme {
                 NavigationHost(
-                    loginDataStore = remember { myApplication.loginDataStore },
-                    testDataStore = remember { myApplication.testDataStore }
+                    doctorLoginDataStore = remember { myApplication.loginDataStore },
+                    patientLoginDataStore = remember { myApplication.testDataStore }
                 )
             }
         }
@@ -47,7 +44,7 @@ internal fun initKoin() {
     }
 }
 
-@Preview(showSystemUi = true)
+/*@Preview(showSystemUi = true)
 @Composable
 private fun LoginScreenPreviewDark() {
     AppTheme(systemIsDark = true) {
@@ -65,5 +62,5 @@ private fun LoginScreenPreviewLight() {
             navigateToCaseList = {}
         )
     }
-}
+}*/
 

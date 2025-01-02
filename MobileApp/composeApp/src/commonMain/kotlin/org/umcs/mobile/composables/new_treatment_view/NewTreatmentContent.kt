@@ -43,7 +43,12 @@ import com.slapps.cupertino.adaptive.icons.DateRange
 import com.slapps.cupertino.theme.CupertinoTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.plus
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 import org.koin.compose.viewmodel.koinViewModel
 import org.umcs.mobile.composables.shared.AdaptiveTextField
 import org.umcs.mobile.composables.shared.AdaptiveWheelDateTimePicker
@@ -75,7 +80,7 @@ fun NewTreatmentContent(
     doctorID: String,
     modifier: Modifier,
     navigateBack: () -> Unit,
-    viewmodel : AppViewModel = koinViewModel()
+    viewmodel: AppViewModel = koinViewModel(),
 ) {
     val theme = remember { determineTheme() }
     val isCupertino = when (theme) {
@@ -126,9 +131,17 @@ fun NewTreatmentContent(
                     onNewTreatmentChange(newTreatment.copy(endDate = newDateTime.toString()))
                     shownEndDate = newDateTime.toString().replace('-', '/').replace('T', ' ')
                 },
-                passedStartDateTime = if (newTreatment.startDate.isNotBlank()) LocalDateTime.parse(
-                    newTreatment.startDate
-                ) else null
+                passedStartDateTime =
+                if (newTreatment.startDate.isNotBlank()) {
+                    val timeZone = TimeZone.currentSystemDefault()
+                    val startDate = LocalDateTime.parse(newTreatment.startDate)
+                    val instant = startDate.toInstant(timeZone)
+                    val instantOneDayLater = instant.plus(1,DateTimeUnit.DAY,timeZone)
+                    val localDateTimeOneDayLater = instantOneDayLater.toLocalDateTime(timeZone)
+                    localDateTimeOneDayLater
+                } else {
+                    null
+                }
             )
         }
         AdaptiveTextField(
@@ -222,7 +235,7 @@ fun NewTreatmentContent(
                     changeEndDateError = { endDateError = it },
                     changeDetailsError = { detailsError = it },
                     changeNameError = { nameError = it },
-                    navigateBack =  navigateBack,
+                    navigateBack = navigateBack,
                     updateCases = viewmodel::setMedicalCases,
                     updatePatients = viewmodel::setPatients
                 )
@@ -264,7 +277,7 @@ private fun handleCreateTreatment(
     changeNameError: (String) -> Unit,
     updatePatients: KFunction1<List<PatientResponseDto>, Unit>,
     updateCases: KFunction1<List<MedicalCaseResponseDto>, Unit>,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
 ) {
     changeDescriptionError("")
     changeStartDateError("")
@@ -274,7 +287,8 @@ private fun handleCreateTreatment(
 
     if (isFormValid) {
         scope.launch {
-            val createNewTreatmentResult =GlobalKtorClient.createNewTreatment(newTreatment, doctorID, medicalCaseID)
+            val createNewTreatmentResult =
+                GlobalKtorClient.createNewTreatment(newTreatment, doctorID, medicalCaseID)
 
             when (createNewTreatmentResult) {
                 is CreateNewTreatmentResult.Error -> Logger.i(createNewTreatmentResult.message)
@@ -312,3 +326,4 @@ private fun handleCreateTreatment(
 
     Logger.i(newTreatment.toString(), tag = "Treatment")
 }
+

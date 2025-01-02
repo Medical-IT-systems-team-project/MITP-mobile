@@ -128,7 +128,6 @@ fun CaseListLayout(
                     modifier = Modifier.fillMaxSize().then(
                         if (isMaterial) Modifier.nestedScroll(scrollBehavior.nestedScrollConnection) else Modifier
                     ),
-                    onImportPatientCase = navigateToImportPatientCase!!,
                     onShareUUID = navigateToSharePatientUUID!!,
                 )
             }

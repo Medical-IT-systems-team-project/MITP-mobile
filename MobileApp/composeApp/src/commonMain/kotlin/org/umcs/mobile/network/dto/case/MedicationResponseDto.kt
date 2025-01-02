@@ -19,3 +19,4 @@ data class MedicationResponseDto  (
     val medicalDoctorName : String,
     val status : MedicalStatus
 )
+

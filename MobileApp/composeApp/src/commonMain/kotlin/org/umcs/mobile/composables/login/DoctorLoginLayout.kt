@@ -22,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,8 +37,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import co.touchlab.kermit.Logger
 import com.slapps.cupertino.CupertinoButtonDefaults
+import com.slapps.cupertino.adaptive.AdaptiveCircularProgressIndicator
 import com.slapps.cupertino.adaptive.AdaptiveTonalButton
 import com.slapps.cupertino.adaptive.ExperimentalAdaptiveApi
 import com.slapps.cupertino.adaptive.Theme
@@ -45,7 +49,13 @@ import com.slapps.cupertino.adaptive.icons.AdaptiveIcons
 import com.slapps.cupertino.adaptive.icons.Email
 import com.slapps.cupertino.adaptive.icons.Lock
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import mobileapp.composeapp.generated.resources.Res
 import mobileapp.composeapp.generated.resources.caretrack
 import mobileapp.composeapp.generated.resources.cross_logo
@@ -59,12 +69,16 @@ import org.umcs.mobile.network.GlobalKtorClient
 import org.umcs.mobile.theme.determineTheme
 import org.umcs.mobile.theme.onSurfaceDark
 
+@Serializable
+data class LoginData(val login: String, val password: String)
+
+
 @OptIn(ExperimentalAdaptiveApi::class)
 @Composable
 fun DoctorLoginLayout(
     navigateToCaseList: () -> Unit,
     viewModel: AppViewModel = koinViewModel(),
-    loginDataStore: DataStore<Preferences>? = null,
+    loginDataStore: DataStore<Preferences>
 ) {
     var login by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -77,143 +91,189 @@ fun DoctorLoginLayout(
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
+    val loginDataKey = stringPreferencesKey("login_data")
+    var loading by remember{ mutableStateOf(true) }
 
     val isCupertino = when (determineTheme()) {
         Theme.Cupertino -> true
         Theme.Material3 -> false
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .imePadding()
-            .clickable(
-                interactionSource = interactionSource,
-                indication = null,
-                onClick = focusManager::clearFocus
-            ),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
+    LaunchedEffect(Unit) {
+        val storedLoginData = loginDataStore.data.map { preferences ->
+            preferences[loginDataKey]
+        }.first()
+
+        storedLoginData?.let {
+            val loginData = Json.decodeFromString<LoginData>(it)
+            handleLogin(
+                changeLoginError = { loginError = it },
+                changePasswordError = { passwordError = it },
+                changeErrorMessage = { errorMessage = it },
+                login = loginData.login,
+                password = loginData.password,
+                loginScope = loginScope,
+                loginAsDoctor = { doctorId ->
+                    loginScope.launch {
+                        viewModel.setDoctorId(doctorId)
+                        val getPatientsNetworkCall = GlobalKtorClient.getAllDoctorPatients()
+                        val getMedicalCasesNetworkCall = GlobalKtorClient.getAllMedicalCasesAsDoctor()
+
+                        when (getMedicalCasesNetworkCall) {
+                            is AllMedicalCasesResult.Error -> Logger.i("${getMedicalCasesNetworkCall.message}", tag = "Finito")
+                            is AllMedicalCasesResult.Success -> viewModel.setMedicalCases(getMedicalCasesNetworkCall.cases)
+                        }
+                        when (getPatientsNetworkCall) {
+                            is AllPatientsResult.Error -> Logger.i("${getPatientsNetworkCall.message}", tag = "Finito")
+                            is AllPatientsResult.Success -> viewModel.setPatients(getPatientsNetworkCall.patients)
+                        }
+                        navigateToCaseList()
+                    }
+                }
+            )
+        }
+        delay(1000)
+        loading = false
+    }
+
+    if (loading) {
+        AdaptiveCircularProgressIndicator(modifier = Modifier.fillMaxSize())
+    } else {
         Column(
             modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .offset(y = (-65).dp),
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .imePadding()
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = null,
+                    onClick = focusManager::clearFocus
+                ),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+            verticalArrangement = Arrangement.Center
         ) {
-            Icon(
+            Column(
                 modifier = Modifier
-                    .size(150.dp)
-                    .offset(y = 50.dp),
-                tint = MaterialTheme.colorScheme.primary,
-                painter = painterResource(Res.drawable.cross_logo),
-                contentDescription = null
-            )
-            Icon(
-                modifier = Modifier.fillMaxWidth(0.7f),
-                painter = painterResource(Res.drawable.caretrack),
-                contentDescription = null
-            )
-        }
-
-        AdaptiveTextField(
-            leadingIcon = {
+                    .fillMaxWidth(0.8f)
+                    .offset(y = (-65).dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
                 Icon(
-                    modifier = Modifier.size(30.dp),
-                    imageVector = AdaptiveIcons.Outlined.Email,
+                    modifier = Modifier
+                        .size(150.dp)
+                        .offset(y = 50.dp),
+                    tint = MaterialTheme.colorScheme.primary,
+                    painter = painterResource(Res.drawable.cross_logo),
                     contentDescription = null
                 )
-            },
-            modifier = Modifier.padding(horizontal = 35.dp).heightIn(min = 45.dp),
-            keyboardType = KeyboardType.Email,
-            title = { Text("Login") },
-            text = login,
-            supportingText = loginError,
-            focusRequester = focusRequester,
-            changeSupportingText = { loginError = it },
-            onTextChange = { newLogin ->
-                login = newLogin
-            },
-            placeholder = { Text("Login") },
-        )
-        Spacer(Modifier.height(30.dp))
-
-        AdaptiveTextField(
-            leadingIcon = {
                 Icon(
-                    modifier = Modifier.size(30.dp),
-                    imageVector = AdaptiveIcons.Outlined.Lock,
+                    modifier = Modifier.fillMaxWidth(0.7f),
+                    painter = painterResource(Res.drawable.caretrack),
                     contentDescription = null
                 )
-            },
-            modifier = Modifier.padding(horizontal = 35.dp).heightIn(min = 45.dp),
-            keyboardType = KeyboardType.Password,
-            title = { Text("Password") },
-            text = password,
-            supportingText = passwordError,
-            focusRequester = focusRequester,
-            changeSupportingText = { passwordError = it },
-            onTextChange = { newPassword ->
-                password = newPassword
-            },
-            placeholder = { Text("Password") },
-        )
-        Spacer(Modifier.height(30.dp))
-
-        AdaptiveTonalButton(
-            onClick = {
-                handleLogin(
-                    changeLoginError = { newLoginError -> loginError = newLoginError },
-                    changePasswordError = { newPasswordError -> passwordError = newPasswordError },
-                    changeErrorMessage = { newErrorMessage -> errorMessage = newErrorMessage },
-                    login = login,
-                    password = password,
-                    loginScope = loginScope,
-                    loginAsDoctor = { doctorId ->
-                        loginScope.launch {
-                            viewModel.setDoctorId(doctorId)
-                            val getPatientsNetworkCall = GlobalKtorClient.getAllDoctorPatients()
-                            val getMedicalCasesNetworkCall = GlobalKtorClient.getAllMedicalCasesAsDoctor()
-
-                            when(getMedicalCasesNetworkCall){
-                                is AllMedicalCasesResult.Error -> Logger.i("${getMedicalCasesNetworkCall.message}", tag ="Finito")
-                                is AllMedicalCasesResult.Success -> viewModel.setMedicalCases(getMedicalCasesNetworkCall.cases)
-                            }
-                            when(getPatientsNetworkCall){
-                                is AllPatientsResult.Error -> Logger.i("${getPatientsNetworkCall.message}", tag = "Finito")
-                                is AllPatientsResult.Success -> viewModel.setPatients(getPatientsNetworkCall.patients)
-                            }
-                            navigateToCaseList()
-                        }
-                    }
-                )
-            },
-            modifier = Modifier.then(
-                if (isCupertino) Modifier.fillMaxWidth()
-                    .padding(horizontal = 35.dp) else Modifier.width(270.dp).height(50.dp)
-            ),
-            adaptation = {
-                material {
-                    colors = ButtonDefaults.filledTonalButtonColors(
-                        contentColor = onSurfaceDark
-                    )
-                }
-                cupertino {
-                    colors = CupertinoButtonDefaults.filledButtonColors(
-                        contentColor = onSurfaceDark
-                    )
-                }
             }
-        ) {
-            Text(text = "Login", fontSize = 16.sp)
-        }
-        Spacer(Modifier.height(30.dp))
 
-        if (errorMessage.isNotBlank()) {
-            Text(text = errorMessage, color = MaterialTheme.colorScheme.error, fontSize = 15.sp)
-            Spacer(Modifier.height(20.dp))
+            AdaptiveTextField(
+                leadingIcon = {
+                    Icon(
+                        modifier = Modifier.size(30.dp),
+                        imageVector = AdaptiveIcons.Outlined.Email,
+                        contentDescription = null
+                    )
+                },
+                modifier = Modifier.padding(horizontal = 35.dp).heightIn(min = 45.dp),
+                keyboardType = KeyboardType.Email,
+                title = { Text("Login") },
+                text = login,
+                supportingText = loginError,
+                focusRequester = focusRequester,
+                changeSupportingText = { loginError = it },
+                onTextChange = { newLogin ->
+                    login = newLogin
+                },
+                placeholder = { Text("Login") },
+            )
+            Spacer(Modifier.height(30.dp))
+
+            AdaptiveTextField(
+                leadingIcon = {
+                    Icon(
+                        modifier = Modifier.size(30.dp),
+                        imageVector = AdaptiveIcons.Outlined.Lock,
+                        contentDescription = null
+                    )
+                },
+                modifier = Modifier.padding(horizontal = 35.dp).heightIn(min = 45.dp),
+                keyboardType = KeyboardType.Password,
+                title = { Text("Password") },
+                text = password,
+                supportingText = passwordError,
+                focusRequester = focusRequester,
+                changeSupportingText = { passwordError = it },
+                onTextChange = { newPassword ->
+                    password = newPassword
+                },
+                placeholder = { Text("Password") },
+            )
+            Spacer(Modifier.height(30.dp))
+
+            AdaptiveTonalButton(
+                onClick = {
+                    handleLogin(
+                        changeLoginError = { newLoginError -> loginError = newLoginError },
+                        changePasswordError = { newPasswordError -> passwordError = newPasswordError },
+                        changeErrorMessage = { newErrorMessage -> errorMessage = newErrorMessage },
+                        login = login,
+                        password = password,
+                        loginScope = loginScope,
+                        loginAsDoctor = { doctorId ->
+                            loginScope.launch {
+                                viewModel.setDoctorId(doctorId)
+                                val getPatientsNetworkCall = GlobalKtorClient.getAllDoctorPatients()
+                                val getMedicalCasesNetworkCall = GlobalKtorClient.getAllMedicalCasesAsDoctor()
+
+                                when(getMedicalCasesNetworkCall){
+                                    is AllMedicalCasesResult.Error -> Logger.i("${getMedicalCasesNetworkCall.message}", tag ="Finito")
+                                    is AllMedicalCasesResult.Success -> viewModel.setMedicalCases(getMedicalCasesNetworkCall.cases)
+                                }
+                                when(getPatientsNetworkCall){
+                                    is AllPatientsResult.Error -> Logger.i("${getPatientsNetworkCall.message}", tag = "Finito")
+                                    is AllPatientsResult.Success -> viewModel.setPatients(getPatientsNetworkCall.patients)
+                                }
+                                loginDataStore.edit { preferences ->
+                                    preferences[loginDataKey] = Json.encodeToString<LoginData>(LoginData(login,password))
+                                }
+                                navigateToCaseList()
+                            }
+                        }
+                    )
+                },
+                modifier = Modifier.then(
+                    if (isCupertino) Modifier.fillMaxWidth()
+                        .padding(horizontal = 35.dp) else Modifier.width(270.dp).height(50.dp)
+                ),
+                adaptation = {
+                    material {
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            contentColor = onSurfaceDark
+                        )
+                    }
+                    cupertino {
+                        colors = CupertinoButtonDefaults.filledButtonColors(
+                            contentColor = onSurfaceDark
+                        )
+                    }
+                }
+            ) {
+                Text(text = "Login", fontSize = 16.sp)
+            }
+            Spacer(Modifier.height(30.dp))
+
+            if (errorMessage.isNotBlank()) {
+                Text(text = errorMessage, color = MaterialTheme.colorScheme.error, fontSize = 15.sp)
+                Spacer(Modifier.height(20.dp))
+            }
         }
     }
 }

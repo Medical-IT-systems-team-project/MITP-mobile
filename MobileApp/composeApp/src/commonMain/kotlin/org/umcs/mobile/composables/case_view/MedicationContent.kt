@@ -62,7 +62,8 @@ fun MedicationContent(
             MedicationItem(
                 dropdownOnClick = { chosenStatus: MedicalStatus ->
                     medicationScope.launch {
-                        val successful = GlobalKtorClient.changeMedicationStatus(chosenStatus, medication.id)
+                        val successful =
+                            GlobalKtorClient.changeMedicationStatus(chosenStatus, medication.id)
                         if (successful) {
                             viewModel.changeMedicationStatus(chosenStatus, medication)
                         }
@@ -89,6 +90,7 @@ fun MedicationContent(
         }
     }
 }
+
 
 @Composable
 fun MedicationItem(

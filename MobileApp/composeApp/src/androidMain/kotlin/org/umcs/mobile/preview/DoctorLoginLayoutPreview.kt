@@ -1,3 +1,4 @@
+/*
 package org.umcs.mobile.preview
 
 import androidx.compose.runtime.Composable
@@ -19,4 +20,4 @@ fun DoctorLoginLightPreview() {
     AppTheme(systemIsDark = false) {
         DoctorLoginLayout({})
     }
-}
+}*/

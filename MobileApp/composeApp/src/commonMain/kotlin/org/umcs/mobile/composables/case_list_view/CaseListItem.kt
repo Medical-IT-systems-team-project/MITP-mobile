@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,6 +21,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.slapps.cupertino.adaptive.AdaptiveWidget
 import com.slapps.cupertino.theme.CupertinoTheme
+import org.umcs.mobile.composables.case_view.CaseStatusIcon
 import org.umcs.mobile.data.Case
 
 @Composable
@@ -62,24 +64,34 @@ fun CaseListItem(
                 text = if (showPatientName) currentCase.patientName else currentCase.attendingDoctor,
                 style = nameAndDateStyle,
                 color = textColor,
-                modifier = Modifier.weight(1.9f)
             )
+            Spacer(Modifier.weight(1f))
             Text(
                 maxLines = 1,
                 textAlign = TextAlign.End,
                 text = currentCase.admissionDate.takeWhile{it != ' '},
                 style = nameAndDateStyle,
                 color = textColor,
-                modifier = Modifier.weight(1.1f)
             )
         }
-        Text(
-            style = detailsStyle,
-            maxLines = 1,
-            text = currentCase.admissionReason,
-            color = textColor,
-            modifier = Modifier.padding(start = 12.dp)
-        )
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(15.dp)
+        ){
+            Text(
+                overflow = TextOverflow.Ellipsis,
+                style = detailsStyle,
+                maxLines = 1,
+                text = currentCase.admissionReason,
+                color = textColor,
+            )
+            Spacer(Modifier.weight(1f))
+            CaseStatusIcon(
+                status = currentCase.status,
+                tint = textColor
+            )
+        }
     }
 }
 

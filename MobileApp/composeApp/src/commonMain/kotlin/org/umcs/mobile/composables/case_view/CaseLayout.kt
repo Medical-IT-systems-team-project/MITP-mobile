@@ -15,8 +15,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.touchlab.kermit.Logger
+import com.slapps.cupertino.LocalContentColor
 import com.slapps.cupertino.adaptive.AdaptiveAlertDialogNative
 import com.slapps.cupertino.adaptive.AdaptiveCircularProgressIndicator
 import com.slapps.cupertino.adaptive.ExperimentalAdaptiveApi
@@ -69,7 +71,7 @@ fun CaseLayout(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
-            if (isDoctor) {
+            if (isDoctor && case.status != CaseStatus.COMPLETED) {
                 CaseLayoutFAB(
                     currentTab = currentTab,
                     infoOnClick = { showAlertDialog = true },
@@ -169,13 +171,14 @@ private fun CloseCaseDialog(
 }
 
 @Composable
-fun CaseStatusIcon(status: CaseStatus) {
+fun CaseStatusIcon(status: CaseStatus, tint : Color = LocalContentColor.current ) {
     val statusVector = when (status) {
         CaseStatus.ONGOING -> CupertinoIcons.Outlined.Cross
         CaseStatus.COMPLETED -> CupertinoIcons.Outlined.Checkmark
     }
 
     Icon(
+        tint = tint,
         imageVector = statusVector,
         contentDescription = null
     )

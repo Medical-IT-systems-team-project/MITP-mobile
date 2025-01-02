@@ -1,5 +1,6 @@
 package org.umcs.mobile.navigation
 
+import PatientLoginLayout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,7 +19,6 @@ import org.umcs.mobile.composables.case_view.CaseLayout
 import org.umcs.mobile.composables.import_patient.ImportPatientCaseLayout
 import org.umcs.mobile.composables.login.ChooseProfileLayout
 import org.umcs.mobile.composables.login.DoctorLoginLayout
-import org.umcs.mobile.composables.login.PatientLoginLayout
 import org.umcs.mobile.composables.new_case_view.NewCaseLayout
 import org.umcs.mobile.composables.new_medication_view.NewMedicationLayout
 import org.umcs.mobile.composables.new_patient_view.NewPatientLayout
@@ -32,19 +32,19 @@ import kotlin.reflect.typeOf
 @Composable
 fun NavigationHost(
     navController: NavHostController = rememberNavController(),
-    loginDataStore: DataStore<Preferences>,
-    testDataStore: DataStore<Preferences>,
+    doctorLoginDataStore: DataStore<Preferences>,
+    patientLoginDataStore: DataStore<Preferences>,
 ) {
 
     NavHost(
         navController = navController,
         modifier = Modifier.fillMaxSize(),
-        startDestination = Routes.Home
+        startDestination = Routes.ChooseLogin
     ) {
         composable<Routes.Home> {
             App(
                 navController = navController,
-                testDataStore = testDataStore
+                testDataStore = patientLoginDataStore
             )
             /*
                         TestAdaptive()
@@ -53,7 +53,7 @@ fun NavigationHost(
         composable<Routes.CaseListDoctor> {
             CaseListLayout(
                 isDoctor = true,
-                navigateToImportNewPatient = {navController.navigate(Routes.ImportPatient)},
+                navigateToImportNewPatient = { navController.navigate(Routes.ImportPatient) },
                 navigateToCase = { case -> navController.navigate(Routes.CaseDetailsDoctor(case)) },
                 navigateBack = navController::navigateUp,
                 navigateToAddNewPatient = { navController.navigate(Routes.NewPatient) },
@@ -84,7 +84,7 @@ fun NavigationHost(
                 navigateBack = navController::navigateUp
             )
         }
-        composable<Routes.NewTreatment> {backStackEntry ->
+        composable<Routes.NewTreatment> { backStackEntry ->
             val caseID = backStackEntry.toRoute<Routes.NewTreatment>().medicalCaseID
 
             NewTreatmentLayout(
@@ -118,17 +118,30 @@ fun NavigationHost(
             )
         }
         composable<Routes.PatientLogin> {
-            PatientLoginLayout { navController.navigate(Routes.CaseListPatient) }
+            PatientLoginLayout(
+                loginDataStore = patientLoginDataStore,
+                navigateToCaseList = {
+                    navController.navigate(Routes.CaseListPatient) {
+                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
+            )
         }
-        composable<Routes.ImportPatient>{
+        composable<Routes.ImportPatient> {
             ImportNewPatient(
                 navigateBack = navController::navigateUp,
             )
         }
         composable<Routes.DoctorLogin> {
             DoctorLoginLayout(
-                loginDataStore = loginDataStore,
-                navigateToCaseList = { navController.navigate(Routes.CaseListDoctor) }
+                loginDataStore = doctorLoginDataStore,
+                navigateToCaseList = {
+                    navController.navigate(Routes.CaseListDoctor) {
+                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
             )
         }
         composable<Routes.ImportCase>(
@@ -175,8 +188,20 @@ fun NavigationHost(
                 isDoctor = true,
                 caseId = route.case.id,
                 navigateBack = navController::navigateUp,
-                navigateToNewTreatment = { medicalCaseID : Int -> navController.navigate(Routes.NewTreatment(medicalCaseID)) },
-                navigateToNewMedication = { medicalCaseID : Int -> navController.navigate(Routes.NewMedication(medicalCaseID)) }
+                navigateToNewTreatment = { medicalCaseID: Int ->
+                    navController.navigate(
+                        Routes.NewTreatment(
+                            medicalCaseID
+                        )
+                    )
+                },
+                navigateToNewMedication = { medicalCaseID: Int ->
+                    navController.navigate(
+                        Routes.NewMedication(
+                            medicalCaseID
+                        )
+                    )
+                }
             )
         }
 
@@ -191,8 +216,20 @@ fun NavigationHost(
                 isDoctor = false,
                 caseId = route.case.id,
                 navigateBack = navController::navigateUp,
-                navigateToNewTreatment = { medicalCaseID : Int -> navController.navigate(Routes.NewTreatment(medicalCaseID)) },
-                navigateToNewMedication = { medicalCaseID : Int -> navController.navigate(Routes.NewMedication(medicalCaseID)) }
+                navigateToNewTreatment = { medicalCaseID: Int ->
+                    navController.navigate(
+                        Routes.NewTreatment(
+                            medicalCaseID
+                        )
+                    )
+                },
+                navigateToNewMedication = { medicalCaseID: Int ->
+                    navController.navigate(
+                        Routes.NewMedication(
+                            medicalCaseID
+                        )
+                    )
+                }
             )
         }
     }

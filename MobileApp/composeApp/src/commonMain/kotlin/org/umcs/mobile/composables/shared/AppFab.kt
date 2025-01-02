@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -13,7 +14,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.slapps.cupertino.CupertinoIconButton
 import com.slapps.cupertino.adaptive.AdaptiveWidget
-import com.slapps.cupertino.theme.CupertinoTheme
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.umcs.mobile.theme.onSurfaceVariantDark
@@ -50,7 +50,7 @@ fun AdaptiveFAB(
     iconVector: ImageVector? = null,
     onClick: () -> Unit,
 ) {
-    val cupertinoContainer = CupertinoTheme.colorScheme.accent
+    val cupertinoContainer = MaterialTheme.colorScheme.primaryContainer
     val cupertinoContent = onSurfaceVariantDark
     val customElevation = FloatingActionButtonDefaults.elevation(
         defaultElevation = 12.dp,
@@ -80,7 +80,7 @@ fun AdaptiveFAB(
                 ),*/
               //  containerColor = Color.Transparent,
                // contentColor = cupertinoContent.copy(alpha = 0.7f),
-                modifier = Modifier.size(60.dp).clip(CircleShape).background(cupertinoContainer),
+                modifier = modifier.size(60.dp).clip(CircleShape).background(cupertinoContainer),
                 onClick = onClick,
                 content = {
                     if (iconVector != null) {
