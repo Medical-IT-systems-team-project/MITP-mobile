@@ -5,7 +5,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -13,10 +16,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.theapache64.rebugger.Rebugger
+import com.slapps.cupertino.adaptive.AdaptiveWidget
+import com.slapps.cupertino.theme.CupertinoTheme
+import org.umcs.mobile.composables.case_view.CaseStatusIcon
 import org.umcs.mobile.data.Case
 
 @Composable
@@ -25,20 +30,28 @@ fun CaseListItem(
     onCaseClicked: (Case) -> Unit,
     modifier: Modifier = Modifier,
     currentCase: Case,
+    isCupertino: Boolean = false,
 ) {
     val textColor = MaterialTheme.colorScheme.onPrimary
+    val shape = if (isCupertino) CupertinoTheme.shapes.extraLarge else MaterialTheme.shapes.medium
+    val verticalSpacing = if (isCupertino) 12.dp else 16.dp
+    val nameAndDateStyle = if (isCupertino) CupertinoTheme.typography.title3 else MaterialTheme.typography.titleMedium
+    val detailsStyle = if (isCupertino) CupertinoTheme.typography.callout else MaterialTheme.typography.labelLarge
+    val itemModifier = modifier.then(
+        if(isCupertino) Modifier.fillMaxWidth(0.95f).height(70.dp) else Modifier.fillMaxWidth(0.8f).height(80.dp)
+    )
 
     Column(
-        modifier = modifier
+        modifier = itemModifier
             .fillMaxSize()
-            .clip(shape = MaterialTheme.shapes.medium)
+            .clip(shape)
             .background(MaterialTheme.colorScheme.primary)
-            .padding(top = 8.dp)
+            .padding(top = 8.dp, bottom = 4.dp)
             .clickable {
                 onCaseClicked(currentCase)
             },
         horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(verticalSpacing)
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 12.dp),
@@ -48,54 +61,64 @@ fun CaseListItem(
             Text(
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
-                text = if (showPatientName) currentCase.patientName else currentCase.doctorName,
-                fontSize = 20.sp,
+                text = if (showPatientName) currentCase.patientName else currentCase.attendingDoctor,
+                style = nameAndDateStyle,
                 color = textColor,
-                modifier = Modifier.weight(1.9f)
             )
+            Spacer(Modifier.weight(1f))
             Text(
                 maxLines = 1,
-                text = currentCase.stringDate,
-                fontSize = 18.sp,
+                textAlign = TextAlign.End,
+                text = currentCase.admissionDate.takeWhile{it != ' '},
+                style = nameAndDateStyle,
                 color = textColor,
-                modifier = Modifier.weight(1.1f)
             )
         }
-        Text(
-            style = MaterialTheme.typography.bodySmall,
-            maxLines = 1,
-            text = currentCase.caseDetails,
-            fontSize = 16.sp,
-            color = textColor,
-            modifier = Modifier.padding(start = 12.dp)
-        )
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(15.dp)
+        ){
+            Text(
+                overflow = TextOverflow.Ellipsis,
+                style = detailsStyle,
+                maxLines = 1,
+                text = currentCase.admissionReason,
+                color = textColor,
+            )
+            Spacer(Modifier.weight(1f))
+            CaseStatusIcon(
+                status = currentCase.status,
+                tint = textColor
+            )
+        }
     }
+}
 
-    Rebugger(
-        trackMap = mapOf(
-            "isDoctor" to showPatientName,
-            "navigateToCase" to onCaseClicked,
-            "modifier" to modifier,
-            "currentCase" to currentCase,
-            "textColor" to textColor,
-            """modifier
-                .fillMaxSize()
-                .clip(shape = MaterialTheme.shapes.medium)
-                .background(MaterialTheme.colorScheme.primary)
-                .padding(top = 8.dp)
-                .clickable {
-                    navigateToCase(currentCase)
-                }"""
-             to modifier
-                .fillMaxSize()
-                .clip(shape = MaterialTheme.shapes.medium)
-                .background(MaterialTheme.colorScheme.primary)
-                .padding(top = 8.dp)
-                .clickable {
-                    onCaseClicked(currentCase)
-                },
-            "Alignment.Start" to Alignment.Start,
-            "Arrangement.spacedBy(16.dp)" to Arrangement.spacedBy(16.dp),
-        ),
+@Composable
+fun AdaptiveCase(
+    showPatientName: Boolean,
+    onCaseClicked: (Case) -> Unit,
+    modifier: Modifier = Modifier,
+    currentCase: Case,
+) {
+    AdaptiveWidget(
+        material = {
+            CaseListItem(
+                modifier = modifier,
+                showPatientName = showPatientName,
+                onCaseClicked = onCaseClicked,
+                currentCase = currentCase
+            )
+        },
+        cupertino = {
+            CaseListItem(
+                modifier = modifier,
+                showPatientName = showPatientName,
+                onCaseClicked = onCaseClicked,
+                currentCase = currentCase,
+                isCupertino = true
+            )
+        }
     )
 }

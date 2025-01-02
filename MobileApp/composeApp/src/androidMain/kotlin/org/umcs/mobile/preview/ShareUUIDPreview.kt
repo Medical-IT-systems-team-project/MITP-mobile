@@ -11,7 +11,7 @@ import org.umcs.mobile.theme.AppTheme
 @Composable
 fun ShareUUIDDarkPreview() {
     AppTheme(systemIsDark = true) {
-        ShareUUIDLayout({}, modifier = Modifier.fillMaxSize() )
+        ShareUUIDLayout({}, modifier = Modifier.fillMaxSize())
     }
 }
 
@@ -19,6 +19,6 @@ fun ShareUUIDDarkPreview() {
 @Composable
 fun ShareUUIDLightPreview() {
     AppTheme(systemIsDark = false) {
-        ShareUUIDLayout({}, modifier = Modifier.fillMaxSize() )
+        ShareUUIDLayout({}, modifier = Modifier.fillMaxSize())
     }
 }

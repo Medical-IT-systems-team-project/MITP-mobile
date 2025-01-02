@@ -2,17 +2,38 @@ package org.umcs.mobile.data
 
 import kotlinx.serialization.Serializable
 
-//TODO : Create some sort of wrapper for navigation purposes
 @Serializable
 data class Patient(
-    var firstName: String = "",
-    var lastName: String = "",
-    var gender: String = "",
-    var socialSecurityNumber: String = "",
-    var dateOfBirth: String = "",
-    var age: String = "",
-){
+    val id : String = "",
+    val socialSecurityNumber: String = "",
+    val firstName: String = "",
+    val lastName: String = "",
+    val age: String = "",
+    val gender: String = "",
+    val address: String = "",
+    val phoneNumber: String = "",
+    val email: String = "",
+    val birthDate: String = "",
+    val accessID: String = "",
+) {
     fun getFullName(): String {
         return "$firstName $lastName"
+    }
+
+    companion object {
+        fun emptyPatient(): Patient {
+            return Patient(
+                socialSecurityNumber = "",
+                firstName = "",
+                lastName = "",
+                age = "",
+                gender = "",
+                address = "",
+                phoneNumber = "",
+                email = "",
+                birthDate = "",
+                accessID = ""
+            )
+        }
     }
 }

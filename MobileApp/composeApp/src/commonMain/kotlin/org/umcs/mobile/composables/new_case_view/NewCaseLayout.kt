@@ -1,5 +1,6 @@
 package org.umcs.mobile.composables.new_case_view
 
+import AppViewModel
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,16 +16,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
+import co.touchlab.kermit.Logger
+import org.koin.compose.viewmodel.koinViewModel
 import org.umcs.mobile.composables.shared.AppTopBar
 import org.umcs.mobile.data.Patient
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewCaseLayout(navigateBack: () -> Unit, modifier: Modifier = Modifier) {
+fun NewCaseLayout(
+    navigateBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: AppViewModel = koinViewModel(),
+) {
     var newCase by remember { mutableStateOf(MedicalCase()) }
-    var formState by remember { mutableStateOf(MedicalCaseFormState()) }
-    var fullName = newCase.getPatientFullName()
-
     val patientPickerState = rememberModalBottomSheetState()
     var showPatientPicker by remember { mutableStateOf(false) }
     var showDatePicker by remember { mutableStateOf(false) }
@@ -47,18 +51,21 @@ fun NewCaseLayout(navigateBack: () -> Unit, modifier: Modifier = Modifier) {
         }
     ) { paddingValues ->
         NewCaseContent(
+            navigateBack = navigateBack,
             paddingValues = paddingValues,
             showPatientPicker = showPatientPicker,
             showDatePicker = showDatePicker,
             patientPickerState = patientPickerState,
             newCase = newCase,
-            formState = formState,
-            fullName = fullName,
             focusRequester = focusRequester,
             focusManager = focusManager,
-            onNewCaseChange = { newCase = it },
+            onNewCaseChange = {
+                newCase = it
+                Logger.i(newCase.toString(), tag = "new case")
+            },
             onShowPatientPickerChange = { showPatientPicker = it },
-            onShowDatePickerChange = { showDatePicker = it }
+            onShowDatePickerChange = { showDatePicker = it },
+            doctorID = viewModel.doctorID
         )
     }
 }
@@ -73,25 +80,22 @@ fun patientList() = listOf(
     Patient(firstName = "Sarah", lastName = "Wilson", socialSecurityNumber = "89012345678"),
     Patient(firstName = "David", lastName = "Taylor", socialSecurityNumber = "23456789012"),
     Patient(firstName = "Emily", lastName = "Anderson", socialSecurityNumber = "56789012345"),
+    Patient(firstName = "Emily", lastName = "Anderson", socialSecurityNumber = "56789012345"),
+    Patient(firstName = "Emily", lastName = "Anderson", socialSecurityNumber = "56789012345"),
+    Patient(firstName = "Emily", lastName = "Anderson", socialSecurityNumber = "56789012345"),
+    Patient(firstName = "Emily", lastName = "Anderson", socialSecurityNumber = "56789012345"),
+    Patient(firstName = "Emily", lastName = "Anderson", socialSecurityNumber = "56789012345"),
+    Patient(firstName = "Emily", lastName = "Anderson", socialSecurityNumber = "56789012345"),
     Patient(firstName = "James", lastName = "Martinez", socialSecurityNumber = "90123456789")
 )
+
 data class MedicalCase(
     var patient: Patient = Patient(),
     var admissionDate: String = "",
-    var doctor: String = "",
-    var details: String = "",
-    var diagnosis: String = "",
+    var admissionReason: String = "",
+    var description: String = "",
 ) {
     fun getPatientFullName(): String {
         return patient.getFullName()
     }
 }
-
-data class MedicalCaseFormState(
-    var patientError: String = "",
-    var admissionDateError: String = "",
-    var doctorError: String = "",
-    var detailsError: String = "",
-    var diagnosisError: String = "",
-    var error: String = ""
-)

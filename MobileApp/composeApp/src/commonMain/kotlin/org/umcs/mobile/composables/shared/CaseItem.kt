@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.umcs.mobile.composables.case_view.SectionTitleText
 
 @Composable
 fun CaseItem(modifier: Modifier = Modifier, title: String, content: String) {
@@ -25,11 +26,7 @@ fun CaseItem(modifier: Modifier = Modifier, title: String, content: String) {
     Column(
         modifier = modifier
     ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleLarge
-        )
-
+        SectionTitleText(title)
         Column(
             modifier = Modifier
                 .padding(top = 4.dp)

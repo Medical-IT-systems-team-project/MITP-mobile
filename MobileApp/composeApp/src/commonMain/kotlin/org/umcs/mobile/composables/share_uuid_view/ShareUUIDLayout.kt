@@ -24,7 +24,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.slapps.cupertino.adaptive.Theme
+import com.slapps.cupertino.theme.CupertinoTheme
 import io.github.alexzhirkevich.qrose.options.Neighbors
 import io.github.alexzhirkevich.qrose.options.QrLogo
 import io.github.alexzhirkevich.qrose.options.QrLogoPadding
@@ -35,21 +36,27 @@ import mobileapp.composeapp.generated.resources.cross_logo
 import org.jetbrains.compose.resources.painterResource
 import org.umcs.mobile.composables.shared.AppTopBar
 import org.umcs.mobile.theme.backgroundLight
-import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
+import org.umcs.mobile.theme.determineTheme
 
-@OptIn(ExperimentalUuidApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShareUUIDLayout(
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    patientUUID: String = Uuid.random().toString()
+    patientAccessID: String = generateRandomNumber(),
+    patientName: String = ""
 ) {
+    val style = when(determineTheme()){
+        Theme.Cupertino -> CupertinoTheme.typography.title3
+        Theme.Material3 -> MaterialTheme.typography.titleMedium
+    }
+    val title = if(patientName.isNotBlank()) "$patientName's Access ID" else "Access ID"
+
     Scaffold(
         modifier = modifier,
         topBar = { AppTopBar(
             navigateBack = navigateBack,
-            title = "Your UUID",
+            title = title,
             scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
         ) },
     ) { paddingValues ->
@@ -64,11 +71,12 @@ fun ShareUUIDLayout(
             Spacer(modifier = Modifier.height(32.dp))
             Image(
                 modifier = Modifier
-                    .fillMaxWidth(0.8f)
+                    .fillMaxWidth(0.87f)
                     .aspectRatio(1f)
-                    .background(backgroundLight),
+                    .background(backgroundLight)
+                    .padding(10.dp),
                 painter = rememberQrCodePainter(
-                    data = patientUUID,
+                    data = patientAccessID,
                     logo = QrLogo(
                         shape = CrossQrLogoShape(),
                         padding = QrLogoPadding.Accurate(-0.3f),
@@ -87,9 +95,9 @@ fun ShareUUIDLayout(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = patientUUID,
+                    text = patientAccessID,
                     maxLines = 1,
-                    fontSize = 20.sp,
+                    style = style,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.fillMaxWidth()
@@ -97,6 +105,13 @@ fun ShareUUIDLayout(
             }
         }
     }
+}
+
+fun generateRandomNumber(length: Int = 10): String {
+    val digits = "0123456789"
+    return (1..length)
+        .map { digits.random() }
+        .joinToString("")
 }
 
 class CrossQrLogoShape : QrLogoShape {

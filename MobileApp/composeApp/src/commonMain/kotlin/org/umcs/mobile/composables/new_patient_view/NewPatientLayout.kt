@@ -3,9 +3,12 @@ package org.umcs.mobile.composables.new_patient_view
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,11 +24,12 @@ import org.umcs.mobile.data.Patient
 @Composable
 fun NewPatientLayout(navigateBack: () -> Unit) {
     var newPatient by remember { mutableStateOf(Patient()) }
-    var formState by remember { mutableStateOf(PatientFormState()) } //TODO : Handle errors from client
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
+    var showDatePicker by remember { mutableStateOf(false) }
+    val datePickerState = rememberModalBottomSheetState()
     val interactionSource = remember { MutableInteractionSource() }
-    val ssnMaxChars = 9
+    val scrollState = rememberScrollState()
 
     Scaffold(
         modifier = Modifier.fillMaxSize().clickable(
@@ -42,33 +46,19 @@ fun NewPatientLayout(navigateBack: () -> Unit) {
         }
     ) { paddingValues ->
         NewPatientContent(
+            navigateBack = navigateBack,
             paddingValues = paddingValues,
             newPatient = newPatient,
-            formState = formState,
             focusRequester = focusRequester,
-            onFirstNameChange = { newPatient = newPatient.copy(firstName = it) },
-            onLastNameChange = { newPatient = newPatient.copy(lastName = it) },
-            onGenderChange = { newPatient = newPatient.copy(gender = it) },
-            onAgeChange = { newPatient = newPatient.copy(age = it) },
-            onSocialSecurityNumberChange = {
-                if (it.length <= ssnMaxChars) {
-                    newPatient = newPatient.copy(socialSecurityNumber = it)
-                }
-            },
-            onDateOfBirthChange = { newPatient = newPatient.copy(dateOfBirth = it) }
+            showDatePicker = showDatePicker,
+            datePickerState = datePickerState,
+            onShowDatePickerChange = {showDatePicker = it},
+            onNewPatientChange = {newPatient =it},
+            modifier = Modifier.verticalScroll(state = scrollState)
         )
     }
 }
 
-data class PatientFormState(
-    var firstNameError: String = "",
-    var lastNameError: String = "",
-    var socialSecurityNumberError: String = "",
-    var genderError: String = "",
-    var dateOfBirthError: String = "",
-    var ageError: String = "",
-    var error: String = ""
-)
 
 
 

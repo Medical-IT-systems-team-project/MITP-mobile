@@ -1,5 +1,6 @@
 package org.umcs.mobile.composables.new_case_view
 
+import AppViewModel
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
@@ -8,19 +9,23 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
@@ -31,29 +36,70 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.touchlab.kermit.Logger
-import org.umcs.mobile.composables.shared.AppTextField
-import org.umcs.mobile.composables.shared.DatePickerModal
+import com.slapps.cupertino.CupertinoButtonDefaults
+import com.slapps.cupertino.adaptive.AdaptiveTonalButton
+import com.slapps.cupertino.adaptive.Theme
+import com.slapps.cupertino.adaptive.icons.AdaptiveIcons
+import com.slapps.cupertino.adaptive.icons.DateRange
+import com.slapps.cupertino.adaptive.icons.Face
+import com.slapps.cupertino.theme.CupertinoTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDateTime
+import org.koin.compose.viewmodel.koinViewModel
+import org.umcs.mobile.composables.shared.AdaptiveTextField
+import org.umcs.mobile.composables.shared.AdaptiveWheelDateTimePicker
 import org.umcs.mobile.composables.shared.PatientPicker
-import org.umcs.mobile.data.convertMillisToDate
+import org.umcs.mobile.network.AllMedicalCasesResult
+import org.umcs.mobile.network.AllPatientsResult
+import org.umcs.mobile.network.CreateNewCaseResult
+import org.umcs.mobile.network.GlobalKtorClient
+import org.umcs.mobile.network.dto.case.MedicalCaseResponseDto
+import org.umcs.mobile.network.dto.patient.PatientResponseDto
+import org.umcs.mobile.theme.determineTheme
+import org.umcs.mobile.theme.onSurfaceDark
+import kotlin.reflect.KFunction1
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewCaseContent(
+    viewmodel: AppViewModel = koinViewModel(),
+    navigateBack: () -> Unit,
     paddingValues: PaddingValues,
     showPatientPicker: Boolean,
     showDatePicker: Boolean,
     patientPickerState: SheetState,
     newCase: MedicalCase,
-    formState: MedicalCaseFormState,
-    fullName: String,
     focusRequester: FocusRequester,
     focusManager: FocusManager,
     onNewCaseChange: (MedicalCase) -> Unit,
     onShowPatientPickerChange: (Boolean) -> Unit,
     onShowDatePickerChange: (Boolean) -> Unit,
+    doctorID: String,
 ) {
+    val theme = remember { determineTheme() }
+    val isCupertino = when (theme) {
+        Theme.Cupertino -> true
+        Theme.Material3 -> false
+    }
+    val verticalSpacing = if (isCupertino) 15.dp else 5.dp
+    val buttonTextStyle =
+        if (isCupertino) CupertinoTheme.typography.title3 else MaterialTheme.typography.titleMedium.copy(
+            fontSize = 20.sp
+        )
+    var shownDate by remember { mutableStateOf("") }
+    var patientError by remember { mutableStateOf("") }
+    var dateError by remember { mutableStateOf("") }
+    var reasonError by remember { mutableStateOf("") }
+    var descriptionError by remember { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
+    val isFormValid = newCase.getPatientFullName().isNotBlank() &&
+            newCase.admissionDate.isNotBlank() &&
+            newCase.admissionReason.isNotBlank() &&
+            newCase.description.isNotBlank()
+
     Column(
-        verticalArrangement = Arrangement.spacedBy(5.dp),
+        verticalArrangement = Arrangement.spacedBy(verticalSpacing),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize().padding(horizontal = 25.dp).padding(
             top = paddingValues.calculateTopPadding() + 20.dp
@@ -70,32 +116,29 @@ fun NewCaseContent(
             )
         }
         if (showDatePicker) {
-            DatePickerModal(
-                onDateSelected = { dateInMillis ->
-                    if (dateInMillis != null) {
-                        val newDate = convertMillisToDate(dateInMillis)
-                        onNewCaseChange(newCase.copy(admissionDate = newDate))
-                    }
-                },
-                onDismiss = {
+            AdaptiveWheelDateTimePicker(
+                sheetState = rememberModalBottomSheetState(),
+                dismiss = { newDateTime: LocalDateTime ->
                     onShowDatePickerChange(false)
-                    focusManager.clearFocus()
+                    onNewCaseChange(newCase.copy(admissionDate = newDateTime.toString()))
+                    shownDate = newDateTime.toString().replace('-', '/').replace('T', ' ')
                 }
             )
         }
-        AppTextField(
+        AdaptiveTextField(
             readOnly = true,
             title = { Text("Patient ") },
-            text = fullName,
-            supportingText = formState.patientError,
+            text = newCase.getPatientFullName(),
+            supportingText = patientError,
+            changeSupportingText = { patientError = it },
             onTextChange = { },
             focusRequester = focusRequester,
             placeholder = { Text("Patient") },
             trailingIcon = {
-                Icon(Icons.Default.Face, contentDescription = "Select Patient")
+                Icon(AdaptiveIcons.Outlined.Face, contentDescription = "Select Patient")
             },
             modifier = Modifier
-                .pointerInput(fullName) {
+                .pointerInput(newCase.getPatientFullName()) {
                     awaitEachGesture {
                         awaitFirstDown(pass = PointerEventPass.Initial)
                         val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
@@ -105,16 +148,17 @@ fun NewCaseContent(
                     }
                 }
         )
-        AppTextField(
+        AdaptiveTextField(
             readOnly = true,
             keyboardType = KeyboardType.Number,
             title = { Text("Admission date") },
-            text = newCase.admissionDate,
-            supportingText = formState.admissionDateError,
+            text = shownDate,
+            supportingText = dateError,
+            changeSupportingText = { dateError = it },
             focusRequester = focusRequester,
             placeholder = { Text("Admission date") },
             trailingIcon = {
-                Icon(Icons.Default.DateRange, contentDescription = "Select date")
+                Icon(AdaptiveIcons.Outlined.DateRange, contentDescription = "Select date")
             },
             onTextChange = { onNewCaseChange(newCase.copy(admissionDate = it)) },
             modifier = Modifier
@@ -128,34 +172,123 @@ fun NewCaseContent(
                     }
                 }
         )
-        AppTextField(
-            title = { Text("Details") },
-            text = newCase.details,
-            supportingText = formState.detailsError,
-            onTextChange = { onNewCaseChange(newCase.copy(details = it)) },
+        AdaptiveTextField(
+            title = { Text("Admission Reason") },
+            text = newCase.admissionReason,
+            supportingText = reasonError,
+            changeSupportingText = { reasonError = it },
+            onTextChange = { onNewCaseChange(newCase.copy(admissionReason = it)) },
             focusRequester = focusRequester,
-            placeholder = { Text("Details") },
+            placeholder = { Text("Admission Reason") },
         )
-        AppTextField(
+        AdaptiveTextField(
             maxLines = 5,
             isSingleLine = false,
-            title = { Text("Diagnosis") },
-            text = newCase.diagnosis,
-            supportingText = formState.diagnosisError,
-            onTextChange = { onNewCaseChange(newCase.copy(diagnosis = it)) },
+            title = { Text("Description") },
+            text = newCase.description,
+            supportingText = descriptionError,
+            changeSupportingText = { descriptionError = it },
+            onTextChange = { onNewCaseChange(newCase.copy(description = it)) },
             focusRequester = focusRequester,
-            placeholder = { Text("Diagnosis") },
+            placeholder = { Text("Description") },
         )
 
-        Spacer(modifier = Modifier.height(30.dp))
-        Button(
+        Spacer(modifier = Modifier.height(30.dp)) //fixme
+
+        AdaptiveTonalButton(
             onClick = {
-                Logger.i(newCase.toString(),tag ="Case")
+                handleCreateCase(
+                    updatePatients = viewmodel::setPatients,
+                    updateCases = viewmodel::setMedicalCases,
+                    navigateBack = navigateBack,
+                    newCase = newCase,
+                    doctorID = doctorID,
+                    scope = scope,
+                    isFormValid = isFormValid,
+                    changePatientError = { patientError = it },
+                    changeDateError = { dateError = it },
+                    changeReasonError = { reasonError = it },
+                    changeDescriptionError = { descriptionError = it }
+                )
             },
-            shape = RoundedCornerShape(16.dp),
-            modifier = Modifier.size(width = 270.dp, height = 60.dp),
+            modifier = Modifier.then(
+                if (isCupertino) Modifier.fillMaxWidth() else Modifier.size(
+                    width = 270.dp,
+                    height = 60.dp
+                )
+            ),
+            adaptation = {
+                material {
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        contentColor = onSurfaceDark,
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                    )
+                }
+                cupertino {
+                    colors = CupertinoButtonDefaults.filledButtonColors(
+                        contentColor = onSurfaceDark,
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                    )
+                }
+            }
         ) {
             Text(text = "Create Case", fontSize = 16.sp)
         }
     }
+}
+
+private fun handleCreateCase(
+    newCase: MedicalCase,
+    doctorID: String,
+    scope: CoroutineScope,
+    isFormValid: Boolean,
+    changePatientError: (String) -> Unit,
+    changeDateError: (String) -> Unit,
+    changeReasonError: (String) -> Unit,
+    changeDescriptionError: (String) -> Unit,
+    updatePatients: KFunction1<List<PatientResponseDto>, Unit>,
+    updateCases: KFunction1<List<MedicalCaseResponseDto>, Unit>,
+    navigateBack: () -> Unit,
+) {
+    changePatientError("")
+    changeDateError("")
+    changeReasonError("")
+    changeDescriptionError("")
+
+    if (isFormValid) {
+        scope.launch {
+            val createNewCaseResult = GlobalKtorClient.createNewCase(newCase, doctorID)
+
+            when (createNewCaseResult) {
+                is CreateNewCaseResult.Error -> Logger.i(createNewCaseResult.message)
+                CreateNewCaseResult.Success -> {
+                    val patientsResult = GlobalKtorClient.getAllDoctorPatients()
+                    val casesResult = GlobalKtorClient.getAllMedicalCasesAsDoctor()
+
+                    if (patientsResult is AllPatientsResult.Success) {
+                        updatePatients(patientsResult.patients)
+                    }
+                    if (casesResult is AllMedicalCasesResult.Success) {
+                        updateCases(casesResult.cases)
+                    }
+                    navigateBack()
+                }
+            }
+        }
+    } else {
+        newCase.getPatientFullName().ifBlank {
+            changePatientError("This field can't be blank")
+        }
+        newCase.admissionDate.ifBlank {
+            changeDateError("This field can't be blank")
+        }
+        newCase.admissionReason.ifBlank {
+            changeReasonError("This field can't be blank")
+        }
+        newCase.description.ifBlank {
+            changeDescriptionError("This field can't be blank")
+        }
+    }
+
+    Logger.i(newCase.toString(), tag = "Case")
 }

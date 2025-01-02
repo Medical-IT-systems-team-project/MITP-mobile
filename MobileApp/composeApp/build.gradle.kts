@@ -12,6 +12,20 @@ plugins {
     id("co.touchlab.skie") version "0.9.3"
 }
 
+allprojects {
+    repositories {
+        mavenCentral()
+        google()
+        maven {
+            url = uri("https://maven.pkg.github.com/schott12521/compose-cupertino")
+            credentials {
+                username = "MichalRymarski"
+                password = System.getenv("github_password")
+            }
+        }
+    }
+}
+
 kotlin {
     jvmToolchain(17)
     androidTarget {
@@ -43,17 +57,24 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.serialization)
             implementation(libs.ktor.client.logging)
+            implementation(libs.ktor.client.auth)
+            implementation(libs.ktor.client.content.negotiation.json)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.androidx.navigation.composee)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
             implementation(libs.kotlinx.datetime)
             implementation(libs.room.runtime)
             implementation(libs.composeIcons.featherIcons)
-            implementation(libs.ktor.client.content.negotiation.json)
+            implementation(libs.cupertino)
+            implementation(libs.cupertino.adaptive)
+            implementation(libs.cupertino.native)
+            implementation(libs.cupertino.icons.extended)
 
+            implementation("io.github.darkokoa:datetime-wheel-picker:1.0.2-compose1.7.0-beta01") // NIE ZMIENIAJ WERSJIIII
             implementation("com.eygraber:uri-kmp:0.0.18")
             implementation("io.github.theapache64:rebugger:1.0.0-rc03")
             implementation(libs.qrose)
@@ -63,7 +84,13 @@ kotlin {
         }
 
         commonTest.dependencies {
-
+            implementation(libs.ktor.client.content.negotiation.json)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.client.serialization)
+            implementation(libs.ktor.client.logging)
+            implementation(libs.ktor.client.auth)
             implementation(kotlin("test"))
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.uiTest)
@@ -80,6 +107,11 @@ kotlin {
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
         }
+        getByName("commonMain") {
+            dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+            }
+        }
 
     }
 }
@@ -89,7 +121,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        minSdk = 29
+        minSdk = 30
         targetSdk = 35
 
         applicationId = "org.umcs.mobile.androidApp"
@@ -100,12 +132,11 @@ android {
     }
 }
 
-skie{
-    features{
+skie {
+    features {
         coroutinesInterop.set(true)
     }
 }
-
 
 
 //https://developer.android.com/develop/ui/compose/testing#setup

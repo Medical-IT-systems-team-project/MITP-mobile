@@ -1,53 +1,33 @@
 package org.umcs.mobile.composables.case_list_view.doctor
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable
+import AppViewModel
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import co.touchlab.kermit.Logger
-import org.umcs.mobile.composables.new_case_view.patientList
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.koin.compose.viewmodel.koinViewModel
+import org.umcs.mobile.AdaptivePatientListItem
 import org.umcs.mobile.data.Patient
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PatientListContent(
-    onImportPatientCase: (Patient) -> Unit,
     onShareUUID: (Patient) -> Unit,
     contentPadding: PaddingValues,
-    patients: List<Patient> = patientList(),
     listState: LazyListState = rememberLazyListState(),
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: AppViewModel = koinViewModel()
 ) {
-    val textColor = MaterialTheme.colorScheme.onPrimary
-    var showDropdownFor by remember { mutableStateOf<Patient?>(null) }
+    val patients by viewModel.patientList.collectAsStateWithLifecycle()
 
     LazyColumn(
         contentPadding = contentPadding,
@@ -57,72 +37,13 @@ fun PatientListContent(
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         items(patients) { patient ->
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth(0.8f)
-                    .height(50.dp)
-                    .clip(shape = MaterialTheme.shapes.medium)
-                    .background(MaterialTheme.colorScheme.primary)
-                    .padding(horizontal = 12.dp)
-                    .combinedClickable(
-                        onClick = {},
-                        onLongClick = {
-                            showDropdownFor = patient
-                            Logger.d(
-                                "Long click on patient: ${patient.getFullName()}",
-                                tag = "LongClick"
-                            )
-                        }
-                    )
-            ) {
-                Icon(Icons.Default.Face, contentDescription = "Select Patient", tint = textColor)
-                Text(
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1,
-                    text = patient.getFullName(),
-                    fontSize = 20.sp,
-                    color = textColor,
-                )
-
-                if (showDropdownFor == patient) {
-                    PatientDropdownMenu(
-                        onDismiss = { showDropdownFor = null },
-                        onImportPatientCase = { onImportPatientCase(patient) },
-                        onShareUUID = { onShareUUID(patient) },
-                    )
-                }
-            }
+            AdaptivePatientListItem(
+                patient = patient,
+                onShareUUID = onShareUUID
+            )
         }
+        item { Spacer(modifier.height(5.dp)) }
     }
 }
 
-@Composable
-private fun PatientDropdownMenu(
-    onImportPatientCase: () -> Unit,
-    onShareUUID: () -> Unit,
-    onDismiss: () -> Unit,
-) {
-    Surface {
-        DropdownMenu(
-            expanded = true,
-            onDismissRequest = onDismiss
-        ) {
-            DropdownMenuItem(
-                text = { Text("Import Patient's Case") },
-                onClick = {
-                    onDismiss()
-                    onImportPatientCase()
-                }
-            )
-            DropdownMenuItem(
-                text = { Text("Share Patient's UUID") },
-                onClick = {
-                    onDismiss()
-                    onShareUUID()
-                }
-            )
-        }
-    }
-}
+
