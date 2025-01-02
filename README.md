@@ -43,18 +43,16 @@ CareTrack is a cross-platform mobile application designed for medical case manag
 
 ## Screenshots
 
-### Login
-[![Login](/screenshots/login.png)
 
 ### Doctor Interface
-![Doctor](/screenshots/doctor.png)
-![Doctor2](/screenshots/doctor_2.png)
-
-### Patient Interface
-![Patient](/screenshots/patient.png)
+![Doctor](/screenshots/main_light-portrait.png) ![Doctor2](/screenshots/patient_list_light-portrait.png)
 
 ### Case Management
-![Case](/screenshots/case.png)
+![Case](/screenshots/case_info_light-portrait.png) ![Case2](/screenshots/treatments_light-portrait.png) ![Case3](/screenshots/medication_light-portrait.png)
+![Treatment_New](/screenshots/new_treatment_light-portrait.png) ![Medication_New](/screenshots/new_medication_light-portrait.png)
+
+### Patient Management
+![Patient_New](/screenshots/new_patient_light-portrait.png) ![Patient_Share](/screenshots/share_id_light-portrait.png)
 
 ## Getting Started
 
