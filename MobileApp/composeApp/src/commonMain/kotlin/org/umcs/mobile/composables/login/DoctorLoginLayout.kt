@@ -145,8 +145,8 @@ fun DoctorLoginLayout(
                     }
                 }
             )
+            delay(700)
         }
-        delay(700)
         loading = false
     }
 
