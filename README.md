@@ -43,16 +43,15 @@ CareTrack is a cross-platform mobile application designed for medical case manag
 
 ## Screenshots
 
-
 ### Doctor Interface
-![Doctor](/screenshots/main_light-portrait.png) ![Doctor2](/screenshots/patient_list_light-portrait.png)
+<img src="/screenshots/main_light-portrait.png" alt="Doctor" width="300"/> <img src="/screenshots/patient_list_light-portrait.png" alt="Doctor2" width="300"/>
 
 ### Case Management
-![Case](/screenshots/case_info_light-portrait.png) ![Case2](/screenshots/treatments_light-portrait.png) ![Case3](/screenshots/medication_light-portrait.png)
-![Treatment_New](/screenshots/new_treatment_light-portrait.png) ![Medication_New](/screenshots/new_medication_light-portrait.png)
+<img src="/screenshots/case_info_light-portrait.png" alt="Case" width="300"/> <img src="/screenshots/treatments_light-portrait.png" alt="Case2" width="300"/> <img src="/screenshots/medication_light-portrait.png" alt="Case3" width="300"/>
+<img src="/screenshots/new_treatment_light-portrait.png" alt="Treatment_New" width="300"/> <img src="/screenshots/new_medication_light-portrait.png" alt="Medication_New" width="300"/>
 
 ### Patient Management
-![Patient_New](/screenshots/new_patient_light-portrait.png) ![Patient_Share](/screenshots/share_id_light-portrait.png)
+<img src="/screenshots/new_patient_light-portrait.png" alt="Patient_New" width="300"/> <img src="/screenshots/share_id_light-portrait.png" alt="Patient_Share" width="300"/>
 
 ## Getting Started
 
