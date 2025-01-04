@@ -6,9 +6,9 @@ CareTrack is a cross-platform mobile application designed for medical case manag
 ## Tech Stack
 
 ### Core Technologies
-- Kotlin Multiplatform 
+- Kotlin Multiplatform
 - Compose Multiplatform
-- Compose Cupertino 
+- Compose Cupertino
 
 ### Architecture & DI
 - MVVM Architecture
@@ -44,19 +44,19 @@ CareTrack is a cross-platform mobile application designed for medical case manag
 ## Screenshots
 
 ### Doctor Interface
-<img src="/screenshots/main_light-portrait.png" alt="Doctor" width="300"/> <img src="/screenshots/main_dark-portrait.png" alt="Doctor" width="300"/> 
-<img src="/screenshots/patient_list_light-portrait.png" alt="Doctor2" width="300"/> <img src="/screenshots/patient_list_dark-portrait.png" alt="Doctor" width="300"/> 
+<img src="/screenshots/main_light-portrait.png" alt="Doctor" width="300" height="600"/> <img src="/screenshots/main_dark-portrait.png" alt="Doctor" width="300" height="600"/>
+<img src="/screenshots/patient_list_light-portrait.png" alt="Doctor2" width="300" height="600"/> <img src="/screenshots/patient_list_dark-portrait.png" alt="Doctor" width="300" height="600"/>
 
 ### Case Management
-<img src="/screenshots/case_info_light-portrait.png" alt="Case" width="300"/> <img src="/screenshots/case_info_dark-portrait.png" alt="Doctor" width="300"/> 
-<img src="/screenshots/treatments_light-portrait.png" alt="Case2" width="300"/> <img src="/screenshots/treatments_dark-portrait.png" alt="Case2" width="300"/> 
-<img src="/screenshots/medication_light-portrait.png" alt="Case3" width="300"/> <img src="/screenshots/medication_dark-portrait.png" alt="Case2" width="300"/> 
-<img src="/screenshots/new_treatment_light-portrait.png" alt="Treatment_New" width="300"/> <img src="/screenshots/new_treatment_dark-portrait.png" alt="Case2" width="300"/> 
-<img src="/screenshots/new_medication_light-portrait.png" alt="Medication_New" width="300"/> <img src="/screenshots/new_medication-portrait.png" alt="Case2" width="300"/> 
+<img src="/screenshots/case_info_light-portrait.png" alt="Case" width="300" height="600"/> <img src="/screenshots/case_info_dark-portrait.png" alt="Doctor" width="300" height="600"/>
+<img src="/screenshots/treatments_light-portrait.png" alt="Case2" width="300" height="600"/> <img src="/screenshots/treatments_dark-portrait.png" alt="Case2" width="300" height="600"/>
+<img src="/screenshots/medication_light-portrait.png" alt="Case3" width="300" height="600"/> <img src="/screenshots/medication_dark-portrait.png" alt="Case2" width="300" height="600"/>
+<img src="/screenshots/new_treatment_light-portrait.png" alt="Treatment_New" width="300" height="600"/> <img src="/screenshots/new_treatment_dark-portrait.png" alt="Case2" width="300" height="600"/>
+<img src="/screenshots/new_medication_light-portrait.png" alt="Medication_New" width="300" height="600"/> <img src="/screenshots/new_medication_dark-portrait.png" alt="Case2" width="300" height="600"/>
 
 ### Patient Management
-<img src="/screenshots/new_patient_light-portrait.png" alt="Patient_New" width="300"/> <img src="/screenshots/new_patient_dark-portrait.png" alt="Case2" width="300"/> 
-<img src="/screenshots/share_id_light-portrait.png" alt="Patient_Share" width="300"/> <img src="/screenshots/share_id_dark-portrait.png" alt="Case2" width="300"/> 
+<img src="/screenshots/new_patient_light-portrait.png" alt="Patient_New" width="300" height="600"/> <img src="/screenshots/new_patient_dark-portrait.png" alt="Case2" width="300" height="600"/>
+<img src="/screenshots/share_id_light-portrait.png" alt="Patient_Share" width="300" height="600"/> <img src="/screenshots/share_id_dark-portrait.png" alt="Case2" width="300" height="600"/>
 
 ## Getting Started
 
@@ -79,7 +79,3 @@ To run the application on iPhone device/simulator:
 - Open `iosApp/iosApp.xcproject` in Xcode and run standard configuration
 - Or use [Kotlin Multiplatform Mobile plugin](https://plugins.jetbrains.com/plugin/14936-kotlin-multiplatform-mobile) for Android Studio
   Run iOS simulator UI tests: `./gradlew :composeApp:iosSimulatorArm64Test`
-
-
-
-
