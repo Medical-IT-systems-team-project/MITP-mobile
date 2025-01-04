@@ -44,14 +44,19 @@ CareTrack is a cross-platform mobile application designed for medical case manag
 ## Screenshots
 
 ### Doctor Interface
-<img src="/screenshots/main_light-portrait.png" alt="Doctor" width="300"/> <img src="/screenshots/patient_list_light-portrait.png" alt="Doctor2" width="300"/>
+<img src="/screenshots/main_light-portrait.png" alt="Doctor" width="300"/> <img src="/screenshots/main_dark-portrait.png" alt="Doctor" width="300"/> 
+<img src="/screenshots/patient_list_light-portrait.png" alt="Doctor2" width="300"/> <img src="/screenshots/patient_list_dark-portrait.png" alt="Doctor" width="300"/> 
 
 ### Case Management
-<img src="/screenshots/case_info_light-portrait.png" alt="Case" width="300"/> <img src="/screenshots/treatments_light-portrait.png" alt="Case2" width="300"/> <img src="/screenshots/medication_light-portrait.png" alt="Case3" width="300"/>
-<img src="/screenshots/new_treatment_light-portrait.png" alt="Treatment_New" width="300"/> <img src="/screenshots/new_medication_light-portrait.png" alt="Medication_New" width="300"/>
+<img src="/screenshots/case_info_light-portrait.png" alt="Case" width="300"/> <img src="/screenshots/case_info_dark-portrait.png" alt="Doctor" width="300"/> 
+<img src="/screenshots/treatments_light-portrait.png" alt="Case2" width="300"/> <img src="/screenshots/treatments_dark-portrait.png" alt="Case2" width="300"/> 
+<img src="/screenshots/medication_light-portrait.png" alt="Case3" width="300"/> <img src="/screenshots/medication_dark-portrait.png" alt="Case2" width="300"/> 
+<img src="/screenshots/new_treatment_light-portrait.png" alt="Treatment_New" width="300"/> <img src="/screenshots/new_treatment_dark-portrait.png" alt="Case2" width="300"/> 
+<img src="/screenshots/new_medication_light-portrait.png" alt="Medication_New" width="300"/> <img src="/screenshots/new_medication-portrait.png" alt="Case2" width="300"/> 
 
 ### Patient Management
-<img src="/screenshots/new_patient_light-portrait.png" alt="Patient_New" width="300"/> <img src="/screenshots/share_id_light-portrait.png" alt="Patient_Share" width="300"/>
+<img src="/screenshots/new_patient_light-portrait.png" alt="Patient_New" width="300"/> <img src="/screenshots/new_patient_dark-portrait.png" alt="Case2" width="300"/> 
+<img src="/screenshots/share_id_light-portrait.png" alt="Patient_Share" width="300"/> <img src="/screenshots/share_id_dark-portrait.png" alt="Case2" width="300"/> 
 
 ## Getting Started
 
