@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import co.touchlab.kermit.Logger
 import com.slapps.cupertino.adaptive.AdaptiveWidget
 import com.slapps.cupertino.adaptive.ExperimentalAdaptiveApi
 import com.slapps.cupertino.theme.CupertinoTheme
@@ -36,9 +37,11 @@ fun AdaptiveWheelDatePicker(
     sheetState: SheetState,
     dismiss: (LocalDate) -> Unit,
     passedStartDate: LocalDate? = null,
-    minimumDate : LocalDate? = null
+    minimumDate : LocalDate? = null,
+    maxDate : LocalDate? = null
 ) {
-    val currentDate = passedStartDate ?: Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+    val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+    val currentDate = passedStartDate ?: now
     var currentlyPickedDate by remember { mutableStateOf(currentDate) }
 
     AdaptiveWidget(
@@ -47,6 +50,7 @@ fun AdaptiveWheelDatePicker(
                 minimumDate = minimumDate,
                 sheetState = sheetState,
                 dismiss = dismiss,
+                maxDate = now,
                 currentlyPickedDateTime = currentlyPickedDate,
                 startDateTime = currentDate,
                 changeCurrentlyPickedDateTime = { snappedDateTime ->
@@ -59,6 +63,7 @@ fun AdaptiveWheelDatePicker(
                 minimumDate = minimumDate,
                 sheetState = sheetState,
                 dismiss = dismiss,
+                maxDate = now,
                 currentlyPickedDate = currentlyPickedDate,
                 startDate = currentDate,
                 changeCurrentlyPickedDate = { snappedDateTime ->
@@ -78,7 +83,14 @@ private fun CupertinoWheelDatePicker(
     startDate: LocalDate,
     changeCurrentlyPickedDate: (LocalDate) -> Unit,
     minimumDate: LocalDate?,
+    maxDate: LocalDate,
 ) {
+    val minDate =minimumDate ?: LocalDate(
+        year = 2020,
+        monthNumber = 1,
+        dayOfMonth = 1,
+    )
+    Logger.i(maxDate.toString(), tag = "actual time")
     ModalBottomSheet(
         dragHandle = { BottomSheetDefaults.HiddenShape },
         sheetState = sheetState,
@@ -90,16 +102,8 @@ private fun CupertinoWheelDatePicker(
         ) {
             WheelDatePicker(
                 startDate = startDate,
-                minDate = minimumDate ?: LocalDate(
-                    year = 2020,
-                    monthNumber = 1,
-                    dayOfMonth = 1,
-                ),
-                maxDate = LocalDate(
-                    year = 2030,
-                    monthNumber = 12,
-                    dayOfMonth = 31,
-                ),
+                minDate = minDate,
+                maxDate = maxDate ,
                 size = DpSize(400.dp, 250.dp),
                 rowCount = 3,
                 textStyle = CupertinoTheme.typography.body,
@@ -123,7 +127,14 @@ private fun MaterialWheelDatePicker(
     startDateTime: LocalDate,
     changeCurrentlyPickedDateTime: (LocalDate) -> Unit,
     minimumDate: LocalDate?,
+    maxDate: LocalDate,
 ) {
+    val minDate =minimumDate ?: LocalDate(
+        year = 2020,
+        monthNumber = 1,
+        dayOfMonth = 1,
+    )
+    Logger.i(maxDate.toString(), tag = "actual time")
     ModalBottomSheet(
         dragHandle = { BottomSheetDefaults.HiddenShape },
         sheetState = sheetState,
@@ -135,16 +146,8 @@ private fun MaterialWheelDatePicker(
         ) {
             WheelDatePicker(
                 startDate = startDateTime,
-                minDate = minimumDate ?: LocalDate(
-                    year = 2020,
-                    monthNumber = 1,
-                    dayOfMonth = 1,
-                ),
-                maxDate = LocalDate(
-                    year = 2030,
-                    monthNumber = 12,
-                    dayOfMonth = 31,
-                ),
+                minDate = minDate,
+                maxDate = maxDate ,
                 size = DpSize(400.dp, 250.dp),
                 rowCount = 3,
                 textStyle = MaterialTheme.typography.titleSmall,
