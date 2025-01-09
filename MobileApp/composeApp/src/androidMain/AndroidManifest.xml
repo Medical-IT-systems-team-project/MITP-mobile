@@ -12,7 +12,7 @@
         android:name=".MyApplication"
         android:icon="@mipmap/ic_launcher"
 
-        android:label="MobileApp"
+        android:label="CareTrack"
         android:theme="@android:style/Theme.Material.NoActionBar">
         <activity
             android:name=".AppActivity"
