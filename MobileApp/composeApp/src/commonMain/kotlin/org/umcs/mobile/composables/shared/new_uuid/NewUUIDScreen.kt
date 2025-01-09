@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Logger
 import com.slapps.cupertino.adaptive.Theme
@@ -82,10 +83,13 @@ fun NewUUIDScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            QrScannerContent(showQrScanner, onQrScannerCompletion = { UUID ->
-                text = UUID
-                Logger.i(UUID, tag = "UUID")
-            })
+            QrScannerContent(
+                showQrScanner = showQrScanner,
+                onQrScannerCompletion = { UUID ->
+                    text = UUID
+                    Logger.i(UUID, tag = "UUID")
+                }
+            )
             if (determineTheme() == Theme.Cupertino) {
                 Spacer(Modifier.height(80.dp))
             }
@@ -116,7 +120,10 @@ fun NewUUIDScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(
+                        vertical = 16.dp,
+                        horizontal = 16.dp + paddingValues.calculateLeftPadding(LayoutDirection.Ltr)
+                    )
             )
         }
     }
