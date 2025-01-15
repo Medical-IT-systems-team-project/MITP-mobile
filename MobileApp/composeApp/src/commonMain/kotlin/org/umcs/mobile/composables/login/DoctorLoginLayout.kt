@@ -142,14 +142,15 @@ fun DoctorLoginLayout(
                             )
                         }
                         navigateToCaseList()
+                        delay(100)
+                        loading = false
                     }
                 }
             )
-            delay(700)
+        } ?: run {
+            loading = false
         }
-        loading = false
     }
-
     if (loading) {
         Box(Modifier.fillMaxSize()) {
             AdaptiveCircularProgressIndicator(

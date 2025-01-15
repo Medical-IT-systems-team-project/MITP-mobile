@@ -68,7 +68,7 @@ fun PatientLoginLayout(
 
         storedAccessId?.let { accessId ->
             handleLogin(accessId)
-            delay(700)
+            delay(200)
         }
         loading = false
     }
