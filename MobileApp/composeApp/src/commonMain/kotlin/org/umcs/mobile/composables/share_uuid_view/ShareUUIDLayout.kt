@@ -46,9 +46,10 @@ fun ShareUUIDLayout(
     patientAccessID: String = generateRandomNumber(),
     patientName: String = ""
 ) {
+    val textColor = MaterialTheme.colorScheme.onPrimary
     val style = when(determineTheme()){
         Theme.Cupertino -> CupertinoTheme.typography.title3
-        Theme.Material3 -> MaterialTheme.typography.titleMedium
+        Theme.Material3 -> MaterialTheme.typography.titleMedium.copy(color = textColor)
     }
     val title = if(patientName.isNotBlank()) "$patientName's Access ID" else "Access ID"
 

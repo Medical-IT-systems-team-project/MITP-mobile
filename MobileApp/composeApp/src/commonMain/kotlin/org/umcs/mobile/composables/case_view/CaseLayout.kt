@@ -3,6 +3,7 @@
 package org.umcs.mobile.composables.case_view
 
 import AppViewModel
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -16,6 +17,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.touchlab.kermit.Logger
 import com.slapps.cupertino.LocalContentColor
@@ -70,7 +72,24 @@ fun CaseLayout(
     )
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().pointerInput(currentTab) {
+            detectHorizontalDragGestures { change, dragAmount ->
+                change.consume()
+                if (dragAmount < -10) {
+                    when (currentTab) {
+                        CaseScreens.INFO -> currentTab = CaseScreens.TREATMENTS
+                        CaseScreens.TREATMENTS -> currentTab = CaseScreens.MEDICATIONS
+                        CaseScreens.MEDICATIONS -> { /* Do nothing */ }
+                    }
+                } else if (dragAmount > 10) {
+                    when (currentTab) {
+                        CaseScreens.INFO -> { /* Do nothing */ }
+                        CaseScreens.TREATMENTS -> currentTab = CaseScreens.INFO
+                        CaseScreens.MEDICATIONS -> currentTab = CaseScreens.TREATMENTS
+                    }
+                }
+            }
+        },
         floatingActionButton = {
             if (isDoctor && case.status != CaseStatus.COMPLETED && !loading) {
                 CaseLayoutFAB(

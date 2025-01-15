@@ -19,13 +19,13 @@ ksp = "2.0.20-1.0.25"
 composeIcons = "1.1.1"
 qrose = "1.0.1"
 datastore = "1.1.1"
-cupertino = "1.1.0"
+cupertino = "2.0.8"
 
 [libraries]
-cupertino = { group = "com.slapps.cupertino", name = "cupertino", version.ref = "cupertino" }
-cupertino-adaptive = { group = "com.slapps.cupertino", name = "cupertino-adaptive", version.ref = "cupertino" }
-cupertino-native = { group = "com.slapps.cupertino", name = "cupertino-native", version.ref = "cupertino" }
-cupertino-icons-extended = { module = "com.slapps.cupertino:cupertino-icons-extended", version.ref = "cupertino" }
+cupertino = { group = "io.github.schott12521", name = "cupertino", version.ref = "cupertino" }
+cupertino-adaptive = { group = "io.github.schott12521", name = "cupertino-adaptive", version.ref = "cupertino" }
+cupertino-native = { group = "io.github.schott12521", name = "cupertino-native", version.ref = "cupertino" }
+cupertino-icons-extended = { group = "io.github.schott12521", name = "cupertino-icons-extended", version.ref = "cupertino" }
 
 datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }

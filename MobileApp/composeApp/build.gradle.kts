@@ -16,13 +16,13 @@ allprojects {
     repositories {
         mavenCentral()
         google()
-        maven {
+       /* maven {
             url = uri("https://maven.pkg.github.com/schott12521/compose-cupertino")
             credentials {
                 username = "MichalRymarski"
                 password = System.getenv("github_password")
             }
-        }
+        }*/
     }
 }
 
@@ -121,7 +121,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        minSdk = 30
+        minSdk = 29
         targetSdk = 35
 
         applicationId = "org.umcs.mobile.androidApp"
