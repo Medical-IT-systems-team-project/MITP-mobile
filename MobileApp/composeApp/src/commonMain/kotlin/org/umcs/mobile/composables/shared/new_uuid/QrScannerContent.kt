@@ -23,7 +23,7 @@ fun QrScannerContent(showQrScanner: Boolean, onQrScannerCompletion: (String) -> 
     AnimatedVisibility(
         visible = showQrScanner,
         enter = slideInVertically(),
-        exit = slideOutVertically()
+        exit = slideOutVertically { fullHeight -> fullHeight * -2 }
     ) {
         Column(
             modifier = modifier
