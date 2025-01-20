@@ -45,7 +45,10 @@ import com.slapps.cupertino.adaptive.icons.Face
 import com.slapps.cupertino.theme.CupertinoTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.koin.compose.viewmodel.koinViewModel
 import org.umcs.mobile.composables.shared.AdaptiveTextField
 import org.umcs.mobile.composables.shared.AdaptiveWheelDateTimePicker
@@ -117,6 +120,7 @@ fun NewCaseContent(
         }
         if (showDatePicker) {
             AdaptiveWheelDateTimePicker(
+                endDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
                 sheetState = rememberModalBottomSheetState(),
                 dismiss = { newDateTime: LocalDateTime ->
                     onShowDatePickerChange(false)

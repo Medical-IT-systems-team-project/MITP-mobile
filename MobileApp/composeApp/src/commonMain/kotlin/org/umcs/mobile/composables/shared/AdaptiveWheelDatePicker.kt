@@ -50,7 +50,7 @@ fun AdaptiveWheelDatePicker(
                 minimumDate = minimumDate,
                 sheetState = sheetState,
                 dismiss = dismiss,
-                maxDate = now,
+                maxDate = maxDate ?: now,
                 currentlyPickedDateTime = currentlyPickedDate,
                 startDateTime = currentDate,
                 changeCurrentlyPickedDateTime = { snappedDateTime ->
@@ -63,7 +63,7 @@ fun AdaptiveWheelDatePicker(
                 minimumDate = minimumDate,
                 sheetState = sheetState,
                 dismiss = dismiss,
-                maxDate = now,
+                maxDate = maxDate?: now,
                 currentlyPickedDate = currentlyPickedDate,
                 startDate = currentDate,
                 changeCurrentlyPickedDate = { snappedDateTime ->

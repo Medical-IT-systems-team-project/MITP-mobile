@@ -90,10 +90,6 @@ fun NewPatientContent(
         Theme.Material3 -> false
     }
     val verticalSpacing = if (isCupertino) 15.dp else 5.dp
-    val buttonTextStyle =
-        if (isCupertino) CupertinoTheme.typography.title3 else MaterialTheme.typography.titleMedium.copy(
-            fontSize = 20.sp
-        )
     val scope = rememberCoroutineScope()
     val isFormValid = newPatient.socialSecurityNumber.isNotBlank() &&
             newPatient.firstName.isNotBlank() &&
@@ -103,7 +99,9 @@ fun NewPatientContent(
             newPatient.address.isNotBlank() &&
             newPatient.phoneNumber.isNotBlank() &&
             newPatient.email.isNotBlank() &&
-            newPatient.birthDate.isNotBlank()
+            newPatient.birthDate.isNotBlank() &&
+            newPatient.phoneNumber.length == 9 &&
+            newPatient.socialSecurityNumber.length == 11
 
     Column(
         verticalArrangement = Arrangement.spacedBy(verticalSpacing),
@@ -372,9 +370,8 @@ private fun handleCreatePatient(
             }
         }
     } else {
-        newPatient.socialSecurityNumber.ifBlank {
-            changeSsnError("This field can't be blank")
-        }
+        changeSsnError(validateSsn(newPatient.socialSecurityNumber))
+        changePhoneNumberError(validatePhoneNumber(newPatient.phoneNumber))
         newPatient.firstName.ifBlank {
             changeFirstNameError("This field can't be blank")
         }
@@ -390,16 +387,30 @@ private fun handleCreatePatient(
         newPatient.address.ifBlank {
             changeAddressError("This field can't be blank")
         }
-        newPatient.phoneNumber.ifBlank {
-            changePhoneNumberError("This field can't be blank")
-        }
         newPatient.email.ifBlank {
             changeEmailError("This field can't be blank")
         }
         newPatient.birthDate.ifBlank {
             changeDateOfBirthError("This field can't be blank")
         }
+
     }
 
     Logger.i(newPatient.toString(), tag = "Patient")
+}
+
+fun validateSsn(ssn: String): String {
+    return when {
+        ssn.isEmpty() -> "This field can't be blank"
+        ssn.length != 11  -> "SSN must be 11 digits - current length is ${ssn.length}"
+        else -> ""
+    }
+}
+
+fun validatePhoneNumber(phoneNumber: String): String {
+    return when {
+        phoneNumber.isEmpty() -> "This field can't be blank"
+        phoneNumber.length != 11  -> "Phone number must be 9 digits - current length is ${phoneNumber.length}"
+        else -> ""
+    }
 }

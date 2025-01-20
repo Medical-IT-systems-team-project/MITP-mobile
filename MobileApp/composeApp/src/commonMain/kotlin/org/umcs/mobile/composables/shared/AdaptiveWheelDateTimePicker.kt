@@ -35,6 +35,7 @@ fun AdaptiveWheelDateTimePicker(
     sheetState: SheetState,
     dismiss: (LocalDateTime) -> Unit,
     passedStartDateTime: LocalDateTime? = null,
+    endDateTime : LocalDateTime? = null
 ) {
     val currentDateTime = if (passedStartDateTime != null) passedStartDateTime else Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
     var currentlyPickedDateTime by remember { mutableStateOf(currentDateTime) }
@@ -48,7 +49,8 @@ fun AdaptiveWheelDateTimePicker(
                 startDateTime = currentDateTime,
                 changeCurrentlyPickedDateTime = { snappedDateTime ->
                     currentlyPickedDateTime = snappedDateTime
-                }
+                },
+                endDateTime = endDateTime
             )
         },
         cupertino = {
@@ -59,7 +61,9 @@ fun AdaptiveWheelDateTimePicker(
                 startDateTime = currentDateTime,
                 changeCurrentlyPickedDateTime = { snappedDateTime ->
                     currentlyPickedDateTime = snappedDateTime
-                }
+                },
+                        endDateTime = endDateTime
+
             )
         }
     )
@@ -73,6 +77,7 @@ private fun CupertinoWheelDateTimePicker(
     currentlyPickedDateTime: LocalDateTime,
     startDateTime: LocalDateTime,
     changeCurrentlyPickedDateTime: (LocalDateTime) -> Unit,
+    endDateTime : LocalDateTime? = null
 ) {
     ModalBottomSheet(
         dragHandle = { BottomSheetDefaults.HiddenShape },
@@ -86,7 +91,7 @@ private fun CupertinoWheelDateTimePicker(
             WheelDateTimePicker(
                 startDateTime = startDateTime,
                 minDateTime = startDateTime,
-                maxDateTime = LocalDateTime(
+                maxDateTime = endDateTime ?: LocalDateTime(
                     year = 2030,
                     monthNumber = 12,
                     dayOfMonth = 31,
@@ -123,6 +128,7 @@ private fun MaterialWheelDateTimePicker(
     currentlyPickedDateTime: LocalDateTime,
     startDateTime: LocalDateTime,
     changeCurrentlyPickedDateTime: (LocalDateTime) -> Unit,
+    endDateTime : LocalDateTime? = null
 ) {
     ModalBottomSheet(
         dragHandle = { BottomSheetDefaults.HiddenShape },
@@ -136,7 +142,7 @@ private fun MaterialWheelDateTimePicker(
             WheelDateTimePicker(
                 startDateTime = startDateTime,
                 minDateTime = startDateTime,
-                maxDateTime = LocalDateTime(
+                maxDateTime = endDateTime ?: LocalDateTime(
                     year = 2030,
                     monthNumber = 12,
                     dayOfMonth = 31,

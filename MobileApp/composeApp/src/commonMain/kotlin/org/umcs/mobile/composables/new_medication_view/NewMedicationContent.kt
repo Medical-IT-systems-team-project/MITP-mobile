@@ -117,6 +117,11 @@ fun NewMedicationContent(
     ) {
         if (showStartDatePicker) {
             AdaptiveWheelDatePicker(
+                maxDate =  LocalDate(
+                    year = 2030,
+                    monthNumber = 1,
+                    dayOfMonth = 1,
+                ),
                 sheetState = startDatePickerState,
                 dismiss = { newDateTime: LocalDate ->
                     onShowStartDatePickerChange(false)
@@ -127,6 +132,11 @@ fun NewMedicationContent(
         }
         if (showEndDatePicker) {
             AdaptiveWheelDatePicker(
+                maxDate =  LocalDate(
+                    year = 2030,
+                    monthNumber = 1,
+                    dayOfMonth = 1,
+                ),
                 sheetState = endDatePickerState,
                 dismiss = { newDateTime: LocalDate ->
                     onShowEndDatePickerChange(false)
